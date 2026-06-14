@@ -27,7 +27,7 @@ const PLANS = [
     id: 'starter',
     name: 'Premium',
     description:
-      'Votre coach IA au quotidien — structuré, personnalisé et aligné sur vos objectifs.',
+      'Ton coach IA au quotidien — structuré, personnalisé et aligné sur tes objectifs.',
     monthly: 29,
     semesterMonthly: Math.round(29 * (1 - SEMESTER_DISCOUNT_PERCENT / 100)),
   },

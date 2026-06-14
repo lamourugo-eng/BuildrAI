@@ -36,7 +36,7 @@ export default function DashCityPreview({
           <h3>
             {city.hasAvatar
               ? `${city.level.name}. Niv. ${city.level.id}`
-              : 'Créez votre personnage'}
+              : 'Crée ton personnage'}
           </h3>
         </div>
 
@@ -71,7 +71,7 @@ export default function DashCityPreview({
         </div>
       ) : (
         <div className="dash-city-preview-empty">
-          <p>Créez votre avatar pour afficher votre empire isométrique.</p>
+          <p>Crée ton avatar pour afficher ton empire isométrique.</p>
         </div>
       )}
 

@@ -58,11 +58,11 @@ function CityShellHeader({ city, isSubscribed, onCustomize, locked }: CityShellH
         <div className="city-shell-hero-copy">
           <span className="city-shell-eyebrow">Ma ville</span>
           <h2>
-            {locked ? 'Votre empire en construction' : `${city.level.name}. Niv. ${city.level.id}`}
+            {locked ? 'Ton empire en construction' : `${city.level.name}. Niv. ${city.level.id}`}
           </h2>
           <p>
             {locked
-              ? 'Votre personnage est prêt. Abonnez-vous pour débloquer la progression complète (districts, coach, parcours).'
+              ? 'Ton personnage est prêt. Abonne-toi pour débloquer la progression complète (districts, coach, parcours).'
               : city.accomplishmentSummary}
           </p>
         </div>
@@ -173,13 +173,13 @@ export default function CityView({ isSubscribed }: CityViewProps) {
 
         <div className="city-locked-cta">
           <div className="city-locked-cta-copy">
-            <strong>Débloquez la progression empire</strong>
+            <strong>Débloque la progression empire</strong>
             <p>
               Districts, streaks et tenues évolutives. Tout s&apos;active avec l&apos;abonnement
               Premium.
             </p>
             <ul>
-              <li>Districts qui apparaissent au fil de vos actions</li>
+              <li>Districts qui apparaissent au fil de tes actions</li>
               <li>Étapes business concrètes et déblocages personnage</li>
               <li>Suivi parcours &amp; coach intégré à la ville</li>
             </ul>

@@ -64,15 +64,15 @@ export default function QuizBusinessPicker({
 
   return (
     <div className="quiz-biz-picker">
-      <h3 className="quiz-results-title">Choisissez votre modèle business</h3>
+      <h3 className="quiz-results-title">Choisis ton modèle business</h3>
       <p className="quiz-biz-picker-hint">
-        Tous les modèles sont disponibles. Les 4 premiers affichent votre score de compatibilité
-        quiz. Vous pourrez changer plus tard depuis votre profil.
+        Tous les modèles sont disponibles. Les 4 premiers affichent ton score de compatibilité
+        quiz. Tu pourras changer plus tard depuis ton profil.
       </p>
 
       {recommended.length > 0 && (
         <div className="biz-picker-profile-group">
-          <p className="biz-picker-profile-group-title">Les plus compatibles avec vous</p>
+          <p className="biz-picker-profile-group-title">Les plus compatibles avec toi</p>
           <ul className="account-business-list biz-picker-profile-list quiz-biz-picker-list">
             {recommended.map((item, index) => renderItem(item, index + 1))}
           </ul>

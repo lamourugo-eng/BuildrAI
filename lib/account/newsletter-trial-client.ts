@@ -63,7 +63,7 @@ export async function requestNewsletterTrial(): Promise<NewsletterTrialResponse>
     }
     return data;
   } catch {
-    return { error: 'Connexion au serveur impossible. Vérifiez votre réseau et réessayez.' };
+    return { error: 'Connexion au serveur impossible. Vérifie ton réseau et réessayez.' };
   }
 }
 

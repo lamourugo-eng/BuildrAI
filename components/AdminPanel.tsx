@@ -147,7 +147,7 @@ export default function AdminPanel({ email, isSubscribed, currentPlanId }: Admin
       <section className="admin-simulation">
         <div className="admin-simulation-head">
           <h2>Simuler un abonnement</h2>
-          <p>Choisissez une formule. Vous pouvez changer à tout moment sans repasser par Stripe.</p>
+          <p>Choisis une formule. Tu peux changer à tout moment sans repasser par Stripe.</p>
         </div>
 
         <div className="admin-simulation-presets">
@@ -300,7 +300,7 @@ export default function AdminPanel({ email, isSubscribed, currentPlanId }: Admin
       {error && <p className="auth-error">{error}</p>}
 
       <p className="admin-note">
-        Configurez votre email dans <code>ADMIN_EMAILS</code> du fichier <code>.env.local</code>.
+        Configurez ton email dans <code>ADMIN_EMAILS</code> du fichier <code>.env.local</code>.
       </p>
     </div>
   );

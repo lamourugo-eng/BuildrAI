@@ -270,7 +270,7 @@ export function formatProductResumeDate(iso: string): string {
 }
 
 export function buildProductResumeWelcome(memory: CoachProductMemory): string {
-  const point = memory.thread.progress_point || 'avancer sur votre projet';
+  const point = memory.thread.progress_point || 'avancer sur ton projet';
   const actionBlock = memory.thread.last_action
     ? `\n\n➡️ Dernière action : ${memory.thread.last_action}`
     : '';
@@ -282,9 +282,9 @@ export function buildProductResumeWelcome(memory: CoachProductMemory): string {
     ? `\n\n📁 ${memory.thread.session_summary.slice(0, 280)}${memory.thread.session_summary.length > 280 ? '…' : ''}`
     : '';
 
-  return `Content de vous revoir !${phaseBlock}
+  return `Content de te revoir !${phaseBlock}
 
 Dernière fois : ${point}.${actionBlock}${summaryBlock}
 
-Dites « Continuer » pour reprendre, ou décrivez votre avancement.`;
+Dites « Continuer » pour reprendre, ou décrivez ton avancement.`;
 }

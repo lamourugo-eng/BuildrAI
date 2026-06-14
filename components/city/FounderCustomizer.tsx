@@ -168,13 +168,13 @@ export default function FounderCustomizer({
           )}
           <h3>
             {variant === 'onboarding'
-              ? 'Créez votre entrepreneur'
+              ? 'Crée ton entrepreneur'
               : 'Ajuster tenue & accessoires'}
           </h3>
           <p>
             {variant === 'edit'
-              ? 'Les options grisées se débloquent en validant des étapes dans votre parcours.'
-              : 'Choisissez une tenue de départ. Le reste se débloque en progressant.'}
+              ? 'Les options grisées se débloquent en validant des étapes dans ton parcours.'
+              : 'Choisis une tenue de départ. Le reste se débloque en progressant.'}
           </p>
         </div>
         {playerLevelId > 1 && (
@@ -207,7 +207,7 @@ export default function FounderCustomizer({
             </div>
           </div>
           <p className="founder-preview-caption">
-            Aperçu live. En ville, votre look évolue aussi avec le niveau empire.
+            Aperçu live. En ville, ton look évolue aussi avec le niveau empire.
           </p>
           {lockedPreview.length > 0 && (
             <div className="founder-preview-unlocks-wrap">

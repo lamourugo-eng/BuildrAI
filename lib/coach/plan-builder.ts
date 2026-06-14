@@ -61,7 +61,7 @@ export function buildToolMethodSection(
 
   return `Outil recommandé : **${tool.primary}**
 Lien : ${tool.url}
-Pourquoi pour votre projet : ${tool.why}
+Pourquoi pour ton projet : ${tool.why}
 Coût : ${tool.cost}
 
 Premiers clics pour démarrer :

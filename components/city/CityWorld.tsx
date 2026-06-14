@@ -158,7 +158,7 @@ export default function CityWorld({
               ) : (
                 <div className="founder-character-placeholder">
                   <span>?</span>
-                  {!compact && <p>Créez votre personnage</p>}
+                  {!compact && <p>Crée ton personnage</p>}
                 </div>
               )}
             </div>
@@ -169,7 +169,7 @@ export default function CityWorld({
       {!compact && (
         <p className="city-world-tagline city-world-tagline--empire">
           {snapshot.unlockedBuildingCount <= 2
-            ? 'Votre empire naît. Posez les premières pierres de votre parcours.'
+            ? 'Ton empire naît. Pose les premières pierres de ton parcours.'
             : snapshot.level.tagline}
         </p>
       )}

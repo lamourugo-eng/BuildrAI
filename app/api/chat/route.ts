@@ -310,7 +310,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error: isConfig
-          ? 'OpenAI non configuré. Ajoutez OPENAI_API_KEY dans .env.local'
+          ? 'OpenAI non configuré. Ajoute OPENAI_API_KEY dans .env.local'
           : message,
       },
       { status: isConfig ? 503 : 500 }

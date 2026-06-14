@@ -47,7 +47,7 @@ function mapAuthError(message: string, view: AuthView): string {
     return 'Email ou mot de passe incorrect.';
   }
   if (lower.includes('user already registered') || lower.includes('already been registered')) {
-    return 'Un compte existe déjà avec cet email. Connectez-vous.';
+    return 'Un compte existe déjà avec cet email. Connecte-toi.';
   }
   if (lower.includes('password') && lower.includes('least')) {
     return 'Le mot de passe doit contenir au moins 6 caractères.';
@@ -56,13 +56,13 @@ function mapAuthError(message: string, view: AuthView): string {
     return 'Adresse email invalide.';
   }
   if (lower.includes('email not confirmed')) {
-    return 'Confirmez votre email avant de vous connecter (vérifiez votre boîte mail).';
+    return 'Confirme ton email avant de toi connecter (vérifiez ton boîte mail).';
   }
   return view === 'signup'
     ? 'Impossible de créer le compte. Réessayez.'
     : view === 'forgot'
       ? 'Impossible d\'envoyer l\'email. Réessayez.'
-      : 'Connexion impossible. Vérifiez vos identifiants.';
+      : 'Connexion impossible. Vérifie tes identifiants.';
 }
 
 export default function LoginForm(props: LoginFormProps = {}) {
@@ -229,7 +229,7 @@ export default function LoginForm(props: LoginFormProps = {}) {
 
       {authError && (
         <p className="auth-error">
-          Le lien de confirmation est invalide ou expiré. Demandez un nouvel email ou reconnectez-vous.
+          Le lien de confirmation est invalide ou expiré. Demande un nouvel email ou reconnecte-toi.
         </p>
       )}
 
@@ -237,13 +237,13 @@ export default function LoginForm(props: LoginFormProps = {}) {
         <div className="auth-success">
           <h2>Compte créé</h2>
           <p>
-            Un email de confirmation a été envoyé à <strong>{email}</strong>. Ouvrez-le sur votre
+            Un email de confirmation a été envoyé à <strong>{email}</strong>. Ouvrez-le sur ton
             téléphone dans <strong>Safari ou Chrome</strong> (pas seulement l&apos;aperçu Gmail).
-            Puis connectez-vous.
+            Puis connecte-toi.
             {newsletterOptIn && (
               <>
                 {' '}
-                Votre essai Premium 24 h démarrera à la première connexion.
+                Ton essai Premium 24 h démarrera à la première connexion.
               </>
             )}
           </p>
@@ -255,8 +255,8 @@ export default function LoginForm(props: LoginFormProps = {}) {
         <div className="auth-success">
           <h2>Email envoyé</h2>
           <p>
-            Si un compte existe pour <strong>{email}</strong>, vous recevrez un lien pour
-            réinitialiser votre mot de passe.
+            Si un compte existe pour <strong>{email}</strong>, tu recevras un lien pour
+            réinitialiser ton mot de passe.
           </p>
           <button type="button" className="btn btn-outline" onClick={() => switchView('login')}>
             Retour à la connexion
@@ -266,14 +266,14 @@ export default function LoginForm(props: LoginFormProps = {}) {
         <form onSubmit={handleForgotPassword} className="auth-form">
           <h2 className="auth-form-title">Mot de passe oublié</h2>
           <p className="auth-form-lead">
-            Entrez votre email. Nous vous enverrons un lien de réinitialisation.
+            Entrez ton email. Nous tu enverrons un lien de réinitialisation.
           </p>
 
           <label htmlFor="email-forgot">Adresse email</label>
           <input
             id="email-forgot"
             type="email"
-            placeholder="votre@email.com"
+            placeholder="ton@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -329,7 +329,7 @@ export default function LoginForm(props: LoginFormProps = {}) {
             <input
               id="email"
               type="email"
-              placeholder="votre@email.com"
+              placeholder="ton@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -352,7 +352,7 @@ export default function LoginForm(props: LoginFormProps = {}) {
               id="password"
               value={password}
               onChange={setPassword}
-              placeholder={view === 'signup' ? '6 caractères minimum' : 'Votre mot de passe'}
+              placeholder={view === 'signup' ? '6 caractères minimum' : 'Ton mot de passe'}
               autoComplete={view === 'signup' ? 'new-password' : 'current-password'}
               minLength={6}
             />
@@ -391,9 +391,9 @@ export default function LoginForm(props: LoginFormProps = {}) {
             <p className="auth-note">
               {view === 'login'
                 ? mode === 'account'
-                  ? 'Accédez à votre espace client avec votre email et mot de passe.'
+                  ? 'Accédez à ton espace client avec ton email et mot de passe.'
                   : 'Connexion requise pour souscrire et accéder au coach IA.'
-                : 'Créez un compte pour accéder à votre espace et gérer votre abonnement.'}
+                : 'Crée un compte pour accéder à ton espace et gérer ton abonnement.'}
             </p>
           </form>
         </>

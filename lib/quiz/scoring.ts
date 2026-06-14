@@ -33,20 +33,20 @@ const BUDGET_FIT_MATRIX: Record<
 };
 
 const BUDGET_FIT_LABELS: Record<BudgetFit, string> = {
-  ideal: 'Aligné avec votre budget',
+  ideal: 'Aligné avec ton budget',
   possible: 'Faisable avec un lancement progressif',
-  stretch: 'À adapter à votre budget actuel',
+  stretch: 'À adapter à ton budget actuel',
 };
 
 const BUDGET_ADVICE: Record<BusinessId, Record<InvestmentBand, string>> = {
   freelance: {
-    minimal: 'Idéal avec moins de 100 € : lancez-vous avec votre expertise et des outils gratuits.',
-    moderate: 'Avec 100 à 1 000 €, professionnalisez votre image (site, portfolio, outils pro).',
+    minimal: 'Idéal avec moins de 100 € : lance-toi avec ton expertise et des outils gratuits.',
+    moderate: 'Avec 100 à 1 000 €, professionnalisez ton image (site, portfolio, outils pro).',
     substantial: 'Au-delà de 1 000 €, accélérez la prospection (pub ciblée, formations, assistant).',
   },
   consulting: {
-    minimal: 'Moins de 100 € suffit : votre crédibilité et votre réseau sont vos premiers atouts.',
-    moderate: 'Avec 100 à 1 000 €, investissez dans un site pro et des supports pour rassurer vos clients.',
+    minimal: 'Moins de 100 € suffit : ton crédibilité et ton réseau sont tes premiers atouts.',
+    moderate: 'Avec 100 à 1 000 €, investissez dans un site pro et des supports pour rassurer tes clients.',
     substantial: 'Au-delà de 1 000 €, financez contenu expert, événements et acquisition ciblée.',
   },
   content: {
@@ -56,7 +56,7 @@ const BUDGET_ADVICE: Record<BusinessId, Record<InvestmentBand, string>> = {
   },
   agency: {
     minimal: 'Moins de 100 € : démarrez en solo sur une niche. Le relationnel compte plus que le budget.',
-    moderate: 'Avec 100 à 1 000 €, financez un site crédible et vos premiers outils de delivery.',
+    moderate: 'Avec 100 à 1 000 €, financez un site crédible et tes premiers outils de delivery.',
     substantial: 'Au-delà de 1 000 €, recrutez en freelance et investissez dans l\'acquisition commerciale.',
   },
   ecommerce: {
@@ -66,13 +66,13 @@ const BUDGET_ADVICE: Record<BusinessId, Record<InvestmentBand, string>> = {
   },
   impact: {
     minimal: 'Moins de 100 € : validez l\'impact avec un pilote local avant d\'investir davantage.',
-    moderate: 'Avec 100 à 1 000 €, structurez l\'offre et touchez vos premiers bénéficiaires.',
+    moderate: 'Avec 100 à 1 000 €, structurez l\'offre et touchez tes premiers bénéficiaires.',
     substantial: 'Au-delà de 1 000 €, scalez l\'impact tout en renforçant le modèle économique.',
   },
   saas: {
     minimal: 'Moins de 100 € : prototype no-code ou offre de conseil pour financer le produit.',
     moderate: 'Avec 100 à 1 000 €, lancez un MVP léger (no-code ou dev ciblé) avant une grosse V1.',
-    substantial: 'Au-delà de 1 000 €, développez, testez et acquérez vos premiers utilisateurs.',
+    substantial: 'Au-delà de 1 000 €, développez, testez et acquérez tes premiers utilisateurs.',
   },
   marketplace: {
     minimal: 'Moins de 100 € : lancez manuellement sur une micro-niche avant de coder la plateforme.',
@@ -83,7 +83,7 @@ const BUDGET_ADVICE: Record<BusinessId, Record<InvestmentBand, string>> = {
     minimal:
       'Moins de 100 € : démarrez en solo OFM avec charte, Notion et prospection modèles OnlyFans (Twitter/X).',
     moderate:
-      'Avec 100 à 1 000 €, professionnalisez contrats OFM, CRM et page agence pour signer vos premiers modèles OnlyFans.',
+      'Avec 100 à 1 000 €, professionnalisez contrats OFM, CRM et page agence pour signer tes premiers modèles OnlyFans.',
     substantial:
       'Au-delà de 1 000 €, structurez chatters + process acquisition abonnés OnlyFans avec reporting transparent.',
   },
@@ -95,7 +95,7 @@ const BUDGET_FIRST_STEPS: Partial<Record<BusinessId, Partial<Record<BudgetFit, s
     possible: 'Prioriser un MVP minimal (une fonctionnalité clé) pour tester la willingness-to-pay avant d\'investir davantage.',
   },
   marketplace: {
-    stretch: 'Concilier votre budget en lançant d\'abord la mise en relation à la main sur une niche très précise.',
+    stretch: 'Concilier ton budget en lançant d\'abord la mise en relation à la main sur une niche très précise.',
     possible: 'Démarrer sur un seul segment (une ville, un métier) pour limiter les coûts techniques.',
   },
   ecommerce: {

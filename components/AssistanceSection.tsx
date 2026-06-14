@@ -7,34 +7,34 @@ const CONTACT_EMAIL = 'Buildraimail@gmail.com';
 const VISITOR_TOPICS = [
   {
     q: 'Comment découvrir mon profil entrepreneurial ?',
-    a: 'Le questionnaire est gratuit et accessible sans compte. Depuis l\'accueil, cliquez sur « Découvrir mon profil » et répondez aux 9 questions.',
+    a: 'Le questionnaire est gratuit et accessible sans compte. Depuis l\'accueil, clique sur « Découvrir mon profil » et répondez aux 9 questions.',
   },
   {
     q: 'Dois-je créer un compte ?',
-    a: 'Non pour le questionnaire. Un compte est utile pour sauvegarder votre profil, gérer un abonnement et accéder à votre espace personnel.',
+    a: 'Non pour le questionnaire. Un compte est utile pour sauvegarder ton profil, gérer un abonnement et accéder à ton espace personnel.',
   },
   {
     q: 'Que comprend le plan gratuit ?',
-    a: 'Le questionnaire, l\'analyse de votre profil, les modèles business adaptés et un aperçu de parcours. Le coach IA et le parcours détaillé sont inclus dans les abonnements payants.',
+    a: 'Le questionnaire, l\'analyse de ton profil, les modèles business adaptés et un aperçu de parcours. Le coach IA et le parcours détaillé sont inclus dans les abonnements payants.',
   },
   {
     q: 'Le coach IA est-il gratuit ?',
-    a: 'Non. Le coach IA est inclus dans les abonnements Premium et Premium. Business Accelerator. Un plan gratuit permet de découvrir votre profil sans carte bancaire.',
+    a: 'Non. Le coach IA est inclus dans les abonnements Premium et Premium. Business Accelerator. Un plan gratuit permet de découvrir ton profil sans carte bancaire.',
   },
   {
     q: 'Je n\'arrive pas à créer mon compte',
-    a: 'Vérifiez que votre mot de passe fait au moins 6 caractères. Si vous ne recevez pas l\'email de confirmation, attendez une heure (limite d\'envoi) ou contactez-nous.',
+    a: 'Vérifie que ton mot de passe fait au moins 6 caractères. Si tu ne recevez pas l\'email de confirmation, attendez une heure (limite d\'envoi) ou contactez-nous.',
   },
 ];
 
 const ACCOUNT_TOPICS = [
   {
     q: 'Où retrouver mon profil et mon espace ?',
-    a: 'Connectez-vous puis ouvrez « Mon espace » (/espace). Votre profil entrepreneurial et votre tableau de bord y sont accessibles.',
+    a: 'Connecte-toi puis ouvrez « Mon espace » (/espace). Ton profil entrepreneurial et ton tableau de bord y sont accessibles.',
   },
   {
     q: 'Comment débloquer le coach IA ?',
-    a: 'Depuis votre espace, section Abonnement, ou la page Tarifs. Choisissez une formule Premium ou Business Accelerator.',
+    a: 'Depuis ton espace, section Abonnement, ou la page Tarifs. Choisis une formule Premium ou Business Accelerator.',
   },
   {
     q: 'Mot de passe oublié',
@@ -42,22 +42,22 @@ const ACCOUNT_TOPICS = [
   },
   {
     q: 'Comment annuler mon abonnement ?',
-    a: 'Espace → Abonnement → « Gérer ou résilier mon abonnement ». Le portail Stripe sécurisé s\'ouvre pour annuler en un clic. Vous conservez l\'accès jusqu\'à la fin de la période payée.',
+    a: 'Espace → Abonnement → « Gérer ou résilier mon abonnement ». Le portail Stripe sécurisé s\'ouvre pour annuler en un clic. Tu conservez l\'accès jusqu\'à la fin de la période payée.',
   },
 ];
 
 const PREMIUM_TOPICS = [
   {
     q: 'Le coach ne répond pas',
-    a: 'Vérifiez votre connexion et réessayez. Si le problème persiste, déconnectez-vous puis reconnectez-vous. Contactez directement le créateur du site par email en précisant l\'heure du incident.',
+    a: 'Vérifie ton connexion et réessayez. Si le problème persiste, déconnecte-toi puis reconnecte-toi. Contacte directement le créateur du site par email en précisant l\'heure du incident.',
   },
   {
     q: 'Ma progression n\'est pas sauvegardée',
-    a: 'L\'historique du coach est lié à votre compte et votre modèle business actif. Vérifiez que vous êtes connecté avec le bon email.',
+    a: 'L\'historique du coach est lié à ton compte et ton modèle business actif. Vérifie que tu es connecté avec le bon email.',
   },
   {
     q: 'Comment nous contacter ?',
-    a: `Utilisez la section « Une question sans réponse ? » en bas de cette page. Vous contactez directement le créateur du site (${CONTACT_EMAIL}), réservé aux abonnés Premium.`,
+    a: `Utilise la section « Une question sans réponse ? » en bas de cette page. Tu contactez directement le créateur du site (${CONTACT_EMAIL}), réservé aux abonnés Premium.`,
   },
 ];
 
@@ -92,11 +92,11 @@ export default function AssistanceSection({
       {variant !== 'dashboard' && (
         <header className="assistance-header">
           <span className="section-tag">Assistance</span>
-          <h2>Comment pouvons-nous vous aider ?</h2>
+          <h2>Comment puis-je t'aider ?</h2>
           <p>
             {isLoggedIn
               ? `Connecté en tant que ${userEmail}. Retrouvez ici les réponses aux questions les plus fréquentes.`
-              : 'Que vous ayez un compte ou non, trouvez rapidement une réponse. Les abonnés Premium peuvent écrire directement au créateur du site.'}
+              : 'Que tu ayez un compte ou non, trouvez rapidement une réponse. Les abonnés Premium peuvent écrire directement au créateur du site.'}
           </p>
         </header>
       )}
@@ -104,8 +104,8 @@ export default function AssistanceSection({
       {variant === 'dashboard' && (
         <p className="account-panel-intro">
           {isSubscribed
-            ? 'Besoin d\'aide ? Consultez les guides ci-dessous ou contactez directement le créateur du site par email. Réponse sous 24 à 48 h ouvrées.'
-            : 'Besoin d\'aide ? Consultez les guides ci-dessous. Le contact par email (directement avec le créateur du site) est réservé aux abonnés Premium.'}
+            ? 'Besoin d\'aide ? Consulte les guides ci-dessous ou contactez directement le créateur du site par email. Réponse sous 24 à 48 h ouvrées.'
+            : 'Besoin d\'aide ? Consulte les guides ci-dessous. Le contact par email (directement avec le créateur du site) est réservé aux abonnés Premium.'}
         </p>
       )}
 
@@ -184,7 +184,7 @@ export default function AssistanceSection({
             <h3>Abonné. Coach & premium</h3>
             {!isSubscribed && variant !== 'dashboard' && (
               <p className="assistance-panel-note">
-                Ces ressources concernent les abonnés. Débloquez le coach IA depuis la page Tarifs.
+                Ces ressources concernent les abonnés. Débloque le coach IA depuis la page Tarifs.
               </p>
             )}
             <div className="assistance-faq-list">
@@ -215,8 +215,8 @@ export default function AssistanceSection({
             <span className="assistance-contact-badge">Abonnés Premium</span>
             <h3>Une question sans réponse ?</h3>
             <p>
-              L&apos;assistance par email vous met en contact direct avec le créateur de BuildrAI.
-              Écrivez à <a href={contactMailto}>{CONTACT_EMAIL}</a> en indiquant votre email de
+              L&apos;assistance par email tu met en contact direct avec le créateur de BuildrAI.
+              Écris à <a href={contactMailto}>{CONTACT_EMAIL}</a> en indiquant ton email de
               compte. Réponse sous 24 à 48 h ouvrées.
             </p>
           </div>
@@ -231,7 +231,7 @@ export default function AssistanceSection({
             <h3>Une question sans réponse ?</h3>
             <p>
               Le contact par email (directement avec le créateur du site) est réservé aux abonnés
-              Premium et Business Accelerator. Consultez les FAQ ci-dessus ou passez à une formule
+              Premium et Business Accelerator. Consulte les FAQ ci-dessus ou passez à une formule
               payante pour lui écrire.
             </p>
           </div>

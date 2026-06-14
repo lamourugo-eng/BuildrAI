@@ -80,7 +80,7 @@ export default function AccountProfile({ isSubscribed = false }: AccountProfileP
         <span className="section-tag">Mon profil</span>
         <h2>Profil non complété</h2>
         <p>
-          Passez le questionnaire pour débloquer votre profil entrepreneurial, vos modèles business
+          Passe le questionnaire pour débloquer ton profil entrepreneurial, tes modèles business
           et un coaching personnalisé.
         </p>
         <Link href="/espace?section=profil&quiz=1" className="btn btn-primary">
@@ -98,7 +98,7 @@ export default function AccountProfile({ isSubscribed = false }: AccountProfileP
   return (
     <div className="account-panel">
       <span className="section-tag">Mon profil</span>
-      <h2>Votre profil entrepreneurial</h2>
+      <h2>Ton profil entrepreneurial</h2>
 
       <div className="account-profile-grid">
         <article className="account-card">
@@ -156,7 +156,7 @@ export default function AccountProfile({ isSubscribed = false }: AccountProfileP
 
       <div className="account-card account-card--wide account-profile-roadmap">
         <div className="account-profile-roadmap-head">
-          <h3>Votre étape dans le parcours</h3>
+          <h3>Ton étape dans le parcours</h3>
           {step.day.phaseId && step.day.phaseName && (
             <span className="account-profile-roadmap-phase">
               Étape {step.day.phaseId}/8. {step.day.phaseName}
@@ -174,7 +174,7 @@ export default function AccountProfile({ isSubscribed = false }: AccountProfileP
         <p className="account-card-desc account-profile-roadmap-meta">
           {step.completedCount > 0
             ? `${step.completedCount} jour${step.completedCount > 1 ? 's' : ''} terminé${step.completedCount > 1 ? 's' : ''} sur ${step.unlockedDays} accessibles.`
-            : 'Commencez par valider cette étape dans l’onglet Parcours.'}
+            : 'Commence par valider cette étape dans l’onglet Parcours.'}
         </p>
         <Link href="/espace?section=parcours" className="account-inline-link">
           {step.status === 'completed_all' ? 'Consulter le parcours →' : 'Continuer le parcours →'}
@@ -190,11 +190,11 @@ export default function AccountProfile({ isSubscribed = false }: AccountProfileP
             {ENTREPRENEUR_PROFILES.find((p) => p.id === founderAvatar.profile)?.label ??
               founderAvatar.profile}
             {'. '}
-            votre personnage évolue au fil de vos étapes business dans la ville.
+            ton personnage évolue au fil de tes étapes business dans la ville.
           </p>
         ) : (
           <p className="account-card-desc">
-            Créez votre entrepreneur. Il sera le centre de votre ville de progression.
+            Crée ton entrepreneur. Il sera le centre de ton ville de progression.
           </p>
         )}
         <div className="account-profile-city-actions">

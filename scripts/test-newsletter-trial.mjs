@@ -81,7 +81,7 @@ async function testApiRoutes() {
     }
   } catch (err) {
     console.error('\n⚠ Serveur non joignable sur', BASE_URL);
-    console.error('  Lancez `npm run dev` puis relancez ce script.');
+    console.error('  Lance `npm run dev` puis relancez ce script.');
     console.error('  Erreur:', err instanceof Error ? err.message : err);
     process.exitCode = 1;
   }

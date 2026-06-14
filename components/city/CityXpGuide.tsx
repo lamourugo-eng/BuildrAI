@@ -11,7 +11,7 @@ export default function CityXpGuide() {
     <section className="city-xp-guide" aria-labelledby="city-xp-guide-title">
       <div className="city-xp-guide-head">
         <div>
-          <h3 id="city-xp-guide-title">Ce qui fait grandir votre empire</h3>
+          <h3 id="city-xp-guide-title">Ce qui fait grandir ton empire</h3>
           <p>
             Chaque action dans BuildrAI se traduit en étape business concrète — pas en points
             abstraits.

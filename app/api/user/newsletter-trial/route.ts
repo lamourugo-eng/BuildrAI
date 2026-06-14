@@ -49,8 +49,8 @@ export async function POST(request: Request) {
 
     if (!trial.ok) {
       const messages: Record<string, string> = {
-        already_used: 'Votre essai gratuit 24 h a déjà été utilisé.',
-        stripe_active: 'Vous avez déjà un abonnement actif.',
+        already_used: 'Ton essai gratuit 24 h a déjà été utilisé.',
+        stripe_active: 'Tu as déjà un abonnement actif.',
         no_opt_in: 'Acceptez la newsletter pour activer l\'essai.',
       };
       return NextResponse.json({

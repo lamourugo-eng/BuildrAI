@@ -35,28 +35,28 @@ const DASHBOARD_SECTION_MAP: Record<DashboardSection, DashboardSectionDef> = {
     id: 'overview',
     label: 'Vue d\'ensemble',
     icon: 'space',
-    description: 'Résumé de votre progression',
+    description: 'Résumé de ton progression',
     href: '/espace',
   },
   coach: {
     id: 'coach',
     label: 'Coach IA',
     icon: 'coach',
-    description: 'Construisez votre projet étape par étape',
+    description: 'Construis ton projet étape par étape',
     href: '/espace?section=coach',
   },
   parcours: {
     id: 'parcours',
     label: 'Parcours',
     icon: 'flow',
-    description: 'Plan 180 jours (6 chapitres) calibré sur votre modèle. 8 étapes coach',
+    description: 'Plan 180 jours (6 chapitres) calibré sur ton modèle. 8 étapes coach',
     href: '/espace?section=parcours',
   },
   profil: {
     id: 'profil',
     label: 'Profil',
     icon: 'profile',
-    description: 'Votre profil entrepreneurial',
+    description: 'Ton profil entrepreneurial',
     href: '/espace?section=profil',
   },
   analyse: {
@@ -93,7 +93,7 @@ const DASHBOARD_SECTION_MAP: Record<DashboardSection, DashboardSectionDef> = {
     id: 'ville',
     label: 'Ma ville',
     icon: 'space',
-    description: 'Créez votre personnage et suivez votre empire',
+    description: 'Crée ton personnage et suis ton empire',
     href: '/espace?section=ville',
   },
   blocnotes: {
@@ -127,25 +127,34 @@ export const DASHBOARD_SECTION_ORDER: DashboardSection[] = [
   'assistance',
 ];
 
+/** Raccourcis visibles en barre horizontale (mobile). */
+export const DASHBOARD_PRIMARY_SECTIONS: DashboardSection[] = [
+  'overview',
+  'coach',
+  'parcours',
+  'ville',
+  'profil',
+];
+
 export const DASHBOARD_NAV_GROUPS: {
   id: string;
   label: string;
   sections: DashboardSection[];
 }[] = [
   {
-    id: 'core',
-    label: 'Essentiel',
-    sections: ['overview', 'coach', 'parcours', 'ville', 'profil'],
+    id: 'journey',
+    label: 'Ton parcours',
+    sections: ['overview', 'coach', 'parcours', 'ville'],
+  },
+  {
+    id: 'profile',
+    label: 'Profil & suivi',
+    sections: ['profil', 'activite', 'blocnotes'],
   },
   {
     id: 'accelerator',
-    label: 'Accélération',
+    label: 'Business Accelerator',
     sections: ['analyse', 'ressources'],
-  },
-  {
-    id: 'progress',
-    label: 'Suivi',
-    sections: ['activite', 'blocnotes'],
   },
   {
     id: 'account',

@@ -30,7 +30,7 @@ export default function LandingStickyCta({ onOpenQuiz, enabled }: LandingStickyC
     <div className="landing-sticky-cta landing-sticky-cta--mobile" role="region" aria-label="Commencer maintenant">
       <div className="container landing-sticky-cta-inner">
         <p className="landing-sticky-cta-copy landing-only-desktop">
-          <strong>Passez de l&apos;idée à l&apos;action</strong>
+          <strong>Passe de l&apos;idée à l&apos;action</strong>
           <span>Sans carte · accès immédiat</span>
         </p>
         <div className="landing-sticky-cta-actions">

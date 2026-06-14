@@ -109,25 +109,25 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
       overview: pickCopy(tier, {
         beginner: {
           label: 'Vue d\'ensemble',
-          description: 'Où vous en êtes, en un coup d\'œil',
+          description: 'Où tu en es, en un coup d\'œil',
         },
         intermediate: {
           label: 'Vue d\'ensemble',
-          description: 'Résumé de votre progression',
+          description: 'Résumé de ton progression',
         },
         experienced: {
           label: 'Vue d\'ensemble',
-          description: 'Pilotage de votre progression et priorités',
+          description: 'Pilotage de ton progression et priorités',
         },
       }),
       coach: pickCopy(tier, {
         beginner: {
           label: 'Coach IA',
-          description: 'Posez vos questions, avancez pas à pas',
+          description: 'Pose tes questions, avancez pas à pas',
         },
         intermediate: {
           label: 'Coach IA',
-          description: 'Construisez votre projet étape par étape',
+          description: 'Construis ton projet étape par étape',
         },
         experienced: {
           label: 'Coach IA',
@@ -141,7 +141,7 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
         },
         intermediate: {
           label: 'Parcours',
-          description: 'Plan 180 jours calibré sur votre modèle',
+          description: 'Plan 180 jours calibré sur ton modèle',
         },
         experienced: {
           label: 'Parcours',
@@ -155,7 +155,7 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
         },
         intermediate: {
           label: 'Profil',
-          description: 'Votre profil entrepreneurial',
+          description: 'Ton profil entrepreneurial',
         },
         experienced: {
           label: 'Profil',
@@ -207,7 +207,7 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
       abonnement: pickCopy(tier, {
         beginner: {
           label: 'Abonnement',
-          description: 'Votre formule et les tarifs',
+          description: 'Ta formule et les tarifs',
         },
         intermediate: {
           label: 'Abonnement',
@@ -221,11 +221,11 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
       ville: pickCopy(tier, {
         beginner: {
           label: 'Ma ville',
-          description: 'Votre avatar et votre progression visuelle',
+          description: 'Ton avatar et ta progression visuelle',
         },
         intermediate: {
           label: 'Ma ville',
-          description: 'Créez votre personnage et suivez votre empire',
+          description: 'Crée ton personnage et suivez ton empire',
         },
         experienced: {
           label: 'Ma ville',
@@ -235,7 +235,7 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
       blocnotes: pickCopy(tier, {
         beginner: {
           label: 'Bloc-notes',
-          description: 'Vos idées et notes sauvegardées',
+          description: 'Tes idées et notes sauvegardées',
         },
         intermediate: {
           label: 'Bloc-notes',
@@ -275,19 +275,19 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
         }),
       subscribedSubtitle: pickCopy(tier, {
         beginner:
-          'Avancez à votre rythme : une action par jour, des réponses simples du coach, et votre ville qui grandit avec vous.',
+          'Avance à ton rythme : une action par jour, des réponses simples du coach, et ta ville qui grandit avec toi.',
         intermediate:
-          'Poursuivez votre parcours 180 jours et votre coaching IA au rythme de votre projet.',
+          'Poursuis ton parcours 180 jours et ton coaching IA au rythme de ton projet.',
         experienced:
           'Pilotage parcours 180 j, coaching 8 phases et indicateurs de régularité.',
       }),
       freeSubtitle: pickCopy(tier, {
         beginner:
-          'Faites le questionnaire pour personnaliser votre espace. Le coach et le plan complet s\'activent avec l\'abonnement.',
+          'Fais le questionnaire pour personnaliser ton espace. Le coach et le plan complet s\'activent avec l\'abonnement.',
         intermediate:
-          'Complétez le quiz pour personnaliser votre parcours et votre coach.',
+          'Complète le quiz pour personnaliser ton parcours et ton coach.',
         experienced:
-          'Complétez le profil quiz pour calibrer parcours, coach et recommandations.',
+          'Complète le profil quiz pour calibrer parcours, coach et recommandations.',
       }),
       statRoadmap: pickCopy(tier, {
         beginner: 'Plan',
@@ -317,17 +317,17 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
       quickAccessSubtitle: pickCopy(tier, {
         beginner: 'Tout en un clic, sans jargon',
         intermediate: 'Profil, outils et ressources en un clic',
-        experienced: 'Sections clés de votre espace',
+        experienced: 'Sections clés de ton espace',
       }),
     },
     coach: {
       eyebrow: pickCopy(tier, {
-        beginner: 'Votre aide au quotidien',
+        beginner: 'Ton aide au quotidien',
         intermediate: 'Assistant personnel',
         experienced: 'Co-pilote stratégique',
       }),
       subtitleFallback: pickCopy(tier, {
-        beginner: 'Je vous guide pas à pas',
+        beginner: 'Je te guide pas à pas',
         intermediate: 'Accompagnement entrepreneurial',
         experienced: 'Exécution structurée. 8 phases',
       }),
@@ -365,20 +365,20 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
         ],
       }),
       welcomeNoProfile: pickCopy(tier, {
-        beginner: `Bonjour ! Je vous aide à lancer votre projet, une petite étape à la fois.
+        beginner: `Bonjour ! Je t'aide à lancer ton projet, une petite étape à la fois.
 
-Faites le questionnaire pour un accompagnement adapté, ou décrivez votre idée ci-dessous.`,
-        intermediate: `Bonjour ! Je vous accompagne de l'idée jusqu'aux premiers clients, une étape à la fois.
+Fais le questionnaire pour un accompagnement adapté, ou décrivez ton idée ci-dessous.`,
+        intermediate: `Bonjour ! Je t'accompagne de l'idée jusqu'aux premiers clients, une étape à la fois.
 
-Complétez le quiz pour un parcours personnalisé, ou décrivez votre projet ci-dessous.`,
+Complète le quiz pour un parcours personnalisé, ou décrivez ton projet ci-dessous.`,
         experienced: `Bonjour. Co-pilotage structuré de l'idée à l'exécution. Livrables concrets à chaque échange.
 
-Complétez le profil quiz ou décrivez directement votre contexte et vos contraintes.`,
+Complète le profil quiz ou décrivez directement ton contexte et tes contraintes.`,
       }),
       welcomeWithProfile: (businessName) =>
         pickCopy(tier, {
-          beginner: `Bonjour ! On avance ensemble sur votre ${businessName}. Je vous explique tout simplement.`,
-          intermediate: `Bonjour ! On construit votre ${businessName} ensemble. Je rédige, vous validez.`,
+          beginner: `Bonjour ! On avance ensemble sur ton ${businessName}. Je t'explique tout simplement.`,
+          intermediate: `Bonjour ! On construit ton ${businessName} ensemble. Je rédige, tu valides.`,
           experienced: `Bonjour. Objectif : exécution sur ${businessName}. Livrables actionnables, une micro-étape à la fois.`,
         }),
     },
@@ -390,12 +390,12 @@ Complétez le profil quiz ou décrivez directement votre contexte et vos contrai
           experienced: `Ch. ${month}. ${businessName}`,
         }),
       compactHint: pickCopy(tier, {
-        beginner: 'Votre prochaine petite action du jour.',
-        intermediate: 'Prochaine étape de votre parcours personnalisé.',
+        beginner: 'Ta prochaine petite action du jour.',
+        intermediate: 'Prochaine étape de ton parcours personnalisé.',
         experienced: 'Prochaine micro-étape du parcours calibré.',
       }),
       heroEyebrow: pickCopy(tier, {
-        beginner: 'Votre plan sur 6 mois',
+        beginner: 'Ton plan sur 6 mois',
         intermediate: 'Parcours semestriel',
         experienced: 'Roadmap semestrielle',
       }),
@@ -444,7 +444,7 @@ Complétez le profil quiz ou décrivez directement votre contexte et vos contrai
       }),
       lockedBody: pickCopy(tier, {
         beginner:
-          'Votre formule actuelle inclut déjà le coach et le plan jour par jour. Les modèles complets (emails, pages web, scripts) sont dans la formule à 79 €/mois.',
+          'Ta formule actuelle inclut déjà le coach et le plan jour par jour. Les modèles complets (emails, pages web, scripts) sont dans la formule à 79 €/mois.',
         intermediate:
           'Premium inclut coach et parcours 180 j. La bibliothèque complète est réservée à Business Accelerator (79 €/mois).',
         experienced:
@@ -458,22 +458,22 @@ Complétez le profil quiz ou décrivez directement votre contexte et vos contrai
         experienced: 'Business Accelerator',
       }),
       lockedTitle: pickCopy(tier, {
-        beginner: 'Votre bilan de la semaine',
-        intermediate: 'Débloquez l\'analyse hebdomadaire',
+        beginner: 'Ton bilan de la semaine',
+        intermediate: 'Débloque l\'analyse hebdomadaire',
         experienced: 'Analyse hebdomadaire approfondie',
       }),
       lockedBody: pickCopy(tier, {
         beginner:
-          'Chaque semaine, un résumé clair de ce que vous avez fait et quoi faire ensuite. Disponible avec la formule à 79 €/mois.',
+          'Chaque semaine, un résumé clair de ce que tu as fait et quoi faire ensuite. Disponible avec la formule à 79 €/mois.',
         intermediate:
-          'Votre formule Premium inclut coach et parcours. L\'analyse approfondie est réservée au plan Business Accelerator.',
+          'Ta formule Premium inclut coach et parcours. L\'analyse approfondie est réservée au plan Business Accelerator.',
         experienced:
           'Premium = coach + roadmap. L\'analyse hebdo stratégique (sync parcours/coach) requiert Accelerator.',
       }),
     },
     welcomeStrip: pickCopy(tier, {
-      beginner: 'Bienvenue ! Votre espace est prêt. Avancez une étape à la fois.',
-      intermediate: 'Bienvenue dans votre espace premium.',
+      beginner: 'Bienvenue ! Ton espace est prêt. Avance une étape à la fois.',
+      intermediate: 'Bienvenue dans ton espace premium.',
       experienced: 'Espace premium activé. Bonne exécution.',
     }),
   };
@@ -498,37 +498,37 @@ export function getCoachLanguageBlock(tier: CopyTier): string {
 export function getPhaseDisplayName(phaseKey: string, tier: CopyTier): string | null {
   const names: Record<string, { beginner: string; intermediate: string; experienced: string }> = {
     vision: {
-      beginner: 'Clarifier votre idée',
+      beginner: 'Clarifier ton idée',
       intermediate: 'Vision & problème',
       experienced: 'Vision & problème',
     },
     icp: {
-      beginner: 'Qui sont vos clients',
+      beginner: 'Qui sont tes clients',
       intermediate: 'Client idéal',
       experienced: 'ICP & segmentation',
     },
     offer: {
-      beginner: 'Votre offre',
+      beginner: 'Ton offre',
       intermediate: 'Offre & promesse',
       experienced: 'Offre & promesse',
     },
     positioning: {
-      beginner: 'Comment vous présenter',
+      beginner: 'Comment te présenter',
       intermediate: 'Positionnement & pitch',
       experienced: 'Positionnement & pitch',
     },
     presence: {
-      beginner: 'Votre page web',
+      beginner: 'Ta page web',
       intermediate: 'Supports & présence en ligne',
       experienced: 'Présence & distribution',
     },
     pricing: {
-      beginner: 'Fixer vos prix',
+      beginner: 'Fixer tes prix',
       intermediate: 'Pricing & modèle économique',
       experienced: 'Pricing & unit economics',
     },
     launch: {
-      beginner: 'Trouver vos premiers clients',
+      beginner: 'Trouver tes premiers clients',
       intermediate: 'Lancement & acquisition',
       experienced: 'Go-to-market',
     },

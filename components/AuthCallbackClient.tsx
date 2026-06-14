@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react';
 export default function AuthCallbackClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [message, setMessage] = useState('Confirmation de votre email…');
+  const [message, setMessage] = useState('Confirmation de ton email…');
 
   useEffect(() => {
     let cancelled = false;
@@ -111,7 +111,7 @@ export default function AuthCallbackClient() {
         <p className="auth-subtitle">{message}</p>
         <p className="auth-callback-hint">
           Si rien ne se passe, ouvrez le lien dans Safari ou Chrome plutôt que dans
-          l&apos;aperçu intégré de votre app mail.
+          l&apos;aperçu intégré de ton app mail.
         </p>
       </div>
     </AuthShell>

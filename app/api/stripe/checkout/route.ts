@@ -21,7 +21,7 @@ export async function POST(request: Request) {
 
     if (!user?.email) {
       return NextResponse.json(
-        { error: 'Connectez-vous pour souscrire à un abonnement.' },
+        { error: 'Connecte-toi pour souscrire à un abonnement.' },
         { status: 401 }
       );
     }
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
     let error = message;
     if (isMissingPrice) {
       error =
-        'Prix Stripe introuvable : la clé API (test/live) et les STRIPE_PRICE_* sur Vercel ne correspondent pas. Relancez npm.cmd run stripe:sync avec sk_live_..., mettez à jour Vercel, puis redeploy.';
+        'Prix Stripe introuvable : la clé API (test/live) et les STRIPE_PRICE_* sur Vercel ne correspondent pas. Relance npm.cmd run stripe:sync avec sk_live_..., mettez à jour Vercel, puis redeploy.';
     }
 
     return NextResponse.json(

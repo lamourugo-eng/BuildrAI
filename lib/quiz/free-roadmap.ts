@@ -14,17 +14,17 @@ const BUSINESS_TEASERS: Record<
   { validate: string; launch: string; accelerate: string }
 > = {
   saas: {
-    validate: 'Testez votre problème B2B ou B2C : 5 entretiens, signaux d\'intérêt pour un essai ou une démo.',
-    launch: 'Structurez MVP + landing 6 sections + pricing 3 paliers. Objectif : premiers essais activés.',
+    validate: 'Teste ton problème B2B ou B2C : 5 entretiens, signaux d\'intérêt pour un essai ou une démo.',
+    launch: 'Structure MVP + landing 6 sections + pricing 3 paliers. Objectif : premiers essais activés.',
     accelerate: 'Parcours 180 jours calibré SaaS : activation, churn J7, MRR et canaux outbound/SEO.',
   },
   freelance: {
-    validate: 'Validez votre niche : 5 RDV prospects, devis testés, ajustez offre forfait ou TJM.',
+    validate: 'Valide ton niche : 5 RDV prospects, devis testés, ajustez offre forfait ou TJM.',
     launch: 'Page 5 blocs + packages Découverte/Mission + scripts prospection LinkedIn et réseau.',
     accelerate: 'Pipeline missions, relances, marge par TJM et passage en rétainer récurrent.',
   },
   ecommerce: {
-    validate: 'Testez produit star : précommandes ou 10 ventes, mesurez panier moyen et marge SKU.',
+    validate: 'Teste produit star : précommandes ou 10 ventes, mesurez panier moyen et marge SKU.',
     launch: 'Fiche produit + storytelling marque + lancement Instagram/TikTok ou communauté niche.',
     accelerate: 'ROAS, CAC, email post-achat, réachat et préparation collection #2.',
   },
@@ -39,7 +39,7 @@ const BUSINESS_TEASERS: Record<
     accelerate: 'Liquidité offre/demande, take rate, parrainage et friction transaction #1.',
   },
   impact: {
-    validate: 'Validez modèle mixte : qui paie, qui bénéficie, impact mesurable dès le pilote.',
+    validate: 'Valide modèle mixte : qui paie, qui bénéficie, impact mesurable dès le pilote.',
     launch: 'Page mission + transparence + offre payante ou partenariat institutionnel.',
     accelerate: 'KPI impact + viabilité économique, financements et storytelling ESS.',
   },
@@ -49,7 +49,7 @@ const BUSINESS_TEASERS: Record<
     accelerate: 'Pipeline diagnostics → missions, preuves sociales B2B et récurrence trimestrielle.',
   },
   content: {
-    validate: 'Testez monétisation : lead magnet, 1 vente produit ou sponsoring symbolique.',
+    validate: 'Teste monétisation : lead magnet, 1 vente produit ou sponsoring symbolique.',
     launch: 'Hub creator + calendrier éditorial + CTA newsletter ou produit digital.',
     accelerate: 'Audience, RPM, collabs, diversification revenus (ads, ventes, premium).',
   },
@@ -67,13 +67,13 @@ export function buildFreeRoadmap(snapshot: QuizProfileSnapshot | null): RoadmapT
   const businessId = (snapshot?.topBusinessId ?? 'saas') as BusinessId;
   const profile = businessProfiles[businessId] ?? businessProfiles.saas;
   const teasers = BUSINESS_TEASERS[businessId] ?? BUSINESS_TEASERS.saas;
-  const personality = snapshot?.personalityLabel ?? 'votre profil';
+  const personality = snapshot?.personalityLabel ?? 'ton profil';
 
   return [
     {
       id: 'clarify',
       phase: 'Étape 1',
-      title: 'Clarifier votre cap',
+      title: 'Définir ta direction',
       teaser: `À partir de ${personality.toLowerCase()} et du modèle ${profile.name}, définissez le problème client précis et la transformation promise.`,
       locked: false,
     },

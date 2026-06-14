@@ -28,7 +28,7 @@ export default function LandingNewsletter({
     const trimmed = email.trim();
 
     if (!trimmed) {
-      setErrorMsg('Indiquez votre adresse email.');
+      setErrorMsg('Indiquez ton adresse email.');
       setStatus('error');
       return;
     }
@@ -52,7 +52,7 @@ export default function LandingNewsletter({
       if (data?.message) {
         setErrorMsg(data.message);
       } else if (data?.reason === 'already_used') {
-        setErrorMsg('Votre essai gratuit 24 h a déjà été utilisé.');
+        setErrorMsg('Ton essai gratuit 24 h a déjà été utilisé.');
       } else if (data?.error) {
         setErrorMsg(data.error);
       } else {
@@ -76,11 +76,11 @@ export default function LandingNewsletter({
   const form = (
     <form className={`landing-newsletter-form${variant === 'compact' ? ' landing-newsletter-form--compact' : ''}`} onSubmit={handleSubmit}>
       <label className="landing-newsletter-field">
-        <span className="landing-newsletter-field-label">Votre email</span>
+        <span className="landing-newsletter-field-label">Ton email</span>
         <input
           type="email"
           name="email"
-          placeholder="votre@email.com"
+          placeholder="ton@email.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -139,9 +139,9 @@ export default function LandingNewsletter({
       <div className="container">
         <div className="landing-newsletter-box">
           <span className="section-tag">Newsletter</span>
-          <h2>24 h de Premium offertes en vous inscrivant</h2>
+          <h2>24 h de Premium offertes en tu inscrivant</h2>
           <p>
-            Laissez votre email, acceptez de recevoir nos conseils entrepreneuriaux et testez le
+            Laissez ton email, acceptez de recevoir nos conseils entrepreneuriaux et testez le
             coach IA, le parcours 180 jours et Ma ville. Puis repassez automatiquement au plan
             Gratuit.
           </p>

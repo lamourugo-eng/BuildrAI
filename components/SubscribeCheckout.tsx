@@ -55,7 +55,7 @@ export default function SubscribeCheckout({ plan, period, email }: SubscribeChec
   return (
     <div className="subscribe-card">
       <div className="subscribe-plan">
-        <span className="section-tag">Votre formule</span>
+        <span className="section-tag">Ta formule</span>
         <h2>{details.name}</h2>
         <p>{details.desc}</p>
         <div className="subscribe-price">

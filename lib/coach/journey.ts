@@ -85,34 +85,34 @@ export const COACHING_PHASES: CoachingPhase[] = [
 
 const BUSINESS_PHASE_HINTS: Partial<Record<BusinessId, Record<number, string>>> = {
   saas: {
-    1: 'Problème B2B (workflow entreprise) ou B2C (besoin individuel). Choisissez un seul pour la v1.',
+    1: 'Problème B2B (workflow entreprise) ou B2C (besoin individuel). Choisis un seul pour la v1.',
     2: 'Persona = utilisateur quotidien + décideur budget si B2B.',
     3: 'Offre v1 : 1 job-to-be-done, 3 features max, format abonnement ou essai.',
     4: 'Pitch : problème → solution → essai 14j. Pas une liste de features.',
     5: 'Landing 6 sections : Hero, Problème, Solution, Features (3 max), Social proof, CTA essai/démo',
     6: 'Freemium / Essai 14j / 3 paliers mensuels. Justifier par valeur utilisateur',
     7: 'Canaux : LinkedIn outbound, communautés niche, Product Hunt, SEO problème.',
-    8: 'Premier oui = essai activé ou démo bookée. Documentez onboarding.',
+    8: 'Premier oui = essai activé ou démo bookée. Documente onboarding.',
   },
   freelance: {
     1: 'Problème = situation où le client externalise (deadline, compétence manquante, surcharge).',
     2: 'Persona = décideur qui mandate (dirigeant, marketing, ops) + budget mission.',
     3: 'Forfait signature : résultat + durée + livrables. Évitez « je fais tout ».',
-    4: 'Headline = « J\'aide [cible] à [résultat] en [délai] ». Pas votre métier seul.',
+    4: 'Headline = « J\'aide [cible] à [résultat] en [délai] ». Pas ton métier seul.',
     5: 'Page 5 blocs : Headline résultat, 3 services, Process, Preuves, CTA RDV 30min',
     6: 'Package Découverte + Mission + Rétainer. Prix TJM ou forfait',
     7: 'Canaux : réseau, LinkedIn ciblé, Malt, partenaires complémentaires.',
     8: 'Premier oui = acompte signé. Checklist livraison dès J1.',
   },
   ecommerce: {
-    1: 'Problème = frustration produit ou aspiration lifestyle que votre marque adresse.',
+    1: 'Problème = frustration produit ou aspiration lifestyle que ton marque adresse.',
     2: 'Persona acheteur : moment d\'achat (impulsion, cadeau, récurrent).',
     3: 'Produit pilote unique + promesse marque. Pas un catalogue fourre-tout.',
     4: 'Storytelling marque + bénéfice produit star en accroche.',
     5: 'Fiche : Hero marque, Histoire, Produit star, Avis, Livraison/retours, CTA achat',
     6: 'Prix = coût x2.5 minimum, bundle 2+1, frais port offerts seuil',
     7: 'Canaux : Instagram/TikTok, influence micro, SEO niche, lancement communauté.',
-    8: 'Premier oui = précommande ou 3 ventes. Mesurez panier et CAC.',
+    8: 'Premier oui = précommande ou 3 ventes. Mesure panier et CAC.',
   },
   agency: {
     1: 'Problème récurrent client : visibilité, conversion, recrutement, ops…. Une niche.',
@@ -122,17 +122,17 @@ const BUSINESS_PHASE_HINTS: Partial<Record<BusinessId, Record<number, string>>> 
     5: 'Site : Niche + 3 services + Méthode 4 étapes + Cas type + CTA audit gratuit',
     6: 'Setup fee + mensuel récurrent OU forfait projet. Montrer ROI client',
     7: 'Canaux : réseau, LinkedIn, partenariats, événements sectoriels.',
-    8: 'Premier oui = audit signé ou mission forfait. Standardisez le process.',
+    8: 'Premier oui = audit signé ou mission forfait. Standardise le process.',
   },
   marketplace: {
     1: 'Problème des deux côtés : offreurs (visibilité) et demandeurs (trouver/confiance).',
-    2: 'Lancez un côté en premier. Persona early adopter de ce côté.',
+    2: 'Lance un côté en premier. Persona early adopter de ce côté.',
     3: 'Transaction type claire : matching, paiement, confiance. Pas toute la plateforme.',
     4: 'Deux accroches si 2 faces. Ou une accroche forte pour le côté #1.',
     5: 'Landing 2 faces : valeur fournisseurs / valeur acheteurs + Comment ça marche (3 étapes)',
     6: 'Commission % par transaction + incitation early adopters (gratuit 3 mois)',
     7: 'Recrutement manuel early adopters. Pas de pub massive au départ.',
-    8: 'Premier oui = 5 users actifs ou 1ère transaction. Notez friction #1.',
+    8: 'Premier oui = 5 users actifs ou 1ère transaction. Note friction #1.',
   },
   impact: {
     1: 'Problème social lié à un besoin concret que quelqu\'un paie pour résoudre.',
@@ -142,7 +142,7 @@ const BUSINESS_PHASE_HINTS: Partial<Record<BusinessId, Record<number, string>>> 
     5: 'Page : Mission 1 phrase + Impact chiffré + Offre + Transparence + CTA',
     6: 'Modèle mixte : vente produit + % reversé OU abonnement mission',
     7: 'Canaux : communauté mission, partenaires, presse locale, réseau engagé.',
-    8: 'Premier oui = client payeur + impact mesuré. Documentez les deux.',
+    8: 'Premier oui = client payeur + impact mesuré. Documente les deux.',
   },
   consulting: {
     1: 'Problème business précis : CA, marge, org, stratégie, digital…',
@@ -217,8 +217,8 @@ ${hints ? `### Précisions modèle ${businessId} :\n${hints}\n` : ''}${toolBlock
 - Une sous-étape par échange. Ne regroupe pas plusieurs sections site en un message.
 
 ### Interdit
-- « Créez un site » sans nommer l'outil (Carrd, Shopify, Notion, Webflow…).
-- Plans vagues (« améliorez votre présence en ligne »).
+- « Crée un site » sans nommer l'outil (Carrd, Shopify, Notion, Webflow…).
+- Plans vagues (« améliorez ton présence en ligne »).
 - Sauter la sous-étape 5.1 (choix outil) même si le client veut le texte directement.`;
 }
 

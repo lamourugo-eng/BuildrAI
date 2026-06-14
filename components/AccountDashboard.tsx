@@ -6,6 +6,8 @@ import AccountNotepad from '@/components/AccountNotepad';
 import AccountProfile from '@/components/AccountProfile';
 import CityView from '@/components/CityView';
 import DashCityPreview from '@/components/dashboard/DashCityPreview';
+import DashNextStep from '@/components/dashboard/DashNextStep';
+import { DashMobileNav, DashSidebar } from '@/components/dashboard/DashWorkspaceNav';
 import { useEntrepreneurCopy } from '@/components/EntrepreneurCopyProvider';
 import AccountSubscription from '@/components/AccountSubscription';
 import Coach from '@/components/Coach';
@@ -195,6 +197,10 @@ export default function AccountDashboard({
     setNewBuildings([]);
   }
 
+  const storedRoadmap = loadRoadmapProgress();
+  const roadmapDays =
+    activeId && storedRoadmap?.businessId === activeId ? storedRoadmap.completedDays : [];
+
   return (
     <div className="dash-shell dash-shell--live">
       <div className="dash-ambient" aria-hidden="true">
@@ -202,7 +208,24 @@ export default function AccountDashboard({
         <span className="dash-orb dash-orb--2" />
         <span className="dash-orb dash-orb--3" />
       </div>
+      <DashSidebar
+        activeSection={section}
+        onNavigate={goTo}
+        isSubscribed={isSubscribed}
+        serverPlanId={serverPlanId}
+        isGrowth={isGrowth}
+        planLabel={isSubscribed ? planName : 'Gratuit'}
+        progressLabel={isSubscribed ? `${planProgress}%` : undefined}
+      />
       <div className="dash-body">
+        <DashMobileNav
+          activeSection={section}
+          onNavigate={goTo}
+          isSubscribed={isSubscribed}
+          serverPlanId={serverPlanId}
+          isGrowth={isGrowth}
+          planLabel={isSubscribed ? planName : 'Gratuit'}
+        />
         {newBuildingDetails.length > 0 && section !== 'ville' && (
           <div className="dash-toast" role="status">
             <span>
@@ -216,6 +239,13 @@ export default function AccountDashboard({
 
         {section !== 'coach' && section !== 'overview' && (
           <header className="dash-page-header dash-page-header--live">
+            <button
+              type="button"
+              className="dash-breadcrumb"
+              onClick={() => goTo('overview')}
+            >
+              ← Accueil
+            </button>
             <h1>{currentSectionCopy.label}</h1>
             <p>{currentSectionCopy.description}</p>
           </header>
@@ -247,7 +277,7 @@ export default function AccountDashboard({
                               {activeBiz.name}
                             </>
                           ) : (
-                            'Votre espace fondateur'
+                            'Ton espace fondateur'
                           )}
                         </h2>
                         <p>
@@ -285,10 +315,10 @@ export default function AccountDashboard({
                       </>
                     ) : (
                       <>
-                        <h2>Plan gratuit. Votre profil est prêt</h2>
+                        <h2>Plan gratuit. Ton profil est prêt</h2>
                         <p>
                           Quiz, analyse de profil et modèles business adaptés sont débloqués.
-                          Passez à l&apos;abonnement pour le parcours 180 jours et le coach IA.
+                          Passe à l&apos;abonnement pour le parcours 180 jours et le coach IA.
                         </p>
                         <div className="dash-hero-stats">
                           <span className="dash-hero-stat">
@@ -323,6 +353,15 @@ export default function AccountDashboard({
                 </div>
               </section>
 
+              <DashNextStep
+                isSubscribed={isSubscribed}
+                hasProfile={Boolean(profile)}
+                coachMessages={stats.coachMessages}
+                roadmapProgress={roadmapProgress}
+                completedDayNumbers={roadmapDays}
+                onGo={goTo}
+              />
+
               <div className="dash-overview-body">
                 <DashCityPreview
                   city={city}
@@ -332,11 +371,56 @@ export default function AccountDashboard({
 
                 <div className="dash-overview-aside">
                   <header className="dash-overview-section-head">
-                    <h3>{copy.overview.quickAccessTitle}</h3>
-                    <p>{copy.overview.quickAccessSubtitle}</p>
+                    <h3>Explorer ton espace</h3>
+                    <p>Profil, notes, activité et formules. Tout est regroupé ici.</p>
                   </header>
 
                   <div className="dash-overview-grid">
+                    {isSubscribed && (
+                      <>
+                        <article
+                          className="dash-card dash-card--tile dash-card--primary"
+                          onClick={() => goTo('coach')}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => e.key === 'Enter' && goTo('coach')}
+                        >
+                          <div className="dash-card-top">
+                            <span className="dash-card-icon" aria-hidden="true">
+                              ◈
+                            </span>
+                            <span className="dash-card-chevron" aria-hidden="true">
+                              →
+                            </span>
+                          </div>
+                          <span className="dash-card-label">{copy.sections.coach.label}</span>
+                          <p className="dash-card-value">Parler au coach</p>
+                          <p className="dash-card-meta">{stats.coachMessages} messages échangés</p>
+                        </article>
+                        <article
+                          className="dash-card dash-card--tile dash-card--primary"
+                          onClick={() => goTo('parcours')}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => e.key === 'Enter' && goTo('parcours')}
+                        >
+                          <div className="dash-card-top">
+                            <span className="dash-card-icon" aria-hidden="true">
+                              ◎
+                            </span>
+                            <span className="dash-card-chevron" aria-hidden="true">
+                              →
+                            </span>
+                          </div>
+                          <span className="dash-card-label">{copy.sections.parcours.label}</span>
+                          <p className="dash-card-value">
+                            {roadmapProgress > 0 ? `${roadmapProgress}% complété` : 'Jour 1'}
+                          </p>
+                          <p className="dash-card-meta">Plan 180 jours calibré sur ton modèle</p>
+                        </article>
+                      </>
+                    )}
+
                     <article
                       className="dash-card dash-card--tile"
                       onClick={() => goTo('profil')}
@@ -361,7 +445,7 @@ export default function AccountDashboard({
                       ) : (
                         <>
                           <p className="dash-card-value">Compléter le quiz</p>
-                          <p className="dash-card-meta">Personnalisez votre parcours</p>
+                          <p className="dash-card-meta">Personnalise ton parcours</p>
                         </>
                       )}
                     </article>
@@ -500,7 +584,7 @@ export default function AccountDashboard({
                           <p className="dash-card-value">Business Accelerator</p>
                           <p className="dash-card-meta">
                             {isSubscribed
-                              ? 'Inclus dans la formule 79 €/mois. Cliquez pour upgrader'
+                              ? 'Inclus dans la formule 79 €/mois. Clique pour upgrader'
                               : 'Bilan stratégique chaque semaine. Formule 79 €/mois'}
                           </p>
                         </article>

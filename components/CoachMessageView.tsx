@@ -61,7 +61,7 @@ export default function CoachMessageView({ content }: CoachMessageViewProps) {
       {parsed.deliverable && (
         <div className="coach-msg-deliverable">
           <span className="coach-msg-label">
-            <span aria-hidden="true">✅</span> Votre livrable
+            <span aria-hidden="true">✅</span> Ton livrable
           </span>
           <TextBlock text={parsed.deliverable} />
         </div>

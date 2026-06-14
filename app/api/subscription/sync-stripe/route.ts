@@ -20,7 +20,7 @@ function stripeUnavailableResponse(message: string) {
       transient: true,
       error: message,
       message:
-        'Stripe est temporairement indisponible. Votre accès actuel est conservé. Réessayez dans quelques instants.',
+        'Stripe est temporairement indisponible. Ton accès actuel est conservé. Réessayez dans quelques instants.',
     },
     { status: 503 }
   );
@@ -74,7 +74,7 @@ export async function POST() {
         source: 'stripe',
         transient: true,
         message:
-          'Stripe est temporairement indisponible. Votre accès actuel est conservé.',
+          'Stripe est temporairement indisponible. Ton accès actuel est conservé.',
       });
       setActiveSubscriptionCookies(response, resolved.planId);
       return response;
@@ -92,7 +92,7 @@ export async function POST() {
       currentPeriodEnd: null,
       roadmapMonthsPaid: 0,
       hasStripeCustomer: false,
-      message: 'Votre essai Premium 24 h est terminé. Vous êtes repassé sur le plan Gratuit.',
+      message: 'Ton essai Premium 24 h est terminé. Tu es repassé sur le plan Gratuit.',
     });
     clearSubscriptionCookies(response);
     return response;

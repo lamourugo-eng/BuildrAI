@@ -57,7 +57,7 @@ export default function CoachNotepadPanel({ open, onClose }: CoachNotepadPanelPr
         className="coach-notepad-panel-editor"
         value={content}
         onChange={(e) => handleChange(e.target.value)}
-        placeholder="Notez ici les infos utiles de la conversation…"
+        placeholder="Note ici les infos utiles de la conversation…"
         rows={7}
         disabled={status === 'loading'}
         aria-label="Notes de conversation"
@@ -68,7 +68,7 @@ export default function CoachNotepadPanel({ open, onClose }: CoachNotepadPanelPr
       )}
 
       <div className="coach-notepad-panel-foot">
-        <span className="coach-notepad-panel-hint">Sync. avec votre bloc-notes</span>
+        <span className="coach-notepad-panel-hint">Sync. avec ton bloc-notes</span>
         <Link href="/espace?section=blocnotes" className="coach-notepad-panel-link">
           Ouvrir tout
         </Link>

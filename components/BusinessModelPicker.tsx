@@ -159,13 +159,13 @@ export default function BusinessModelPicker({
       {variant === 'profile' && (
         <div className="biz-picker biz-picker--profile">
           <p className="biz-picker-profile-hint">
-            Choisissez le modèle sur lequel le coach vous accompagne. Recommandé ou autre. Changer
+            Choisis le modèle sur lequel le coach tu accompagne. Recommandé ou autre. Changer
             de modèle efface l&apos;historique de discussion du modèle actuel.
           </p>
 
           {recommendedChoices.length > 0 && (
             <div className="biz-picker-profile-group">
-              <p className="biz-picker-profile-group-title">Recommandés pour vous</p>
+              <p className="biz-picker-profile-group-title">Recommandés pour toi</p>
               <ul className="account-business-list biz-picker-profile-list">
                 {recommendedChoices.map((item, index) => renderProfileItem(item, index + 1))}
               </ul>
@@ -190,8 +190,8 @@ export default function BusinessModelPicker({
               Passer sur {pendingBiz.name} ?
             </p>
             <p className="biz-picker-confirm-text">
-              Votre historique coach sur <strong>{activeBiz.name}</strong> sera effacé. Vous
-              repartirez sur une nouvelle piste avec {pendingBiz.name}.
+              Ton historique coach sur <strong>{activeBiz.name}</strong> sera effacé. Tu
+              repartiras sur une nouvelle piste avec {pendingBiz.name}.
             </p>
             <div className="biz-picker-confirm-actions">
               <button

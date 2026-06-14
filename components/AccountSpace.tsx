@@ -94,7 +94,7 @@ export default function AccountSpace({
   useEffect(() => {
     if (trialExpired) {
       setTrialNotice(
-        'Votre essai Premium 24 h est terminé. Vous êtes repassé sur le plan Gratuit.'
+        'Ton essai Premium 24 h est terminé. Tu es repassé sur le plan Gratuit.'
       );
     }
   }, [trialExpired]);
@@ -114,7 +114,7 @@ export default function AccountSpace({
     void syncSubscriptionAndHandleTrialExpiry().then((result) => {
       if (result.trialExpired) {
         setTrialNotice(
-          'Votre essai Premium 24 h est terminé. Vous êtes repassé sur le plan Gratuit.'
+          'Ton essai Premium 24 h est terminé. Tu es repassé sur le plan Gratuit.'
         );
       }
       if (!result.transient && (Boolean(result.active) !== isSubscribed || result.trialExpired)) {
@@ -146,7 +146,7 @@ export default function AccountSpace({
       void syncSubscriptionAndHandleTrialExpiry().then((result) => {
         if (result.trialExpired) {
           setTrialNotice(
-            'Votre essai Premium 24 h est terminé. Vous êtes repassé sur le plan Gratuit.'
+            'Ton essai Premium 24 h est terminé. Tu es repassé sur le plan Gratuit.'
           );
           router.refresh();
         }

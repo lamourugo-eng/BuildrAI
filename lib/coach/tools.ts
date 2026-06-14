@@ -30,12 +30,12 @@ const SITE_TOOLS: Record<TechBand, Record<BusinessId, SiteToolRecommendation>> =
         'Choisir le template « Landing » ou « Startup »',
         'Renommer les sections : Hero, Problème, Solution, CTA',
       ],
-      alternatives: 'Framer (gratuit) si vous voulez plus de design',
+      alternatives: 'Framer (gratuit) si tu veux plus de design',
     },
     freelance: {
       primary: 'Notion (page publique)',
       url: 'https://notion.so',
-      why: 'Vitrine rapide + portfolio, zéro code, vous éditez le texte comme un document',
+      why: 'Vitrine rapide + portfolio, zéro code, tu éditez le texte comme un document',
       cost: 'Gratuit',
       setupSteps: [
         'Créer une page Notion « Mon offre »',
@@ -54,7 +54,7 @@ const SITE_TOOLS: Record<TechBand, Record<BusinessId, SiteToolRecommendation>> =
         'Ajouter 1 produit test avec photos',
         'Configurer paiement Stripe/PayPal dans Shopify',
       ],
-      alternatives: 'Etsy si vous testez sans créer de marque',
+      alternatives: 'Etsy si tu testez sans créer de marque',
     },
     agency: {
       primary: 'Carrd',

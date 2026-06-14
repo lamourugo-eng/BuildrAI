@@ -354,7 +354,7 @@ export default function SideNav({
             {primaryCta && showFreeCta && (
               <div className="side-nav-cta">
                 <div className="side-nav-cta-badge">Plan gratuit</div>
-                <h3>Votre coach IA vous attend</h3>
+                <h3>Ton coach IA t&apos;attend</h3>
                 <p>Plan d&apos;action personnalisé, suivi et outils premium.</p>
                 <NavItem item={primaryCta} onClose={onClose} index={itemIndex} />
               </div>

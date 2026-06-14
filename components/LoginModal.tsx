@@ -37,9 +37,9 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
           ×
         </button>
         <span className="section-tag">Connexion</span>
-        <h2 id="login-modal-title">Accédez à votre espace</h2>
+        <h2 id="login-modal-title">Accédez à ton espace</h2>
         <p className="login-modal-subtitle">
-          Connectez-vous avec votre email et mot de passe. Le questionnaire reste gratuit sans
+          Connecte-toi avec ton email et mot de passe. Le questionnaire reste gratuit sans
           compte.
         </p>
         <Suspense fallback={<p className="login-modal-loading">Chargement…</p>}>

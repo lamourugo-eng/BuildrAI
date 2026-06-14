@@ -14,7 +14,7 @@ export default function ResetPasswordPage() {
         <span className="section-tag">Sécurité</span>
         <h1>Nouveau mot de passe</h1>
         <p className="auth-subtitle">
-          Choisissez un nouveau mot de passe pour votre espace client.
+          Choisis un nouveau mot de passe pour ton espace client.
         </p>
         <Suspense fallback={<p>Chargement…</p>}>
           <ResetPasswordForm />

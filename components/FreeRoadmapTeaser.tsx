@@ -30,9 +30,9 @@ export default function FreeRoadmapTeaser({
     <section className={`free-roadmap free-roadmap--${variant}`}>
       <div className="free-roadmap-header">
         <span className="section-tag">Parcours aperçu</span>
-        <h3>Votre parcours en bref</h3>
+        <h3>Ton parcours en bref</h3>
         <p>
-          Un aperçu des grandes étapes pour avancer. Passez à l&apos;abonnement pour débloquer le
+          Un aperçu des grandes étapes pour avancer. Passe à l&apos;abonnement pour débloquer le
           plan détaillé, étape par étape, avec le coach IA.
         </p>
       </div>
@@ -63,7 +63,7 @@ export default function FreeRoadmapTeaser({
         <div className="free-roadmap-cta">
           <p>
             <strong>Envie d&apos;aller plus loin ?</strong> Le coach IA détaille chaque étape,
-            adapte les actions à votre profil et vous suit semaine après semaine.
+            adapte les actions à ton profil et tu suit semaine après semaine.
           </p>
           <Link href="/subscribe?plan=starter&period=monthly" className="btn btn-primary">
             Débloquer le parcours complet. Premium 29 €/mois

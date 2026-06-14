@@ -53,7 +53,7 @@ export default async function EspacePage() {
       </Suspense>
       <main className="dashboard-main account-main account-main--wide account-main--live">
         <div className="container">
-          <Suspense fallback={<p>Chargement de votre espace…</p>}>
+          <Suspense fallback={<p>Chargement de ton espace…</p>}>
             <AccountSpace
               email={user.email ?? ''}
               isAdmin={isAdmin}

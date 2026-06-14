@@ -17,7 +17,7 @@ export default function AccountNotepad() {
           />
           <span>
             {status === 'saved' && syncedToCloud
-              ? 'Sauvegardé sur votre compte'
+              ? 'Sauvegardé sur ton compte'
               : statusLabel}
           </span>
           {updatedAt && status !== 'loading' && (
@@ -33,7 +33,7 @@ export default function AccountNotepad() {
         className="account-notepad-editor"
         value={content}
         onChange={(e) => handleChange(e.target.value)}
-        placeholder="Idées, contacts, décisions, liens utiles… Tout ce que vous voulez retrouver à la prochaine session."
+        placeholder="Idées, contacts, décisions, liens utiles… Tout ce que tu veux retrouver à la prochaine session."
         rows={16}
         disabled={status === 'loading'}
         aria-label="Bloc-notes personnel"
@@ -43,8 +43,8 @@ export default function AccountNotepad() {
 
       <p className="account-notepad-hint">
         {syncedToCloud
-          ? 'Vos notes sont liées à votre compte et disponibles à chaque reconnexion.'
-          : 'Vos notes sont enregistrées localement sur cet appareil.'}
+          ? 'Tes notes sont liées à ton compte et disponibles à chaque reconnexion.'
+          : 'Tes notes sont enregistrées localement sur cet appareil.'}
       </p>
     </div>
   );

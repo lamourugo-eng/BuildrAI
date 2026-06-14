@@ -58,7 +58,7 @@ export default function CityJourneyPanel({ snapshot }: CityJourneyPanelProps) {
       <header className="city-journey-head">
         <div>
           <span className="city-journey-eyebrow">Progression empire</span>
-          <h3 id="city-journey-title">Votre empire en chiffres</h3>
+          <h3 id="city-journey-title">Ton empire en chiffres</h3>
           <p>{snapshot.accomplishmentSummary}</p>
         </div>
         <div className="city-journey-head-badge">
@@ -72,13 +72,13 @@ export default function CityJourneyPanel({ snapshot }: CityJourneyPanelProps) {
           label="Districts"
           value={snapshot.unlockedBuildingCount}
           max={snapshot.buildings.length}
-          hint="Chaque bâtiment reflète une étape concrète de votre activité."
+          hint="Chaque bâtiment reflète une étape concrète de ton activité."
         />
         <ProgressStat
           label="Parcours"
           value={snapshot.roadmapProgress}
           max={100}
-          hint="Jours cochés dans votre parcours premium."
+          hint="Jours cochés dans ton parcours premium."
           href="/espace?section=parcours"
         />
         <ProgressStat

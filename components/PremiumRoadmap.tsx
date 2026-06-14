@@ -154,10 +154,10 @@ export default function PremiumRoadmap({
       <section className="premium-roadmap premium-roadmap--empty">
         <div className="premium-roadmap-header">
           <span className="section-tag">Parcours évolutif</span>
-          <h3>Choisissez votre modèle business</h3>
+          <h3>Choisis ton modèle business</h3>
           <p>
-            Complétez le questionnaire et sélectionnez votre modèle dans la section Profil pour
-            générer votre parcours personnalisé.
+            Complète le questionnaire et sélectionnez ton modèle dans la section Profil pour
+            générer ton parcours personnalisé.
           </p>
         </div>
         <Link href="/espace?section=profil&quiz=1" className="btn btn-primary">
@@ -278,7 +278,7 @@ export default function PremiumRoadmap({
               </span>
             </div>
             <p className="premium-roadmap-unlock-hint">
-              Les <strong>6 chapitres</strong> (180 jours) sont accessibles dès votre abonnement. Avancez à votre rythme.
+              Les <strong>6 chapitres</strong> (180 jours) sont accessibles dès ton abonnement. Avance à ton rythme.
             </p>
           </div>
           <ProgressRing value={completion} label="global" />
@@ -371,7 +371,7 @@ export default function PremiumRoadmap({
             <div>
               <strong>Chapitre indisponible</strong>
               <p>
-                Abonnez-vous à Premium pour accéder aux 6 chapitres du parcours (180 jours).
+                Abonne-toi à Premium pour accéder aux 6 chapitres du parcours (180 jours).
               </p>
             </div>
           </div>
@@ -482,7 +482,7 @@ export default function PremiumRoadmap({
           ◈
         </div>
         <p>
-          Une étape vous bloque ? Le <strong>Coach IA</strong> détaille chaque jour selon votre
+          Une étape te bloque ? Le <strong>Coach IA</strong> détaille chaque jour selon ton
           modèle {plan.businessName}.
         </p>
         <Link href="/espace?section=coach" className="btn btn-primary btn-sm">

@@ -45,7 +45,7 @@ export const FREE_PLAN_FEATURES = [
 export const FREE_PLAN: PublicPlan = {
   id: 'free',
   name: 'Gratuit',
-  desc: 'Découvrez votre profil et les modèles qui vous correspondent. Sans carte bancaire.',
+  desc: 'Découvre ton profil et les modèles qui te correspondent. Sans carte bancaire.',
   monthly: 0,
   semester: 0,
   features: [...FREE_PLAN_FEATURES],
@@ -60,7 +60,7 @@ export const BILLING_PLANS: BillingPlan[] = [
   {
     id: 'starter',
     name: 'Premium',
-    desc: 'Votre coach IA au quotidien. Structuré, personnalisé et aligné sur vos objectifs.',
+    desc: 'Ton coach IA au quotidien. Structuré, personnalisé et aligné sur tes objectifs.',
     monthly: 29,
     semester: semesterMonthlyEquivalent(29),
     features: [

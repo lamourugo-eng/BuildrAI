@@ -44,10 +44,10 @@ export function formatRoadmapActivityDescription(summary: ActivitySummary): stri
   const daysLabel = `${n} jour${n !== 1 ? 's' : ''} terminé${n !== 1 ? 's' : ''}`;
 
   if (summary.unlockedMonths >= summary.maxMonths) {
-    return `${daysLabel} sur ${summary.totalProgramDays} jours du programme (6 chapitres. 30 jours chacun). Tous les chapitres sont accessibles dès votre abonnement. Cochez chaque jour au fur et à mesure dans l’onglet Parcours.`;
+    return `${daysLabel} sur ${summary.totalProgramDays} jours du programme (6 chapitres. 30 jours chacun). Tous les chapitres sont accessibles dès ton abonnement. Cochez chaque jour au fur et à mesure dans l’onglet Parcours.`;
   }
 
-  return `${daysLabel} sur ${summary.roadmapUnlockedDays} jours accessibles. Abonnez-vous à Premium pour débloquer les 6 chapitres (180 jours).`;
+  return `${daysLabel} sur ${summary.roadmapUnlockedDays} jours accessibles. Abonne-toi à Premium pour débloquer les 6 chapitres (180 jours).`;
 }
 
 export function buildActivitySummary(

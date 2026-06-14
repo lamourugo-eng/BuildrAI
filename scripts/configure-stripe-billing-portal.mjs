@@ -69,7 +69,7 @@ try {
   if (config) {
     config = await stripe.billingPortal.configurations.update(config.id, {
       business_profile: {
-        headline: 'BuildrAI — Gérer votre abonnement',
+        headline: 'BuildrAI — Gérer ton abonnement',
       },
       features: portalFeatures,
     });
@@ -77,7 +77,7 @@ try {
   } else {
     config = await stripe.billingPortal.configurations.create({
       business_profile: {
-        headline: 'BuildrAI — Gérer votre abonnement',
+        headline: 'BuildrAI — Gérer ton abonnement',
       },
       features: portalFeatures,
     });
@@ -113,7 +113,7 @@ Côté site : Mon espace → Abonnement → « Gérer ou résilier mon abonnemen
 Vérifier dans Stripe (${mode}) :
   https://dashboard.stripe.com/settings/billing/portal
 
-Ajoutez aussi sur Vercel (Production) :
+Ajoute aussi sur Vercel (Production) :
   STRIPE_BILLING_PORTAL_CONFIG_ID=${config.id}
 `);
 } catch (err) {

@@ -54,7 +54,7 @@ console.log(`
 ═══════════════════════════════════════════════════════════════
 
 1) VERCEL — Settings → Environment Variables (Production)
-   Copiez depuis votre .env.local sauf NEXT_PUBLIC_APP_URL :
+   Copie depuis ton .env.local sauf NEXT_PUBLIC_APP_URL :
 
 `);
 
@@ -90,7 +90,7 @@ console.log(`
 4) STRIPE — Webhooks (mode test pour l'instant)
    Endpoint : ${PROD_URL}/api/stripe/webhook
    Événements : checkout.session.completed, customer.subscription.*
-   Copiez le signing secret → STRIPE_WEBHOOK_SECRET sur Vercel
+   Copie le signing secret → STRIPE_WEBHOOK_SECRET sur Vercel
 
 5) Vérifications manuelles
    □ Inscription email → lien de confirmation ouvre ${PROD_URL}/auth/callback

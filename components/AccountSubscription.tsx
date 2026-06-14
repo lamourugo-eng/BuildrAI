@@ -70,8 +70,8 @@ export default function AccountSubscription({
         }
         setCancelNotice(
           data.trialExpired
-            ? 'Votre essai Premium 24 h est terminé. Vous êtes repassé sur le plan Gratuit.'
-            : 'Votre abonnement a été résilié. Vous êtes repassé sur le plan Gratuit.'
+            ? 'Ton essai Premium 24 h est terminé. Tu es repassé sur le plan Gratuit.'
+            : 'Ton abonnement a été résilié. Tu es repassé sur le plan Gratuit.'
         );
         router.refresh();
         return;
@@ -120,7 +120,7 @@ export default function AccountSubscription({
     void syncStripeStatus();
     if (searchParams.get('billing') === 'return') {
       setCancelNotice(
-        'Si vous avez résilié, votre accès Premium reste actif jusqu\'à la fin de la période payée.'
+        'Si tu as résilié, ton accès Premium reste actif jusqu\'à la fin de la période payée.'
       );
     }
   }, [isSubscribed, searchParams]);
@@ -313,10 +313,10 @@ export default function AccountSubscription({
             🔒
           </span>
           <div>
-            <strong>Passez à Business Accelerator. 79 €/mois</strong>
+            <strong>Passe à Business Accelerator. 79 €/mois</strong>
             <p>
               L&apos;analyse hebdomadaire et la bibliothèque de ressources sont incluses dans cette
-              formule. Votre coach IA et votre parcours 180 jours restent actifs.
+              formule. Ton coach IA et ton parcours 180 jours restent actifs.
             </p>
           </div>
         </div>
@@ -441,7 +441,7 @@ export default function AccountSubscription({
       <div className="account-card account-card--muted account-subscription-help">
         <h3>Gestion & facturation</h3>
         <ul className="account-subscription-help-list">
-          <li>Plan gratuit disponible sans carte bancaire pour découvrir votre profil.</li>
+          <li>Plan gratuit disponible sans carte bancaire pour découvrir ton profil.</li>
           <li>Résiliation en libre-service via le bouton « Résiliez » (abonnements Stripe).</li>
           <li>
             Assistance par email (contact direct avec le créateur du site) :{' '}

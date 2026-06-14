@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(resolveServerAppOrigin()),
   title: 'BuildrAI. Coaching IA pour entrepreneurs',
   description:
-    'BuildrAI. Votre coach IA pour lancer et faire grandir votre entreprise. Disponible 24h/24.',
+    'BuildrAI. Ton coach IA pour lancer et faire grandir ton entreprise. Disponible 24h/24.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

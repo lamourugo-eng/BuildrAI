@@ -42,11 +42,11 @@ export function buildBusinessCoachExpertBlock(
 - **Première étape clé** : ${profile.firstSteps[0] ?? '—'}
 
 ### Réflexion coach par étape (8 phases. ${profile.name})
-${phaseHints || '- Adaptez chaque étape au modèle ' + profile.name}
+${phaseHints || '- Adapte chaque étape au modèle ' + profile.name}
 
 ${currentPhase && currentHint ? `### Phase du jour. Étape ${phaseId}/8 : ${currentPhase.name}\n${currentHint}\n` : ''}${toolBlock}
 ### Consignes de réflexion
-- Proposez des exemples **concrets** pour ${profile.name} (pas de conseils génériques « startup »).
+- Propose des exemples **concrets** pour ${profile.name} (pas de conseils génériques « startup »).
 - Citez métriques pertinentes : ${getBusinessMetricsHint(businessId)}.
 - Si le client hésite, tranchez avec une recommandation adaptée à son budget et niveau tech.`;
 }

@@ -17,21 +17,21 @@ interface HeroProps extends LandingSectionsProps {
 }
 
 const LANDING_TRUST_ITEMS = [
-  'Plan adapté à votre profil',
+  'Plan adapté à ton profil',
   'Coach disponible 24/7',
   'Parcours progressif 180 jours',
   'Sans engagement',
 ] as const;
 
 const LANDING_SOCIAL_PROOF = [
-  { value: '4 min', label: 'pour votre profil' },
+  { value: '4 min', label: 'pour ton profil' },
   { value: '180 j', label: 'de parcours guidé' },
   { value: '24 h', label: 'Premium offertes' },
   { value: '0 €', label: 'pour commencer' },
 ] as const;
 
 const JOURNEY_PIPELINE = [
-  { icon: '🎯', label: 'Quiz', desc: '9 questions sur vous' },
+  { icon: '🎯', label: 'Quiz', desc: '9 questions sur toi' },
   { icon: '◎', label: 'Analyse du profil', desc: 'Forces & personnalité' },
   { icon: '◈', label: 'Choix du business', desc: 'SaaS, freelance, OFM…' },
   { icon: '🗺️', label: 'Plan 180 jours', desc: 'Tâches jour par jour' },
@@ -43,17 +43,17 @@ const GAMIFICATION_HIGHLIGHTS = [
   {
     icon: '👤',
     title: 'Personnage qui évolue',
-    desc: 'Votre avatar fondateur grandit avec votre régularité et vos victoires.',
+    desc: 'Ton avatar fondateur grandit avec ton régularité et tes victoires.',
   },
   {
     icon: '🏗️',
     title: 'Ville qui se construit',
-    desc: 'Chaque action coach et parcours débloque des bâtiments dans votre empire.',
+    desc: 'Chaque action coach et parcours débloque des bâtiments dans ton empire.',
   },
   {
     icon: '📈',
     title: 'Progression visible',
-    desc: 'Jours cochés, chapitres, XP : vous voyez concrètement avancer.',
+    desc: 'Jours cochés, chapitres, XP : tu voyez concrètement avancer.',
   },
 ] as const;
 
@@ -114,9 +114,9 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
             <em>avec un coach IA qui te donne chaque jour la prochaine action.</em>
           </h1>
           <ul className="hero-benefits landing-only-desktop">
-            <li>Découvrez quel business correspond à votre profil</li>
+            <li>Découvre quel business correspond à ton profil</li>
             <li>L&apos;IA crée un plan personnalisé sur 180 jours</li>
-            <li>Le coach vous accompagne au quotidien, étape par étape</li>
+            <li>Le coach tu accompagne au quotidien, étape par étape</li>
           </ul>
           <div className="hero-cta">
             <a
@@ -167,7 +167,7 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
                 </svg>
               </span>
               <div className="hero-free-hint-body">
-                <strong>Passez de l&apos;idée à l&apos;action, sans vous perdre</strong>
+                <strong>Passe de l&apos;idée à l&apos;action, sans tu perdre</strong>
                 <p>
                   Quiz gratuit en 4 minutes, profil entrepreneurial, modèle business adapté et
                   aperçu du parcours. Puis testez Premium 24 h pour le coach IA et Ma ville.
@@ -225,13 +225,13 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
               </div>
               <div className="message bot hero-chat-msg hero-chat-msg--3">
                 <p>
-                  Parfait. Voici 3 accroches pour vos clients idéaux, plus la structure de
-                  votre page d&apos;accueil. On coche la tâche du jour ensuite ?
+                  Parfait. Voici 3 accroches pour tes clients idéaux, plus la structure de
+                  ta page d&apos;accueil. On coche la tâche du jour ensuite ?
                 </p>
               </div>
             </div>
             <div className="chat-input">
-              <input type="text" placeholder="Posez votre question..." disabled />
+              <input type="text" placeholder="Pose ton question..." disabled />
               <button type="button" aria-label="Envoyer">
                 →
               </button>
@@ -253,9 +253,9 @@ export function LandingJourney({ onOpenQuiz }: LandingSectionsProps = {}) {
           <span className="section-tag">La méthode BuildrAI</span>
           <h2>Plus qu&apos;un chatbot IA : un parcours complet</h2>
           <p className="landing-section-intro landing-only-desktop">
-            De votre profil à votre empire entrepreneurial — chaque étape est connectée,
-            personnalisée et visible. Vous ne discutez pas avec une IA : vous construisez
-            votre business.
+            De ton profil à ton empire entrepreneurial — chaque étape est connectée,
+            personnalisée et visible. Tu ne discutez pas avec une IA : tu construisez
+            ton business.
           </p>
         </div>
 
@@ -279,9 +279,9 @@ export function LandingJourney({ onOpenQuiz }: LandingSectionsProps = {}) {
         <div className="landing-gamification">
           <header className="landing-gamification-head animate-on-scroll">
             <span className="section-tag">Motivation intégrée</span>
-            <h3>Votre progression devient visible</h3>
+            <h3>Ta progression devient visible</h3>
             <p>
-              BuildrAI gamifie votre lancement pour que chaque jour compte — sans perdre le
+              BuildrAI gamifie ton lancement pour que chaque jour compte — sans perdre le
               sérieux du parcours business.
             </p>
           </header>
@@ -388,7 +388,7 @@ const FEATURE_GROUPS: {
       {
         icon: '🏙️',
         title: 'Ma ville',
-        desc: 'Avatar, vue isométrique, XP et bâtiments débloqués avec votre progression.',
+        desc: 'Avatar, vue isométrique, XP et bâtiments débloqués avec ta progression.',
       },
       {
         icon: '📊',
@@ -405,7 +405,7 @@ const FEATURE_GROUPS: {
       {
         icon: '◐',
         title: 'Analyse hebdomadaire',
-        desc: 'Bilan IA chaque semaine, aligné sur votre parcours et vos échanges coach.',
+        desc: 'Bilan IA chaque semaine, aligné sur ton parcours et tes échanges coach.',
       },
       {
         icon: '▧',
@@ -421,10 +421,10 @@ export function Features({ onOpenQuiz }: LandingSectionsProps = {}) {
     <section className="features landing-section landing-section--features" id="features">
       <div className="container">
         <div className="section-header landing-section-header">
-          <span className="section-tag">Votre espace</span>
-          <h2>Tout ce dont vous avez besoin pour avancer</h2>
+          <span className="section-tag">Ton espace</span>
+          <h2>Tout ce dont tu as besoin pour avancer</h2>
           <p className="landing-section-intro landing-only-desktop">
-            Commencez gratuitement, testez Premium 24 h, puis abonnez-vous quand vous êtes prêt.
+            Commence gratuitement, testez Premium 24 h, puis abonne-toi quand tu es prêt.
           </p>
         </div>
 
@@ -475,23 +475,23 @@ export function How({ onOpenQuiz }: LandingSectionsProps = {}) {
   const steps = [
     {
       num: '01',
-      title: 'Découvrez votre profil entrepreneurial',
-      desc: '9 questions en 4 minutes : personnalité, budget, niveau tech. Vous savez enfin quel type de business vous correspond.',
+      title: 'Découvre ton profil entrepreneurial',
+      desc: '9 questions en 4 minutes : personnalité, budget, niveau tech. Tu savez enfin quel type de business te correspond.',
     },
     {
       num: '02',
-      title: 'Recevez votre stratégie personnalisée',
-      desc: 'Analyse de profil, modèles business adaptés (SaaS, freelance, e-commerce…) et plan 180 jours calibré sur votre choix.',
+      title: 'Recevez ton stratégie personnalisée',
+      desc: 'Analyse de profil, modèles business adaptés (SaaS, freelance, e-commerce…) et plan 180 jours calibré sur ton choix.',
     },
     {
       num: '03',
-      title: 'Avancez chaque jour avec votre coach IA',
-      desc: 'Micro-étapes concrètes, outils recommandés, mémoire de votre projet. Le coach connaît votre parcours jour J.',
+      title: 'Avance chaque jour avec ton coach IA',
+      desc: 'Micro-étapes concrètes, outils recommandés, mémoire de ton projet. Le coach connaît ton parcours jour J.',
     },
     {
       num: '04',
-      title: 'Construisez votre empire entrepreneurial',
-      desc: 'Cochez vos jours, débloquez Ma ville, suivez votre progression. De l\'idée aux premiers clients, sans vous perdre.',
+      title: 'Construis ton empire entrepreneurial',
+      desc: 'Cochez tes jours, débloquez Ma ville, suivez ta progression. De l\'idée aux premiers clients, sans tu perdre.',
     },
   ];
 
@@ -503,7 +503,7 @@ export function How({ onOpenQuiz }: LandingSectionsProps = {}) {
           <h2>De l&apos;idée à l&apos;action, étape par étape</h2>
           <p>
             Une expérience de lancement structurée — pas une simple conversation avec une IA.
-            Commencez gratuitement, testez Premium 24 h, avancez à votre rythme.
+            Commence gratuitement, testez Premium 24 h, avancez à ton rythme.
           </p>
         </div>
         <div className="landing-steps">
@@ -555,7 +555,7 @@ export function Pricing({ onOpenLogin, userEmail = null }: PricingProps = {}) {
           <span className="section-tag">Tarifs</span>
           <h2>Des formules simples et transparentes</h2>
           <p className="landing-section-intro landing-only-desktop">
-            Gratuit pour découvrir votre profil. Premium pour construire. Accelerator pour
+            Gratuit pour découvrir ton profil. Premium pour construire. Accelerator pour
             accélérer avec analyse et ressources.
           </p>
         </div>
@@ -654,12 +654,12 @@ export function FAQ() {
   const items = [
     {
       q: 'Comment tester Premium avant de payer ?',
-      a: 'Inscrivez-vous à la newsletter : vous recevez 24 h d\'accès Premium (coach IA, parcours complet, Ma ville) sans carte bancaire. À la fin, retour automatique au plan Gratuit. 1 essai par compte.',
+      a: 'Inscris-toi à la newsletter : tu recevez 24 h d\'accès Premium (coach IA, parcours complet, Ma ville) sans carte bancaire. À la fin, retour automatique au plan Gratuit. 1 essai par compte.',
       open: true,
     },
     {
       q: 'Que comprend le plan gratuit ?',
-      a: 'Le questionnaire entrepreneurial, l\'analyse de profil, les modèles business adaptés, un aperçu du parcours et votre espace personnel (vue d\'ensemble, profil, bloc-notes). Le coach IA, le parcours détaillé et Ma ville complète nécessitent Premium.',
+      a: 'Le questionnaire entrepreneurial, l\'analyse de profil, les modèles business adaptés, un aperçu du parcours et ton espace personnel (vue d\'ensemble, profil, bloc-notes). Le coach IA, le parcours détaillé et Ma ville complète nécessitent Premium.',
     },
     {
       q: 'Quelle différence entre Premium (29 €) et Accelerator (79 €) ?',
@@ -667,23 +667,23 @@ export function FAQ() {
     },
     {
       q: 'Comment fonctionne le parcours 180 jours ?',
-      a: '6 chapitres de 30 jours, calibrés sur votre modèle business (SaaS, freelance, e-commerce…). Chaque jour a une tâche concrète. Le coach IA se synchronise au jour J. Les 6 chapitres sont accessibles dès votre abonnement Premium.',
+      a: '6 chapitres de 30 jours, calibrés sur ton modèle business (SaaS, freelance, e-commerce…). Chaque jour a une tâche concrète. Le coach IA se synchronise au jour J. Les 6 chapitres sont accessibles dès ton abonnement Premium.',
     },
     {
       q: 'Qu\'est-ce que Ma ville ?',
-      a: 'Un espace gamifié en vue isométrique : créez votre avatar fondateur, gagnez de l\'XP, débloquez des bâtiments au fil de vos actions coach et parcours. C\'est votre empire visuel qui grandit avec votre projet.',
+      a: 'Un espace gamifié en vue isométrique : créez ton avatar fondateur, gagnez de l\'XP, débloquez des bâtiments au fil de tes actions coach et parcours. C\'est ton empire visuel qui grandit avec ton projet.',
     },
     {
       q: 'L\'IA remplace-t-elle un vrai mentor ?',
-      a: 'Non. BuildrAI complète l\'humain : disponible 24h/24 pour le quotidien (offre, pitch, pricing, lancement), pendant que vos mentors restent utiles pour le réseau et les gros choix stratégiques.',
+      a: 'Non. BuildrAI complète l\'humain : disponible 24h/24 pour le quotidien (offre, pitch, pricing, lancement), pendant que tes mentors restent utiles pour le réseau et les gros choix stratégiques.',
     },
     {
       q: 'Puis-je annuler à tout moment ?',
-      a: 'Absolument. Pas d\'engagement, pas de frais cachés. Annulez en un clic depuis votre espace client. Vous conservez l\'accès jusqu\'à la fin de la période payée.',
+      a: 'Absolument. Pas d\'engagement, pas de frais cachés. Annule en un clic depuis ton espace client. Tu conservez l\'accès jusqu\'à la fin de la période payée.',
     },
     {
       q: 'Mes données sont-elles en sécurité ?',
-      a: 'Vos données restent associées à votre compte. Vous pouvez gérer vos notes, votre profil et votre abonnement depuis votre espace personnel.',
+      a: 'Tes données restent associées à ton compte. Tu peux gérer tes notes, ton profil et ton abonnement depuis ton espace personnel.',
     },
   ];
 
@@ -737,9 +737,9 @@ export function CTA({ onOpenQuiz, userEmail = null }: CTAProps = {}) {
       <div className="container">
         <div className="cta-box landing-cta-box">
           <span className="section-tag">Prêt à lancer ?</span>
-          <h2>Passez de l&apos;idée à l&apos;action dès aujourd&apos;hui</h2>
+          <h2>Passe de l&apos;idée à l&apos;action dès aujourd&apos;hui</h2>
           <p className="landing-section-intro landing-only-desktop">
-            Créez votre plan personnalisé en 4 minutes, testez le coach IA Premium 24 h sans
+            Crée ton plan personnalisé en 4 minutes, testez le coach IA Premium 24 h sans
             carte bancaire, puis avancez jour après jour — sans engagement.
           </p>
           <div className="landing-cta-actions">
@@ -763,7 +763,7 @@ export function CTA({ onOpenQuiz, userEmail = null }: CTAProps = {}) {
             )}
           </div>
           <span className="cta-note landing-only-desktop">
-            Plan adapté à votre profil · Coach 24/7 · Parcours 180 jours · Sans engagement
+            Plan adapté à ton profil · Coach 24/7 · Parcours 180 jours · Sans engagement
           </span>
           {!userEmail && (
             <LandingNewsletter userEmail={userEmail} variant="compact" />
@@ -783,7 +783,7 @@ export function Footer() {
             <span className="logo-icon">◈</span>
             BuildrAI
           </a>
-          <p>Un parcours entrepreneurial structuré — du profil à l&apos;action, avec un coach IA à vos côtés.</p>
+          <p>Un parcours entrepreneurial structuré — du profil à l&apos;action, avec un coach IA à tes côtés.</p>
         </div>
         <div className="footer-links">
           <h4>Produit</h4>

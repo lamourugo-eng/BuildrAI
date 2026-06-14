@@ -86,11 +86,11 @@ function buildWelcomeMessage(
   parts.push(
     '',
     tier === 'beginner'
-      ? 'Où en êtes-vous ? Décrivez en mots simples ou cliquez « Continuer ».'
-      : 'Où en êtes-vous ? Décrivez votre avancement ou cliquez « Continuer ».',
+      ? 'Où en es-tu ? Décris en mots simples ou clique « Continuer ».'
+      : 'Où en es-tu ? Décris ton avancement ou clique « Continuer ».',
     tier === 'beginner'
-      ? `Votre plan jour par jour est aussi dans l'onglet « Mon plan ».`
-      : `Votre parcours jour par jour (${TOTAL_ROADMAP_DAYS} jours. 6 chapitres) est aussi dans l'onglet Parcours.`
+      ? `Ton plan jour par jour est aussi dans l'onglet « Mon plan ».`
+      : `Ton parcours jour par jour (${TOTAL_ROADMAP_DAYS} jours. 6 chapitres) est aussi dans l'onglet Parcours.`
   );
   return parts.join('\n');
 }
@@ -99,7 +99,7 @@ function buildResetWelcomeMessage(profile: QuizProfileSnapshot): string {
   const biz = businessProfiles[profile.topBusinessId];
   return `Nouveau départ sur ${profile.topBusinessName}.
 
-${biz.firstSteps[0] ? `On repart par : ${biz.firstSteps[0]}` : 'Décrivez où vous en êtes. On avance tout de suite.'}`;
+${biz.firstSteps[0] ? `On repart par : ${biz.firstSteps[0]}` : 'Décris où tu en es. On avance tout de suite.'}`;
 }
 
 function toDisplayMessages(stored: CoachMessage[]): Message[] {
@@ -377,7 +377,7 @@ export default function Coach({
     const ctx = consumeRoadmapCoachContext();
     if (!ctx) return;
 
-    const businessName = activeProfile?.topBusinessName ?? 'votre projet';
+    const businessName = activeProfile?.topBusinessName ?? 'ton projet';
     const welcome = buildRoadmapCoachWelcome(ctx, businessName);
     const now = new Date().toISOString();
 
@@ -487,7 +487,7 @@ export default function Coach({
       const assistantMessage: Message = { role: 'assistant', content: data.reply };
       const now = new Date().toISOString();
 
-      const businessName = activeProfile?.topBusinessName ?? 'votre projet';
+      const businessName = activeProfile?.topBusinessName ?? 'ton projet';
       const roadmapCtx = data.roadmapContext ?? activeRoadmapContext ?? roadmapPayload;
 
       if (data.memory?.messages) {
@@ -693,7 +693,7 @@ export default function Coach({
                 <span className="coach-thread-loading-dot" />
                 <span className="coach-thread-loading-dot" />
               </div>
-              <p>Chargement de votre session…</p>
+              <p>Chargement de ton session…</p>
             </div>
           ) : (
             messages.map((msg, i) => (
@@ -773,11 +773,11 @@ export default function Coach({
             <input
               type="text"
               className="coach-composer-input"
-              placeholder="Posez votre question ou décrivez votre avancement…"
+              placeholder="Pose ton question ou décrivez ton avancement…"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={loading || initializing || coachLimitReached}
-              aria-label="Votre message"
+              aria-label="Ton message"
             />
             <button
               type="submit"

@@ -22,7 +22,7 @@ export default function CoachPaywall({ loggedIn = false }: CoachPaywallProps) {
       <div className="coach-paywall-card">
         <div className="coach-paywall-glow" aria-hidden="true" />
         <span className="section-tag">Coach IA. Premium</span>
-        <h2>Débloquez votre coach personnel</h2>
+        <h2>Débloque ton coach personnel</h2>
         <p className="coach-paywall-price">
           {premiumPlan.monthly} €<small>/mois</small>
           <span className="coach-paywall-price-note">
@@ -30,15 +30,15 @@ export default function CoachPaywall({ loggedIn = false }: CoachPaywallProps) {
           </span>
         </p>
         <p>
-          Le coach IA est réservé aux abonnés Premium. Créez un compte gratuit pour découvrir
-          votre profil, puis passez à Premium quand vous êtes prêt à construire.
+          Le coach IA est réservé aux abonnés Premium. Crée un compte gratuit pour découvrir
+          ton profil, puis passez à Premium quand tu es prêt à construire.
         </p>
         <ul className="coach-paywall-features">
-          <li>Coach IA illimité. Mémoire de votre parcours</li>
+          <li>Coach IA illimité. Mémoire de ton parcours</li>
           <li>Tous les modèles business au choix (pas seulement le top 3 du quiz)</li>
           <li>Parcours complet sur 180 jours (6 chapitres), accessible dès l&apos;abonnement</li>
           <li>Plan d&apos;action en 8 étapes avec outils concrets</li>
-          <li>Recommandations adaptées à votre niveau tech et budget</li>
+          <li>Recommandations adaptées à ton niveau tech et budget</li>
         </ul>
         <div className="coach-paywall-actions">
           <Link href={subscribeHref} className="btn btn-primary btn-lg">

@@ -105,12 +105,12 @@ function ResourceSyncPanel({ businessId }: { businessId: BusinessId }) {
   }, [businessId]);
 
   return (
-    <section className="resource-sync-panel" aria-label="Lien avec votre parcours">
+    <section className="resource-sync-panel" aria-label="Lien avec ton parcours">
       <div className="resource-sync-head">
-        <span className="resource-sync-kicker">Synchronisé avec votre espace</span>
+        <span className="resource-sync-kicker">Synchronisé avec ton espace</span>
         <p>
-          Les ressources complètent votre <strong>parcours {TOTAL_ROADMAP_DAYS} jours</strong> et
-          votre <strong>coach en 8 phases</strong>. Pas un substitut.
+          Les ressources complètent ton <strong>parcours {TOTAL_ROADMAP_DAYS} jours</strong> et
+          ton <strong>coach en 8 phases</strong>. Pas un substitut.
         </p>
       </div>
       <div className="resource-sync-metrics">
@@ -267,7 +267,7 @@ function ResourceCard({ resource }: { resource: LibraryResource }) {
               <pre>{resource.template}</pre>
               {resource.copyable && (
                 <p className="lib-template-hint">
-                  Collez dans un document ou le coach IA. Complétez les [crochets], puis cochez
+                  Collez dans un document ou le coach IA. Complète les [crochets], puis cochez
                   le jour parcours correspondant.
                 </p>
               )}
@@ -370,10 +370,10 @@ export default function ResourceLibrary({
           <span className="resource-hub-empty-icon" aria-hidden="true">
             📚
           </span>
-          <h3>Commencez par définir votre profil</h3>
+          <h3>Commence par définir ton profil</h3>
           <p>
-            La bibliothèque s&apos;adapte à votre modèle business (freelance, SaaS, e-commerce…).
-            Faites le questionnaire pour débloquer vos ressources personnalisées.
+            La bibliothèque s&apos;adapte à ton modèle business (freelance, SaaS, e-commerce…).
+            Fais le questionnaire pour débloquer tes ressources personnalisées.
           </p>
           <Link href="/?quiz=1" className="btn btn-primary">
             Faire le questionnaire
@@ -398,7 +398,7 @@ export default function ResourceLibrary({
             </h2>
             <p>
               {resourceCount} outils expliqués clairement. Templates, scripts, prompts et plans
-              alignés sur votre parcours. Chaque ressource indique <strong>comment l&apos;utiliser</strong>,{' '}
+              alignés sur ton parcours. Chaque ressource indique <strong>comment l&apos;utiliser</strong>,{' '}
               <strong>combien de temps</strong> prévoir et <strong>où ça s&apos;inscrit</strong> dans le
               coach et le parcours.
             </p>

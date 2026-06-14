@@ -69,7 +69,7 @@ export async function GET(request: Request) {
     hint = formatStripeConfigError(missing);
   } else if (invalidPrices.length > 0) {
     hint =
-      'Les STRIPE_PRICE_* sur Vercel ne correspondent pas au mode live/test de STRIPE_SECRET_KEY. Relancez npm.cmd run stripe:sync, copiez les nouveaux price_... sur Vercel, puis redeploy.';
+      'Les STRIPE_PRICE_* sur Vercel ne correspondent pas au mode live/test de STRIPE_SECRET_KEY. Relance npm.cmd run stripe:sync, copiez les nouveaux price_... sur Vercel, puis redeploy.';
   }
 
   return NextResponse.json({

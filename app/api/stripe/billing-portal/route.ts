@@ -23,7 +23,7 @@ export async function POST() {
       return NextResponse.json(
         {
           error:
-            'Aucun abonnement Stripe trouvé pour ce compte. Si vous avez souscrit avec un autre email, contactez le support.',
+            'Aucun abonnement Stripe trouvé pour ce compte. Si tu as souscrit avec un autre email, contactez le support.',
         },
         { status: 404 }
       );
@@ -50,7 +50,7 @@ export async function POST() {
     return NextResponse.json(
       {
         error: isConfig
-          ? 'Portail Stripe non configuré. Activez le Customer Portal dans le Dashboard Stripe.'
+          ? 'Portail Stripe non configuré. Active le Customer Portal dans le Dashboard Stripe.'
           : message,
       },
       { status: isConfig ? 503 : 500 }

@@ -142,7 +142,7 @@ export function formatResumeDate(iso: string): string {
 }
 
 export function buildResumeWelcome(memory: CoachMemory): string {
-  const point = memory.progressPoint || 'avancer sur votre projet';
+  const point = memory.progressPoint || 'avancer sur ton projet';
   const actionBlock = memory.lastAction
     ? `\n\n➡️ Dernière action en cours : ${memory.lastAction}`
     : '';
@@ -154,9 +154,9 @@ export function buildResumeWelcome(memory: CoachMemory): string {
     ? `\n\n📁 ${memory.sessionSummary.slice(0, 280)}${memory.sessionSummary.length > 280 ? '…' : ''}`
     : '';
 
-  return `Content de vous revoir !${phaseBlock}
+  return `Content de te revoir !${phaseBlock}
 
 Dernière fois : ${point}.${actionBlock}${summaryBlock}
 
-Cliquez « Continuer » ou décrivez votre avancement.`;
+Clique « Continuer » ou décrivez ton avancement.`;
 }

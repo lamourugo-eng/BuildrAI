@@ -97,8 +97,8 @@ export default function AccountAnalytics({
         <span className="section-tag">Activité</span>
         <h2>Suivi d&apos;activité réservé aux abonnés</h2>
         <p className="account-panel-intro">
-          Visualisez votre régularité avec le coach, la progression de votre parcours sur 180 jours,
-          l&apos;évolution de votre ville et vos notes. En un seul endroit.
+          Visualisez ton régularité avec le coach, la progression de ton parcours sur 180 jours,
+          l&apos;évolution de ton ville et tes notes. En un seul endroit.
         </p>
 
         <div className="account-rewards-preview">
@@ -113,20 +113,20 @@ export default function AccountAnalytics({
             <p className="account-card-desc">
               {summary.quizCompletedAt
                 ? `Complété le ${new Date(summary.quizCompletedAt).toLocaleDateString('fr-FR')}`
-                : 'Non complété. Faites le quiz pour affiner votre profil.'}
+                : 'Non complété. Fais le quiz pour affiner ton profil.'}
               {summary.businessName ? `. Modèle : ${summary.businessName}` : ''}
             </p>
           </article>
           <ul className="account-rewards-earn-list">
             <li>Parcours premium. 180 jours (6 chapitres de 30 jours)</li>
             <li>Messages coach, sessions et série de régularité</li>
-            <li>Niveau de votre ville et phase coach (8 étapes)</li>
+            <li>Niveau de ton ville et phase coach (8 étapes)</li>
             <li>Graphique d&apos;activité sur 7 jours + bloc-notes</li>
           </ul>
         </div>
 
         <Link href="/subscribe?plan=starter&period=monthly" className="btn btn-primary">
-          S&apos;abonner pour suivre votre progression
+          S&apos;abonner pour suivre ta progression
         </Link>
       </div>
     );
@@ -135,9 +135,9 @@ export default function AccountAnalytics({
   return (
     <div className="account-panel">
       <span className="section-tag">Activité</span>
-      <h2>Votre engagement</h2>
+      <h2>Ton engagement</h2>
       <p className="account-panel-intro">
-        Coach, parcours 180 jours, ville entrepreneuriale et bloc-notes. Toutes vos actions
+        Coach, parcours 180 jours, ville entrepreneuriale et bloc-notes. Toutes tes actions
         {summary.businessName ? ` sur ${summary.businessName}` : ''} en un coup d&apos;œil.
       </p>
 
@@ -254,8 +254,8 @@ export default function AccountAnalytics({
             />
           </div>
           <p className="account-card-desc">
-            Niveau {summary.cityLevelId}. {summary.cityLevelName}. Votre quartier grandit avec
-            votre régularité et vos étapes franchies.
+            Niveau {summary.cityLevelId}. {summary.cityLevelName}. Ton quartier grandit avec
+            ton régularité et tes étapes franchies.
           </p>
           <Link href="/espace?section=ville" className="account-inline-link">
             Voir ma ville →
@@ -268,8 +268,8 @@ export default function AccountAnalytics({
           <h3>Bloc-notes</h3>
           <p className="account-card-desc">
             {summary.notepadChars > 0
-              ? `${summary.notepadChars} caractères enregistrés. Idées, contacts et décisions de vos sessions coach.`
-              : 'Aucune note pour le moment. Utilisez le bloc-notes dans le coach ou l’onglet dédié.'}
+              ? `${summary.notepadChars} caractères enregistrés. Idées, contacts et décisions de tes sessions coach.`
+              : 'Aucune note pour le moment. Utilise le bloc-notes dans le coach ou l’onglet dédié.'}
           </p>
           <Link href="/espace?section=blocnotes" className="account-inline-link">
             Ouvrir le bloc-notes →

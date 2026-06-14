@@ -45,7 +45,7 @@ const LEGAL_GUIDES: Record<BusinessId, BusinessLegalGuide> = {
     caution:
       'Évitez de mélanger compte perso et Stripe pro sans structure. Bloquant pour une revente. Propriété du code et du nom de domaine au nom de la société dès que possible.',
     accountantNote:
-      'Consultez un expert-comptable avant dépassement des plafonds micro. Bascule SASU souvent au bon moment entre 2k€ et 5k€ MRR selon charges.',
+      'Consulte un expert-comptable avant dépassement des plafonds micro. Bascule SASU souvent au bon moment entre 2k€ et 5k€ MRR selon charges.',
   },
   freelance: {
     headline: 'Freelance / services. Simplicité puis structure',
@@ -63,7 +63,7 @@ const LEGAL_GUIDES: Record<BusinessId, BusinessLegalGuide> = {
     ],
     caution:
       'Le portage ou micro convient au test ; dès missions > 6 mois avec le même client, structurez (EURL/SASU).',
-    accountantNote: 'Vérifiez le statut de non-salarié (pas de lien de subordination) sur missions longues.',
+    accountantNote: 'Vérifie le statut de non-salarié (pas de lien de subordination) sur missions longues.',
   },
   ecommerce: {
     headline: 'E-commerce. Stock, TVA et structure',
@@ -125,7 +125,7 @@ const LEGAL_GUIDES: Record<BusinessId, BusinessLegalGuide> = {
         pros: 'Éligibilité financements. Limites sur distribution profits',
       },
     ],
-    caution: 'Clarifiez statut dès le départ si vous visez label ESUS ou subventions.',
+    caution: 'Clarifiez statut dès le départ si tu visez label ESUS ou subventions.',
     accountantNote: 'Conseil juridique spécialisé ESS recommandé.',
   },
   consulting: {
@@ -184,7 +184,7 @@ const LEGAL_GUIDES: Record<BusinessId, BusinessLegalGuide> = {
 
 const EXIT_GUIDES: Record<BusinessId, BusinessExitGuide> = {
   saas: {
-    headline: 'Préparer la revente de votre SaaS (ou de vos actifs digitaux)',
+    headline: 'Préparer la revente de ton SaaS (ou de tes actifs digitaux)',
     resaleRelevant: true,
     valuationHint:
       'Micro-SaaS : souvent 2,5× à 5× l\'ARR (revenu récurrent annuel) selon croissance, churn et dépendance au fondateur. Fourchette indicative, pas une promesse.',
@@ -198,7 +198,7 @@ const EXIT_GUIDES: Record<BusinessId, BusinessExitGuide> = {
       'MRR / churn / CAC exportés 12 mois (Stripe + analytics)',
       'Contrats clients, CGU/CGV, politique confidentialité',
       'Nom de domaine + comptes au nom société',
-      'Documentation onboarding sans dépendance à vous seul',
+      'Documentation onboarding sans dépendance à toi seul',
     ],
   },
   marketplace: {
@@ -259,7 +259,7 @@ const EXIT_GUIDES: Record<BusinessId, BusinessExitGuide> = {
     assetChecklist: ['Impact metrics', 'Gouvernance', 'Financement public documenté'],
   },
   ofm: {
-    headline: 'Scaler votre agence OnlyFans Management',
+    headline: 'Scaler ton agence OnlyFans Management',
     resaleRelevant: false,
     valuationHint:
       'Actif = portefeuille modèles sous contrat + process + équipe chatters ; valorisation agence OFM si revenus récurrents commission.',
@@ -326,7 +326,7 @@ export function resolveSpecialDayKey(title: string): DayKey | null {
     return 'legal-diagnostic';
   }
   if (t.includes('comparer') && t.includes('statut')) return 'legal-compare';
-  if (t.includes('immatriculation') || t.includes('créer votre structure')) return 'legal-register';
+  if (t.includes('immatriculation') || t.includes('créer ton structure')) return 'legal-register';
   if (t.includes('contrats') || t.includes('cgv')) return 'legal-contracts';
   if (t.includes('conformité') || t.includes('rgpd')) return 'legal-compliance';
   if (t.includes('actifs numériques') || t.includes('actifs documentés')) return 'exit-assets';
@@ -351,7 +351,7 @@ export function buildLegalExitTasks(
         legal.recommended[1]
           ? `Statut cible à appliquer une fois le business monté : ${legal.recommended[1].form} (${legal.recommended[1].when})`
           : `Statut cible à appliquer plus tard : ${legal.recommended[0].form}`,
-        'Listez 2–3 déclencheurs concrets (ex. 1er client payant, 3 ventes/mois, besoin de facturer en société)',
+        'Liste 2–3 déclencheurs concrets (ex. 1er client payant, 3 ventes/mois, besoin de facturer en société)',
         `À garder en tête pour plus tard : ${legal.caution}`,
       ];
     case 'legal-compare':
@@ -361,7 +361,7 @@ export function buildLegalExitTasks(
       ]).slice(0, 5);
     case 'legal-register':
       return [
-        `Décidez du statut retenu (priorité : ${legal.recommended[1]?.form ?? legal.recommended[0].form})`,
+        `Décide du statut retenu (priorité : ${legal.recommended[1]?.form ?? legal.recommended[0].form})`,
         'Liste documents : pièce identité, justificatif domicile, déclaration non-condamnation',
         'Guichet unique INPI (guichet-entreprises.fr) ou expert-comptable pour SASU/SAS',
         'Ouvrez compte bancaire pro dès immatriculation reçue',
@@ -369,28 +369,28 @@ export function buildLegalExitTasks(
       ];
     case 'legal-contracts':
       return [
-        'Rédigez ou adaptez CGV/CGU + mentions légales sur votre site',
+        'Rédige ou adaptez CGV/CGU + mentions légales sur ton site',
         'Contrat type client / conditions abonnement (durée, résiliation, SLA si B2B)',
         'Clause propriété intellectuelle et confidentialité',
         businessId === 'saas'
-          ? 'Annexe RGPD / DPA si clients pro traitent des données via votre outil'
+          ? 'Annexe RGPD / DPA si clients pro traitent des données via ton outil'
           : 'Politique de confidentialité + cookies conformes',
-        'Faites relire par un professionnel si CA > 30k€/an',
+        'Fais relire par un professionnel si CA > 30k€/an',
       ];
     case 'legal-compliance':
       return [
         'Registre des traitements RGPD (même simple)',
         'Factures conformes (mentions obligatoires)',
-        'Assurance RC pro si pertinent à votre modèle',
+        'Assurance RC pro si pertinent à ton modèle',
         legal.caution,
         'Calendrier : date limite bascule statut si plafond micro approche',
       ];
     case 'exit-assets':
       if (!exit.resaleRelevant) {
         return [
-          'Documentez vos actifs clés (clients, process, IP) pour une reprise ou diversification',
-          'Listez ce qui a de la valeur sans vous (templates, SOP, listes)',
-          'Identifiez un scénario : scale vs transmission vs pivot',
+          'Documente tes actifs clés (clients, process, IP) pour une reprise ou diversification',
+          'Liste ce qui a de la valeur sans tu (templates, SOP, listes)',
+          'Identifie un scénario : scale vs transmission vs pivot',
           legal.accountantNote,
           'Bilan : que pourrait reprendre un acquéreur demain ?',
         ];
@@ -404,9 +404,9 @@ export function buildLegalExitTasks(
       if (!exit.resaleRelevant) {
         return [
           'Tableau de bord revenus / marge sur 6 mois',
-          'Identifiez vos 3 KPIs de valeur métier',
-          'Documentez croissance mois par mois',
-          'Préparez narratif « pourquoi ça marche »',
+          'Identifie tes 3 KPIs de valeur métier',
+          'Documente croissance mois par mois',
+          'Prépare narratif « pourquoi ça marche »',
           legal.accountantNote,
         ];
       }
@@ -420,8 +420,8 @@ export function buildLegalExitTasks(
           ]
         : [
             'Export revenus / marge par mois sur 12 mois',
-            'Identifiez top 20 % clients ou produits (Pareto)',
-            'Documentez croissance et saisonnalité',
+            'Identifie top 20 % clients ou produits (Pareto)',
+            'Documente croissance et saisonnalité',
             exit.valuationHint,
             `Canaux : ${exit.channels[0]}`,
           ];
@@ -429,16 +429,16 @@ export function buildLegalExitTasks(
       if (!exit.resaleRelevant) {
         return [
           'Dossier « reprise activité » : contrats, factures, process',
-          'Organisez Google Drive : Legal, Clients, Produit, Finances',
+          'Organise Google Drive : Legal, Clients, Produit, Finances',
           'Checklist transfert : ce qu\'un repreneur doit recevoir en J1',
           legal.accountantNote,
           'Timeline : dans 12 mois, que doit contenir ce dossier ?',
         ];
       }
       return [
-        'Créez dossier « Data room light » (Drive ou Notion)',
+        'Crée dossier « Data room light » (Drive ou Notion)',
         ...exit.assetChecklist.map((item) => `Inclure : ${item}`),
-        'Ajoutez FAQ interne : stack, fournisseurs, procédures',
+        'Ajoute FAQ interne : stack, fournisseurs, procédures',
         'Simulez : un acheteur a 2h. Que lit-il en premier ?',
         exit.valuationHint,
       ];
@@ -456,10 +456,10 @@ export function buildLegalExitTasks(
         `Objectif revente ou levée : horizon 18–36 mois (indicatif)`,
         `Canaux cibles : ${exit.channels.join('. ')}`,
         'Liste 5 améliorations produit/process qui augmentent la valorisation',
-        'Identifiez dépendance fondateur #1 et plan pour la réduire',
+        'Identifie dépendance fondateur #1 et plan pour la réduire',
         businessId === 'saas'
-          ? 'Rédigez 1 paragraphe « teaser » : problème, solution, MRR, croissance. Pour future annonce'
-          : 'Rédigez teaser 1 paragraphe pour future annonce de cession',
+          ? 'Rédige 1 paragraphe « teaser » : problème, solution, MRR, croissance. Pour future annonce'
+          : 'Rédige teaser 1 paragraphe pour future annonce de cession',
       ];
     default:
       return [];

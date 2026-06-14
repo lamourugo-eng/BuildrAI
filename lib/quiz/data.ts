@@ -69,7 +69,7 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
     name: 'SaaS',
     icon: '💻',
     description:
-      "Vous créez un logiciel en ligne que vos clients paient chaque mois. Deux voies possibles selon votre préférence : le B2B (vous vendez aux entreprises. Ex. Facturation, RH, gestion d'équipe) ou le B2C (vous vendez aux particuliers. Ex. Apps fitness, productivité, créativité). Dans les deux cas, l'abonnement génère des revenus récurrents et prévisibles. Le B2B vend souvent plus cher mais prend plus de temps ; le B2C peut aller plus vite mais demande plus de volume.",
+      "Tu crées un logiciel en ligne que tes clients paient chaque mois. Deux voies possibles selon ta préférence : le B2B (tu vends aux entreprises. Ex. Facturation, RH, gestion d'équipe) ou le B2C (tu vends aux particuliers. Ex. Apps fitness, productivité, créativité). Dans les deux cas, l'abonnement génère des revenus récurrents et prévisibles. Le B2B vend souvent plus cher mais prend plus de temps ; le B2C peut aller plus vite mais demande plus de volume.",
     traits: ['Réfléchi', 'Produit', 'Abonnement', 'Équipe'],
     examples: 'B2B : Pennylane, Slack. B2C : Duolingo, Canva',
     strengths: [
@@ -83,46 +83,46 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
       'Beaucoup de concurrence',
     ],
     firstSteps: [
-      'Clarifier avec votre coach le problème précis à résoudre et le type de client (B2B ou B2C)',
-      'Co-construire votre proposition de valeur et ce qui rend votre SaaS unique',
-      'Définir ensemble la première version concrète de votre offre (fonctionnalités, prix, promesse)',
+      'Clarifier avec ton coach le problème précis à résoudre et le type de client (B2B ou B2C)',
+      'Co-construire ton proposition de valeur et ce qui rend ton SaaS unique',
+      'Définir ensemble la première version concrète de ton offre (fonctionnalités, prix, promesse)',
     ],
     metrics: { cost: 'Moyen', revenue: '3-6 mois', scale: 'Très forte', autonomy: 'Équipe' },
     whyMatch:
-      'Vous aimez réfléchir, structurer et construire un produit avec des revenus réguliers.',
+      'Tu aimes réfléchir, structurer et construire un produit avec des revenus réguliers.',
   },
   freelance: {
     id: 'freelance',
     name: 'Freelance',
     icon: '🎯',
     description:
-      "Vous travaillez en indépendant et facturez vos missions au cas par cas : conseil, design, développement, rédaction… Vous êtes votre propre patron, sans salariés au départ. C'est le moyen le plus rapide de monétiser une compétence. Chaque heure travaillée se transforme en revenu. Moins scalable qu'un produit, mais très libre et peu coûteux à lancer.",
+      "Tu travailles en indépendant et factures tes missions au cas par cas : conseil, design, développement, rédaction… Tu es ton propre patron, sans salariés au départ. C'est le moyen le plus rapide de monétiser une compétence. Chaque heure travaillée se transforme en revenu. Moins scalable qu'un produit, mais très libre et peu coûteux à lancer.",
     traits: ['Libre', 'Expert', 'Souple', 'Solo'],
     examples: 'Consultant, designer, développeur',
     strengths: [
       'On peut commencer tout de suite',
-      'Vous décidez de tout',
-      'Plus vous travaillez, plus vous gagnez',
+      'Tu décides de tout',
+      'Plus tu travailles, plus tu gagnes',
     ],
     challenges: [
-      'Revenus limités par votre temps',
+      'Revenus limités par ton temps',
       'Il faut trouver des clients seul',
       'Parfois des mois plus difficiles',
     ],
     firstSteps: [
-      'Identifier avec votre coach votre expertise différenciante et votre client idéal',
+      'Identifier avec ton coach ton expertise différenciante et ton client idéal',
       'Formuler une offre claire : résultat promis, format de mission, fourchette de prix',
-      'Préparer votre premier pitch personnalisé pour vos premiers prospects',
+      'Préparer ton premier pitch personnalisé pour tes premiers prospects',
     ],
     metrics: { cost: 'Très faible', revenue: '1-2 mois', scale: 'Moyenne', autonomy: 'Totale' },
-    whyMatch: 'Vous voulez être libre et avancer à votre rythme, avec votre expertise.',
+    whyMatch: 'Tu veux être libre et avancer à ton rythme, avec ton expertise.',
   },
   ecommerce: {
     id: 'ecommerce',
     name: 'E-commerce',
     icon: '🛍️',
     description:
-      "Vous vendez des produits physiques ou digitaux directement aux particuliers via votre site ou des plateformes. Vous gérez la marque, le stock (ou les fournisseurs) et la relation client. On peut tester une idée produit vite avec une petite collection ou des précommandes. Convient aux profils créatifs qui aiment le contact direct avec leurs acheteurs.",
+      "Tu vends des produits physiques ou digitaux directement aux particuliers via ton site ou des plateformes. Tu gères la marque, le stock (ou les fournisseurs) et la relation client. On peut tester une idée produit vite avec une petite collection ou des précommandes. Convient aux profils créatifs qui aiment le contact direct avec leurs acheteurs.",
     traits: ['Créatif', 'Vente', 'Rapide', 'Marque'],
     examples: 'Mode, cosmétiques, produits de niche',
     strengths: [
@@ -136,25 +136,25 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
       'Concurrence sur les grandes plateformes',
     ],
     firstSteps: [
-      'Définir avec votre coach votre niche, votre client type et votre angle de marque',
-      'Structurer votre première gamme produit et votre promesse client',
+      'Définir avec ton coach ton niche, ton client type et ton angle de marque',
+      'Structurer ta première gamme produit et ton promesse client',
       'Construire un plan de lancement personnalisé (offre, prix, canal de vente)',
     ],
     metrics: { cost: 'Moyen', revenue: '2-4 mois', scale: 'Forte', autonomy: 'Souple' },
-    whyMatch: 'Vous êtes créatif et vous aimez aller vite pour lancer une marque.',
+    whyMatch: 'Tu es créatif et tu aimes aller vite pour lancer une marque.',
   },
   agency: {
     id: 'agency',
     name: 'Agence',
     icon: '🤝',
     description:
-      "Vous montez une équipe qui réalise des prestations pour des clients : site web, campagne marketing, recrutement, design… Chaque projet est facturé à part. Le premier client peut arriver vite grâce à votre réseau. La croissance passe surtout par la réputation et le bouche-à-oreille. Bien adapté si vous aimez le relationnel et mener des projets de A à Z.",
+      "Tu montes une équipe qui réalise des prestations pour des clients : site web, campagne marketing, recrutement, design… Chaque projet est facturé à part. Le premier client peut arriver vite grâce à ton réseau. La croissance passe surtout par la réputation et le bouche-à-oreille. Bien adapté si tu aimes le relationnel et mener des projets de A à Z.",
     traits: ['Contact', 'Équipe', 'Vente', 'Projets'],
     examples: 'Agence web, marketing, RH',
     strengths: [
       'Premier euro dès la première mission',
       'On grandit grâce à la réputation',
-      'Le relationnel est votre force',
+      'Le relationnel est ton force',
     ],
     challenges: [
       'Dépendance aux clients',
@@ -162,19 +162,19 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
       'Difficile de grandir sans embaucher',
     ],
     firstSteps: [
-      'Choisir avec votre coach une spécialisation (secteur + type de prestation)',
-      'Définir votre offre signature, votre process de delivery et votre pricing',
-      'Préparer votre stratégie pour signer vos 3 premiers clients cibles',
+      'Choisir avec ton coach une spécialisation (secteur + type de prestation)',
+      'Définir ton offre signature, ton process de delivery et ton pricing',
+      'Préparer ton stratégie pour signer tes 3 premiers clients cibles',
     ],
     metrics: { cost: 'Faible', revenue: '1-3 mois', scale: 'Moyenne', autonomy: 'Équipe' },
-    whyMatch: 'Vous aimez les gens et travailler en équipe sur des projets concrets.',
+    whyMatch: 'Tu aimes les gens et travailler en équipe sur des projets concrets.',
   },
   marketplace: {
     id: 'marketplace',
     name: 'Marketplace',
     icon: '🌐',
     description:
-      "Vous créez une plateforme qui met en relation deux types d'utilisateurs : ceux qui offrent un service/produit et ceux qui le cherchent (comme Airbnb, Uber ou Etsy). Vous prenez une commission sur chaque transaction. Le potentiel de croissance est énorme, mais au départ il faut résoudre le problème de la poule et l'œuf : attirer assez d'offre ET de demande. Pour les profils ambitieux et orientés réseau.",
+      "Tu crées une plateforme qui met en relation deux types d'utilisateurs : ceux qui offrent un service/produit et ceux qui le cherchent (comme Airbnb, Uber ou Etsy). Tu prends une commission sur chaque transaction. Le potentiel de croissance est énorme, mais au départ il faut résoudre le problème de la poule et l'œuf : attirer assez d'offre ET de demande. Pour les profils ambitieux et orientés réseau.",
     traits: ['Réseau', 'Grandir', 'Audace', 'Plateforme'],
     examples: 'Airbnb, Etsy, Doctolib',
     strengths: [
@@ -188,51 +188,51 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
       'Il faut inspirer confiance',
     ],
     firstSteps: [
-      'Identifier avec votre coach quel côté de la marketplace lancer en premier et pourquoi',
-      'Définir votre marché de départ (géographie, niche, proposition de valeur)',
-      'Structurer la confiance et l\'expérience utilisateur de vos premiers membres',
+      'Identifier avec ton coach quel côté de la marketplace lancer en premier et pourquoi',
+      'Définir ton marché de départ (géographie, niche, proposition de valeur)',
+      'Structurer la confiance et l\'expérience utilisateur de tes premiers membres',
     ],
     metrics: { cost: 'Élevé', revenue: '6-12 mois', scale: 'Exceptionnelle', autonomy: 'Réseau' },
-    whyMatch: 'Vous êtes audacieux et vous aimez connecter les gens.',
+    whyMatch: 'Tu es audacieux et tu aimes connecter les gens.',
   },
   impact: {
     id: 'impact',
     name: 'Impact / social',
     icon: '🌱',
     description:
-      "Votre activité répond à un problème social ou environnemental tout en étant rentable : recyclage, inclusion, éducation, santé accessible… Les clients achètent parce que le produit est utile ET parce qu'ils adhèrent à votre mission. La motivation est forte, mais il faut prouver que le modèle économique tient la route. Pas seulement l'impact.",
+      "Ton activité répond à un problème social ou environnemental tout en étant rentable : recyclage, inclusion, éducation, santé accessible… Les clients achètent parce que le produit est utile ET parce qu'ils adhèrent à ton mission. La motivation est forte, mais il faut prouver que le modèle économique tient la route. Pas seulement l'impact.",
     traits: ['Mission', 'Utile', 'Communauté', 'Sens'],
     examples: 'Recyclage, inclusion, éducation',
     strengths: [
       'Motivation très forte',
-      'Clients fidèles qui partagent vos valeurs',
+      'Clients fidèles qui partagent tes valeurs',
       'Aides et fonds dédiés existent',
     ],
     challenges: [
       'Trouver le bon équilibre impact / rentabilité',
-      'Bien expliquer votre mission',
+      'Bien expliquer ton mission',
       'Parfois plus lent au départ',
     ],
     firstSteps: [
-      "Clarifier avec votre coach l'impact visé et le modèle économique qui le soutient",
-      'Définir votre offre : qui paie, pour quoi, et comment l\'impact se mesure',
-      'Construire un plan de validation auprès de vos premiers bénéficiaires et clients',
+      "Clarifier avec ton coach l'impact visé et le modèle économique qui le soutient",
+      'Définir ton offre : qui paie, pour quoi, et comment l\'impact se mesure',
+      'Construire un plan de validation auprès de tes premiers bénéficiaires et clients',
     ],
     metrics: { cost: 'Variable', revenue: '3-6 mois', scale: 'Forte', autonomy: 'Mission' },
-    whyMatch: "Ce qui compte pour vous, c'est d'avoir un impact positif.",
+    whyMatch: "Ce qui compte pour toi, c'est d'avoir un impact positif.",
   },
   consulting: {
     id: 'consulting',
     name: 'Consulting',
     icon: '📊',
     description:
-      "Vous vendez votre expertise à des entreprises sur des sujets précis : stratégie, finance, organisation, digital… Pas besoin de créer un produit : vous facturez des missions ou des forfaits. Les marges peuvent être élevées dès le début si votre réputation est solide. Moins spectaculaire qu'une startup, mais plus stable et moins risqué. Parfait pour un profil méthodique.",
+      "Tu vends ton expertise à des entreprises sur des sujets précis : stratégie, finance, organisation, digital… Pas besoin de créer un produit : tu factures des missions ou des forfaits. Les marges peuvent être élevées dès le début si ta réputation est solide. Moins spectaculaire qu'une startup, mais plus stable et moins risqué. Parfait pour un profil méthodique.",
     traits: ['Expert', 'Méthode', 'Confiance', 'Précis'],
     examples: 'Stratégie, finance, organisation',
     strengths: [
       'Bonnes marges dès le début',
       'Pas besoin de créer un produit',
-      'La confiance protège votre activité',
+      'La confiance protège ton activité',
     ],
     challenges: [
       'Il faut se faire connaître',
@@ -240,19 +240,19 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
       'Revenus limités sans autre offre',
     ],
     firstSteps: [
-      'Identifier avec votre coach votre domaine d\'expertise et le problème business que vous résolvez',
+      'Identifier avec ton coach ton domaine d\'expertise et le problème business que tu résolvez',
       'Structurer 1 à 2 offres de conseil claires (résultat, durée, prix)',
-      'Préparer votre positionnement et votre approche pour convertir votre réseau',
+      'Préparer ton positionnement et ton approche pour convertir ton réseau',
     ],
     metrics: { cost: 'Très faible', revenue: '1-2 mois', scale: 'Moyenne', autonomy: 'Forte' },
-    whyMatch: 'Vous êtes rigoureux et prudent. Le conseil vous va bien.',
+    whyMatch: 'Tu es rigoureux et prudent. Le conseil te va bien.',
   },
   content: {
     id: 'content',
     name: 'Creator / média',
     icon: '🎬',
     description:
-      "Vous construisez une audience (YouTube, newsletter, podcast, réseaux sociaux) et la monétisez : formations, sponsoring, produits, abonnements. Vous êtes la « marque ». Le coût de départ est faible, mais les revenus mettent souvent 6 à 12 mois à décoller. Il faut publier régulièrement. Pour ceux qui aiment créer du contenu et se mettre en avant.",
+      "Tu construis une audience (YouTube, newsletter, podcast, réseaux sociaux) et la monétises : formations, sponsoring, produits, abonnements. Tu es la « marque ». Le coût de départ est faible, mais les revenus mettent souvent 6 à 12 mois à décoller. Il faut publier régulièrement. Pour ceux qui aiment créer du contenu et se mettre en avant.",
     traits: ['Créatif', 'Audience', 'Histoire', 'Solo'],
     examples: 'YouTube, newsletter, podcast, cours en ligne',
     strengths: [
@@ -266,19 +266,19 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
       'La visibilité change souvent',
     ],
     firstSteps: [
-      'Définir avec votre coach votre niche, votre audience cible et votre promesse éditoriale',
-      'Structurer votre ligne éditoriale et votre premier produit monétisable',
+      'Définir avec ton coach ton niche, ton audience cible et ton promesse éditoriale',
+      'Structurer ton ligne éditoriale et ton premier produit monétisable',
       'Construire un plan de publication et de conversion sur 30 jours',
     ],
     metrics: { cost: 'Très faible', revenue: '4-8 mois', scale: 'Forte', autonomy: 'Totale' },
-    whyMatch: 'Vous êtes créatif et vous aimez vous exprimer devant un public.',
+    whyMatch: 'Tu es créatif et tu aimes t\'exprimer devant un public.',
   },
   ofm: {
     id: 'ofm',
     name: 'OnlyFans Management (OFM)',
     icon: '🤝',
     description:
-      "Vous lancez ou développez une activité d'OnlyFans Management (OFM) : agence ou manager solo qui accompagne des modèles OnlyFans. Stratégie de contenu, acquisition d'abonnés, chatting, organisation ops et monétisation (abonnements, PPV, tips). Vous ne créez pas le contenu à leur place : vous structurez la croissance business pendant que le modèle garde le contrôle de son image et de ce qu'il publie.",
+      "Tu lances ou développes une activité d'OnlyFans Management (OFM) : agence ou manager solo qui accompagne des modèles OnlyFans. Stratégie de contenu, acquisition d'abonnés, chatting, organisation ops et monétisation (abonnements, PPV, tips). Tu ne crées pas le contenu à leur place : tu structures la croissance business pendant que le modèle garde le contrôle de son image et de ce qu'il publie.",
     traits: ['Professionnel', 'Management', 'OnlyFans', 'Relationnel'],
     examples: 'Agence OFM, manager solo 2–5 modèles OnlyFans, spécialiste chatting & acquisition',
     strengths: [
@@ -293,22 +293,22 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
       'Cadre légal et fiscal (contrats, TVA, conformité OnlyFans & RGPD)',
     ],
     firstSteps: [
-      'Formaliser votre cadre OFM : consentement, limites de contenu, partage des revenus, confidentialité',
-      'Définir votre niche de modèles OnlyFans et votre offre (chatting, acquisition, contenu, ops)',
+      'Formaliser ton cadre OFM : consentement, limites de contenu, partage des revenus, confidentialité',
+      'Définir ton niche de modèles OnlyFans et ton offre (chatting, acquisition, contenu, ops)',
       'Signer un contrat OFM clair avant tout management. Le modèle reste décisionnaire',
     ],
     metrics: { cost: 'Faible', revenue: '2-4 mois', scale: 'Forte', autonomy: 'Équipe' },
     whyMatch:
-      'Vous voulez structurer une activité OnlyFans Management professionnelle, avec éthique et transparence.',
+      'Tu veux structurer une activité OnlyFans Management professionnelle, avec éthique et transparence.',
   },
 };
 
 export const dimensionLabels = [
   { key: 'risk', label: 'Rapport au risque', values: ['J\'ose', 'Équilibré', 'Prudent'] },
   { key: 'work', label: 'Façon de travailler', values: ['Seul', 'Équipe', 'Réseau'] },
-  { key: 'motivation', label: 'Ce qui vous motive', values: ['Créer', 'Résoudre', 'Aider'] },
-  { key: 'pace', label: 'Votre rythme', values: ['Rapide', 'Étape par étape', 'Souple'] },
-  { key: 'strength', label: 'Votre force', values: ['Contact & vente', 'Technique', 'Créatif'] },
+  { key: 'motivation', label: 'Ce qui te motive', values: ['Créer', 'Résoudre', 'Aider'] },
+  { key: 'pace', label: 'Ton rythme', values: ['Rapide', 'Étape par étape', 'Souple'] },
+  { key: 'strength', label: 'Ta force', values: ['Contact & vente', 'Technique', 'Créatif'] },
   { key: 'model', label: 'Type de revenus', values: ['Chaque mois', 'Par mission', 'En volume'] },
   { key: 'investment', label: 'Budget de lancement', values: ['Budget serré', 'Budget modéré', 'Budget confortable'] },
   { key: 'entrepreneurial', label: 'Niveau entrepreneurial', values: ['Débutant', 'Intermédiaire', 'Expérimenté'] },
@@ -320,43 +320,43 @@ export const levelSummaries: Record<
   { label: string; desc: string }[]
 > = {
   entrepreneurial: [
-    { label: 'Débutant', desc: 'Vous découvrez l\'entrepreneuriat ou n\'avez pas encore lancé de projet.' },
-    { label: 'Intermédiaire', desc: 'Vous avez déjà testé des idées, side-projects ou petites activités.' },
-    { label: 'Expérimenté', desc: 'Vous avez déjà lancé ou fait tourner un business.' },
+    { label: 'Débutant', desc: 'Tu découvres l\'entrepreneuriat ou n\'as pas encore lancé de projet.' },
+    { label: 'Intermédiaire', desc: 'Tu as déjà testé des idées, side-projects ou petites activités.' },
+    { label: 'Expérimenté', desc: 'Tu as déjà lancé ou fait tourner un business.' },
   ],
   tech: [
-    { label: 'Débutant', desc: 'Peu à l\'aise avec l\'informatique. Vous préférez des outils simples et guidés.' },
+    { label: 'Débutant', desc: 'Peu à l\'aise avec l\'informatique. Tu préférez des outils simples et guidés.' },
     { label: 'Intermédiaire', desc: 'À l\'aise au quotidien : sites, apps, réseaux sociaux, outils en ligne.' },
-    { label: 'Avancé', desc: 'Bon niveau technique. Vous codez, automatisez ou configurez des systèmes.' },
+    { label: 'Avancé', desc: 'Bon niveau technique. Tu codez, automatisez ou configurez des systèmes.' },
   ],
 };
 
 export const investmentSummaries: { label: string; desc: string }[] = [
   {
     label: 'Budget serré',
-    desc: 'Moins de 100 €. Vous lancez avec le strict minimum : outils gratuits, validation rapide, croissance organique.',
+    desc: 'Moins de 100 €. Tu lances avec le strict minimum : outils gratuits, validation rapide, croissance organique.',
   },
   {
     label: 'Budget modéré',
-    desc: '100 à 1 000 €. Vous pouvez investir progressivement : nom de domaine, site simple, premiers outils ou pub ciblée.',
+    desc: '100 à 1 000 €. Tu peux investir progressivement : nom de domaine, site simple, premiers outils ou pub ciblée.',
   },
   {
     label: 'Budget confortable',
-    desc: 'Plus de 1 000 €. Vous disposez d\'un budget pour accélérer : produit, technique, stock ou marketing dès le départ.',
+    desc: 'Plus de 1 000 €. Tu disposes d\'un budget pour accélérer : produit, technique, stock ou marketing dès le départ.',
   },
 ];
 
 export const quizQuestions: QuizQuestion[] = [
   {
-    question: 'Face au risque, vous êtes plutôt…',
+    question: 'Face au risque, tu es plutôt…',
     options: [
-      { icon: '🚀', label: 'J\'ose beaucoup', desc: 'J\'aime viser grand et tenter des choses nouvelles', scores: { marketplace: 3, ecommerce: 2, saas: 1 } },
+      { icon: '🚀', label: 'J\'ose beaucoup', desc: 'J\'aime viser grand et tenter de nouvelles choses', scores: { marketplace: 3, ecommerce: 2, saas: 1 } },
       { icon: '⚖️', label: 'Équilibré', desc: 'Je réfléchis avant de me lancer', scores: { saas: 2, agency: 2, consulting: 1 } },
       { icon: '🛡️', label: 'Prudent', desc: 'J\'avance petit à petit, sans tout risquer', scores: { consulting: 3, freelance: 2, content: 1 } },
     ],
   },
   {
-    question: 'Vous préférez travailler…',
+    question: 'Tu préfères travailler…',
     options: [
       { icon: '🧘', label: 'Seul', desc: 'Je décide de tout moi-même', scores: { freelance: 3, content: 2, consulting: 1 } },
       { icon: '👥', label: 'En petite équipe', desc: 'Avec quelques personnes de confiance', scores: { saas: 2, agency: 3, impact: 1 } },
@@ -364,7 +364,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
   },
   {
-    question: 'Ce qui vous motive le plus…',
+    question: 'Ce qui te motive le plus…',
     options: [
       { icon: '💡', label: 'Créer du nouveau', desc: 'Imaginer des produits ou des expériences', scores: { ecommerce: 2, content: 2, saas: 2 } },
       { icon: '🔧', label: 'Résoudre un problème', desc: 'Apporter des solutions concrètes', scores: { saas: 3, consulting: 2, agency: 1 } },
@@ -372,7 +372,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
   },
   {
-    question: 'Votre rythme idéal…',
+    question: 'Ton rythme idéal…',
     options: [
       { icon: '⚡', label: 'Rapide', desc: 'Tester vite, corriger, avancer', scores: { ecommerce: 3, marketplace: 2, content: 1 } },
       { icon: '📈', label: 'Étape par étape', desc: 'Construire sur le long terme, bien organisé', scores: { saas: 3, consulting: 2, agency: 1 } },
@@ -380,7 +380,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
   },
   {
-    question: 'Votre plus grande force…',
+    question: 'Ton plus grande force…',
     options: [
       { icon: '🗣️', label: 'Contact & vente', desc: 'Convaincre, négocier, créer des liens', scores: { agency: 3, ofm: 2, marketplace: 2, consulting: 1 } },
       { icon: '⚙️', label: 'Technique', desc: 'Construire, améliorer, automatiser', scores: { saas: 3, ecommerce: 1, freelance: 1 } },
@@ -388,7 +388,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
   },
   {
-    question: 'Pour gagner de l\'argent, vous préférez…',
+    question: 'Pour gagner de l\'argent, tu préférez…',
     options: [
       { icon: '🔄', label: 'Chaque mois (abonnement)', desc: 'Des revenus réguliers et prévisibles', scores: { saas: 3, content: 1, agency: 1 } },
       { icon: '💼', label: 'Par mission ou projet', desc: 'Facturer au temps ou à la prestation', scores: { freelance: 3, ofm: 2, consulting: 2, agency: 2 } },
@@ -396,7 +396,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
   },
   {
-    question: 'Quel budget pouvez-vous consacrer au lancement ?',
+    question: 'Quel budget peux-tu consacrer au lancement ?',
     levelDimension: 'investment',
     options: [
       {
@@ -420,7 +420,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
   },
   {
-    question: 'Votre niveau entrepreneurial…',
+    question: 'Ton niveau entrepreneurial…',
     levelDimension: 'entrepreneurial',
     options: [
       { icon: '🌱', label: 'Débutant', desc: 'Je découvre ou je n\'ai jamais vraiment lancé de projet', scores: { consulting: 2, freelance: 2, content: 2, ofm: 1 } },
@@ -429,7 +429,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
   },
   {
-    question: 'Votre niveau avec l\'informatique…',
+    question: 'Ton niveau avec l\'informatique…',
     levelDimension: 'tech',
     options: [
       { icon: '📱', label: 'Débutant', desc: 'Je débute. J\'ai besoin d\'outils simples et bien guidés', scores: { agency: 2, ofm: 2, consulting: 2, content: 2 } },
@@ -445,32 +445,32 @@ export const profileLabels: Record<
 > = {
   pioneer: {
     label: 'Aventurier',
-    desc: 'Vous visez grand, vous osez et vous n\'avez pas peur de l\'inconnu.',
+    desc: 'Tu vises grand, tu oses et tu n\'as pas peur de l\'inconnu.',
     traits: ['Visionnaire', 'Ambitieux', 'Tenace', 'Veut grandir'],
   },
   builder: {
     label: 'Bâtisseur organisé',
-    desc: 'Vous avancez avec méthode et vous pensez long terme.',
+    desc: 'Tu avances avec méthode et tu penses long terme.',
     traits: ['Réfléchi', 'Organisé', 'Patient', 'Orienté produit'],
   },
   artisan: {
     label: 'Indépendant expert',
-    desc: 'Vous travaillez bien seul et vous misez sur votre savoir-faire.',
+    desc: 'Tu travailles bien seul et tu mises sur ton savoir-faire.',
     traits: ['Libre', 'Expert', 'Pratique', 'Souple'],
   },
   connector: {
     label: 'Façonnier de liens',
-    desc: 'Votre force : rassembler les bonnes personnes et créer des opportunités.',
+    desc: 'Ta force : rassembler les bonnes personnes et créer des opportunités.',
     traits: ['À l\'écoute', 'Sociable', 'Bon négociateur', 'Esprit d\'équipe'],
   },
   creator: {
     label: 'Créateur',
-    desc: 'Votre énergie vient de la création, des idées et de votre image.',
+    desc: 'Ton énergie vient de la création, des idées et de ton image.',
     traits: ['Créatif', 'Expressif', 'Intuitif', 'Proche du public'],
   },
   changemaker: {
     label: 'Engagé',
-    desc: 'Vous entreprenez surtout pour avoir un impact positif et du sens.',
+    desc: 'Tu entrepreneus surtout pour avoir un impact positif et du sens.',
     traits: ['Engagé', 'À l\'écoute', 'Visionnaire', 'Guidé par une mission'],
   },
 };

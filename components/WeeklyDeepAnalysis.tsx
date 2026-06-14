@@ -339,7 +339,7 @@ export default function WeeklyDeepAnalysis({
 
     try {
       const snapshot = loadQuizProfile();
-      if (!snapshot) throw new Error('Complétez le questionnaire pour générer une analyse.');
+      if (!snapshot) throw new Error('Complète le questionnaire pour générer une analyse.');
 
       const activeId = (loadChosenBusiness() ?? snapshot.topBusinessId) as BusinessId;
       const activeProfile = buildActiveCoachProfile(snapshot, activeId);
@@ -401,8 +401,8 @@ export default function WeeklyDeepAnalysis({
             <span className="weekly-hub-kicker">Business Accelerator</span>
             <h2>Analyse hebdomadaire approfondie</h2>
             <p>
-              Un bilan stratégique généré chaque semaine à partir de votre activité coach, de votre
-              parcours et de votre profil entrepreneurial.
+              Un bilan stratégique généré chaque semaine à partir de ton activité coach, de ton
+              parcours et de ton profil entrepreneurial.
             </p>
           </div>
         </header>
@@ -445,17 +445,17 @@ export default function WeeklyDeepAnalysis({
           <FeatureCard
             icon="🧠"
             title="IA stratégique"
-            desc="Synthèse personnalisée basée sur vos échanges coach et votre progression."
+            desc="Synthèse personnalisée basée sur tes échanges coach et ta progression."
           />
           <FeatureCard
             icon="📈"
             title="Indicateurs clés"
-            desc="Visualisez votre momentum et votre régularité semaine après semaine."
+            desc="Visualisez ton momentum et ton régularité semaine après semaine."
           />
           <FeatureCard
             icon="⚠️"
             title="Alertes précoces"
-            desc="Identifiez les blocages avant qu'ils ne freinent votre lancement."
+            desc="Identifie les blocages avant qu'ils ne freinent ton lancement."
           />
         </div>
         <Link href="/subscribe?plan=growth&period=monthly" className="btn btn-primary btn-lg">
@@ -518,7 +518,7 @@ export default function WeeklyDeepAnalysis({
           <div className="weekly-generate-copy">
             <strong>Nouvelle analyse disponible</strong>
             <p>
-              Votre activité de la semaine ({weekLabel}) est prête à être analysée par l&apos;IA.
+              Ton activité de la semaine ({weekLabel}) est prête à être analysée par l&apos;IA.
             </p>
           </div>
           <button
@@ -542,7 +542,7 @@ export default function WeeklyDeepAnalysis({
       {loading && !current && (
         <section className="weekly-loading" aria-live="polite">
           <div className="weekly-loading-ring" />
-          <p>Construction de votre bilan hebdomadaire…</p>
+          <p>Construction de ton bilan hebdomadaire…</p>
         </section>
       )}
 

@@ -246,7 +246,7 @@ function ideaGrid(businessId: BusinessId): string[] {
   return [
     `Problème précis : quel pain point pour ${ctx.clientType} ?`,
     `Client cible : qui paie, budget, urgence ?`,
-    `Solution : en quoi votre ${ctx.offerType} est différent ?`,
+    `Solution : en quoi ton ${ctx.offerType} est différent ?`,
     `Monétisation : prix, récurrence, marge ?`,
     `Acquisition : ${ctx.channel}. Coût réaliste ?`,
     `Validation : preuve en 7 jours (5 conversations) ?`,
@@ -284,7 +284,7 @@ function buildLibrary(businessId: BusinessId): LibraryCategory[] {
           title: 'Liste de 50 modèles de business',
           description: `50 modèles classés. Priorité ${ctx.label} et variantes proches.`,
           howToUse:
-            'Parcourez la liste en 15 min. Retenez 3 modèles qui vous parlent, puis creusez un seul avec la grille d’analyse.',
+            'Parcourez la liste en 15 min. Retenez 3 modèles qui tu parlent, puis creusez un seul avec la grille d’analyse.',
           timeEstimate: '15–20 min',
           coachPhase: 1,
           roadmapChapter: 1,
@@ -295,7 +295,7 @@ function buildLibrary(businessId: BusinessId): LibraryCategory[] {
           title: 'Exemples de niches rentables',
           description: `Niches adaptées au modèle ${biz.name}.`,
           howToUse:
-            'Choisissez une niche où vous avez un avantage (réseau, métier, passion). Discutez-en avec le coach pour la valider.',
+            'Choisis une niche où tu as un avantage (réseau, métier, passion). Discutez-en avec le coach pour la valider.',
           timeEstimate: '20 min',
           coachPhase: 2,
           roadmapChapter: 1,
@@ -304,9 +304,9 @@ function buildLibrary(businessId: BusinessId): LibraryCategory[] {
         {
           id: 'grid',
           title: 'Grille pour analyser une idée',
-          description: 'Évaluez votre idée en 8 critères avant de vous lancer.',
+          description: 'Évaluez ton idée en 8 critères avant de toi lancer.',
           howToUse:
-            'Répondez par écrit à chaque ligne. Si le score global est faible, pivotez un critère à la fois. Ne abandonnez pas sans tester.',
+            'Réponds par écrit à chaque ligne. Si le score global est faible, pivotez un critère à la fois. Ne abandonnez pas sans tester.',
           timeEstimate: '30–45 min',
           coachPhase: 1,
           roadmapChapter: 1,
@@ -317,7 +317,7 @@ function buildLibrary(businessId: BusinessId): LibraryCategory[] {
           title: 'Checklist « Est-ce que mon idée vaut le coup ? »',
           description: '8 validations minimum avant d\'investir temps et argent.',
           howToUse:
-            'Cochez honnêtement. Moins de 5/8 ? Retournez sur la grille ou faites 5 conversations clients avant de continuer.',
+            'Cochez honnêtement. Moins de 5/8 ? Retourne sur la grille ou faites 5 conversations clients avant de continuer.',
           timeEstimate: '10 min',
           coachPhase: 1,
           roadmapChapter: 1,
@@ -328,7 +328,7 @@ function buildLibrary(businessId: BusinessId): LibraryCategory[] {
           title: 'Plan validation 7 jours',
           description: 'Semaine type pour valider une idée sans construire un produit complet.',
           howToUse:
-            'Suivez un jour à la fois. Notez les retours dans votre bloc-notes, puis partagez-les au coach le jour 7.',
+            'Suis un jour à la fois. Note les retours dans ton bloc-notes, puis partagez-les au coach le jour 7.',
           timeEstimate: '7 jours. 30 min/jour',
           coachPhase: 2,
           roadmapChapter: 1,
@@ -354,7 +354,7 @@ function buildLibrary(businessId: BusinessId): LibraryCategory[] {
           title: 'Template de page de vente',
           description: `Structure landing page pour ${ctx.label}.`,
           howToUse:
-            'Copiez le template, remplissez chaque section, publiez sur Carrd/Notion/Webflow. Demandez au coach de relire votre hero et CTA.',
+            'Copie le template, remplissez chaque section, publiez sur Carrd/Notion/Webflow. Demande au coach de relire ton hero et CTA.',
           timeEstimate: '1–2 h',
           coachPhase: 5,
           roadmapChapter: 1,
@@ -387,7 +387,7 @@ Réserver un appel / Commander / S'inscrire`,
           title: 'Script pour contacter des clients',
           description: `Script d'approche pour ${ctx.channel}.`,
           howToUse:
-            'Personnalisez la 2e phrase pour chaque contact. Envoyez 5 messages par jour, notez les réponses dans le tableau KPI.',
+            'Personnalise la 2e phrase pour chaque contact. Envoie 5 messages par jour, notez les réponses dans le tableau KPI.',
           timeEstimate: '20 min / batch',
           coachPhase: 7,
           roadmapChapter: 2,
@@ -398,11 +398,11 @@ Je m'appelle [Nom] et j'aide ${ctx.clientType} à [résultat concret lié à ${c
 
 J'ai vu que [observation personnalisée sur leur profil / entreprise].
 
-Est-ce que [problème précis] fait partie de vos priorités en ce moment ?
+Est-ce que [problème précis] fait partie de tes priorités en ce moment ?
 
 Si oui, je peux partager [livrable gratuit : audit, checklist, démo] en 15 min. Sans engagement.
 
-Bien à vous,
+Bien à toi,
 [Signature]`,
         },
         {
@@ -410,7 +410,7 @@ Bien à vous,
           title: 'Modèles d\'emails',
           description: '3 emails clés : premier contact, relance, closing.',
           howToUse:
-            'Utilisez l’email 1 pour un premier contact froid. Relance uniquement si pas de réponse sous 72 h. Closing après un échange positif.',
+            'Utilise l’email 1 pour un premier contact froid. Relance uniquement si pas de réponse sous 72 h. Closing après un échange positif.',
           timeEstimate: '30 min',
           coachPhase: 7,
           roadmapChapter: 2,
@@ -433,7 +433,7 @@ Objet : Prochaine étape. [offre]
 
 Bonjour [Prénom],
 Suite à notre échange : [résumé besoin].
-Je vous propose [offre ${ctx.offerType}] à [prix].
+Je tu propose [offre ${ctx.offerType}] à [prix].
 Lien / calendrier : [URL]`,
         },
         {
@@ -441,7 +441,7 @@ Lien / calendrier : [URL]`,
           title: 'Scripts LinkedIn / Instagram',
           description: `Messages DM et posts pour ${ctx.channel}.`,
           howToUse:
-            'Commencez par 5 DM personnalisés. Publiez 1 post « 3 erreurs » par semaine pour crédibiliser votre expertise.',
+            'Commence par 5 DM personnalisés. Publie 1 post « 3 erreurs » par semaine pour crédibiliser ton expertise.',
           timeEstimate: '45 min / semaine',
           coachPhase: 7,
           roadmapChapter: 2,
@@ -460,22 +460,22 @@ J'ai analysé [X] ${ctx.clientType}.
 1. [Erreur]
 2. [Erreur]
 3. [Erreur]
-→ La solution : [votre approche ${ctx.label}]`,
+→ La solution : [ton approche ${ctx.label}]`,
         },
         {
           id: 'client-survey',
           title: 'Questionnaire client',
-          description: 'Validez le besoin avant de construire l\'offre.',
+          description: 'Valide le besoin avant de construire l\'offre.',
           howToUse:
-            'Posez ces questions en appel de 20 min (pas par email). Notez les réponses. Le coach peut vous aider à en tirer une offre.',
+            'Pose ces questions en appel de 20 min (pas par email). Note les réponses. Le coach peut tu aider à en tirer une offre.',
           timeEstimate: '20 min / appel',
           coachPhase: 2,
           roadmapChapter: 1,
           copyable: true,
           template: `Questionnaire découverte. ${biz.name}
 
-1. Décrivez votre situation actuelle (contexte, taille, objectif)
-2. Quel est votre problème #1 aujourd'hui ?
+1. Décris ton situation actuelle (contexte, taille, objectif)
+2. Quel est ton problème #1 aujourd'hui ?
 3. Qu'avez-vous déjà essayé ? Résultat ?
 4. Si résolu, qu'est-ce que ça changerait (chiffre / temps / stress) ?
 5. Budget ou enveloppe envisagée ?
@@ -488,9 +488,9 @@ J'ai analysé [X] ${ctx.clientType}.
         {
           id: 'pricing',
           title: 'Grille tarifaire (2–3 formules)',
-          description: `Structurer vos prix pour ${ctx.offerType}.`,
+          description: `Structurer tes prix pour ${ctx.offerType}.`,
           howToUse:
-            'Remplissez les 3 colonnes. Gardez une formule d’entrée accessible et une premium crédible. Validez avec le coach phase 6.',
+            'Remplissez les 3 colonnes. Gardez une formule d’entrée accessible et une premium crédible. Valide avec le coach phase 6.',
           timeEstimate: '45 min',
           coachPhase: 6,
           roadmapChapter: 2,
@@ -506,7 +506,7 @@ J'ai analysé [X] ${ctx.clientType}.
 | Délai | | | |
 | Argument #1 | | | |
 
-Règle : le cœur de gamme doit être celui que vous voulez vendre le plus.
+Règle : le cœur de gamme doit être celui que tu veux vendre le plus.
 Canal principal : ${ctx.channel}`,
         },
         {
@@ -541,7 +541,7 @@ Canal principal : ${ctx.channel}`,
           title: 'Prompt. Trouver des idées de contenu',
           description: `Générer des idées de posts pour ${ctx.label}.`,
           howToUse:
-            'Copiez dans ChatGPT ou demandez au coach « adapte ce prompt à ma niche ». Sélectionnez 5 idées, planifiez-les sur 2 semaines.',
+            'Copie dans ChatGPT ou demandez au coach « adapte ce prompt à ma niche ». Sélectionne 5 idées, planifiez-les sur 2 semaines.',
           timeEstimate: '15 min',
           coachPhase: 7,
           roadmapChapter: 3,
@@ -563,14 +563,14 @@ Contexte niche : ${ctx.nicheExamples[0]}.`,
           title: 'Prompt. Analyser un marché',
           description: 'Étude de marché rapide avant de lancer.',
           howToUse:
-            'Complétez niche et zone, lancez le prompt, puis vérifiez 3 concurrents manuellement sur Google.',
+            'Complète niche et zone, lancez le prompt, puis vérifiez 3 concurrents manuellement sur Google.',
           timeEstimate: '30 min',
           coachPhase: 1,
           roadmapChapter: 1,
           copyable: true,
           template: `Analyse le marché pour une offre ${ctx.label} ciblant ${ctx.clientType}.
 
-Niche : [votre niche]
+Niche : [ton niche]
 Zone : [pays / ville / online]
 
 Structure ta réponse :
@@ -639,9 +639,9 @@ Ton : professionnel, concret, pas de jargon.`,
         {
           id: 'prompt-coach',
           title: 'Prompt. Travailler avec BuildrAI Coach',
-          description: 'Demandez au coach d’adapter n’importe quelle ressource à votre cas.',
+          description: 'Demande au coach d’adapter n’importe quelle ressource à ton cas.',
           howToUse:
-            'Copiez ce texte dans l’onglet Coach IA (Premium). Remplacez [RESSOURCE] par ce que vous venez d’utiliser ici.',
+            'Copie ce texte dans l’onglet Coach IA (Premium). Remplacez [RESSOURCE] par ce que tu venez d’utiliser ici.',
           timeEstimate: '5 min',
           coachPhase: 1,
           copyable: true,
@@ -661,7 +661,7 @@ Adapte cette ressource à MA situation concrète :
           title: 'Prompt. Débloquer un jour du parcours',
           description: 'Obtenir un plan d’action détaillé pour un jour précis du parcours premium.',
           howToUse:
-            'Remplacez J12 par votre jour actuel (visible dans Parcours). Collez dans le coach. Ou cliquez « Discuter » depuis le parcours.',
+            'Remplacez J12 par ton jour actuel (visible dans Parcours). Collez dans le coach. Ou clique « Discuter » depuis le parcours.',
           timeEstimate: '5 min',
           roadmapChapter: 1,
           copyable: true,
@@ -669,7 +669,7 @@ Adapte cette ressource à MA situation concrète :
 
 Explique-moi concrètement :
 1. Comment réaliser les actions du jour étape par étape
-2. Un exemple adapté à mon niveau tech : ${'[votre niveau]'}
+2. Un exemple adapté à mon niveau tech : ${'[ton niveau]'}
 3. Les erreurs fréquentes à éviter
 4. Un livrable copy-paste si pertinent (script, texte, checklist)
 
@@ -687,7 +687,7 @@ Budget de lancement : [serré / moyen / confortable]`,
           title: 'Plan « Trouver ses 10 premiers clients »',
           description: `Plan 14 jours pour ${ctx.label}.`,
           howToUse:
-            'Suivez le calendrier jour par jour. Utilisez les scripts de l’étape Lancer. Objectif minimum : 2 clients signés.',
+            'Suis le calendrier jour par jour. Utilise les scripts de l’étape Lancer. Objectif minimum : 2 clients signés.',
           timeEstimate: '14 jours',
           coachPhase: 8,
           roadmapChapter: 2,
@@ -709,7 +709,7 @@ Budget de lancement : [serré / moyen / confortable]`,
           title: 'Méthode pour créer du contenu',
           description: `Système contenu adapté à ${ctx.channel}.`,
           howToUse:
-            'Choisissez 3 piliers, planifiez 3 posts/semaine dans un doc. Recyclez 1 contenu long en 5 posts courts.',
+            'Choisis 3 piliers, planifiez 3 posts/semaine dans un doc. Recyclez 1 contenu long en 5 posts courts.',
           timeEstimate: '2 h setup + 1 h/sem',
           coachPhase: 7,
           roadmapChapter: 3,
@@ -727,7 +727,7 @@ Budget de lancement : [serré / moyen / confortable]`,
           title: 'Tableau de suivi des objectifs',
           description: 'KPIs hebdomadaires à synchroniser avec l’analyse hebdo Accelerator.',
           howToUse:
-            'Copiez le tableau, mettez à jour chaque dimanche. Comparez avec votre analyse hebdomadaire si vous êtes en formule 79 €.',
+            'Copie le tableau, mettez à jour chaque dimanche. Compare avec ton analyse hebdomadaire si tu es en formule 79 €.',
           timeEstimate: '10 min / semaine',
           coachPhase: 8,
           roadmapChapter: 2,
@@ -761,7 +761,7 @@ Semaine du : [date]
           title: 'Anticipation forme juridique (mois 1)',
           description: 'Préparer le statut cible sans immatriculer trop tôt. Aligné parcours J5 ch. 1.',
           howToUse:
-            'Lisez les options, notez votre statut cible. Formalisez seulement quand vous avez clients et chiffre d’affaires récurrent.',
+            'Lisez les options, notez ton statut cible. Formalisez seulement quand tu as clients et chiffre d’affaires récurrent.',
           timeEstimate: '30 min',
           coachPhase: 1,
           roadmapChapter: 1,
@@ -779,7 +779,7 @@ Semaine du : [date]
           title: 'Playbook fidélisation (premiers clients)',
           description: 'Transformer un premier oui en client récurrent ou ambassadeur.',
           howToUse:
-            'Appliquez dès le 1er client signé. Une checklist par client dans votre bloc-notes.',
+            'Appliquez dès le 1er client signé. Une checklist par client dans ton bloc-notes.',
           timeEstimate: '1 h / client',
           coachPhase: 8,
           roadmapChapter: 3,

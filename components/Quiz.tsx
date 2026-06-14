@@ -135,13 +135,13 @@ export default function Quiz({
               <div>
                 <span className="section-tag">Étape 1. Profil</span>
                 <h1>
-                  Trouvez le business
+                  Trouve le business
                   <br />
-                  <em>fait pour vous</em>
+                  <em>fait pour toi</em>
                 </h1>
                 <p className="quiz-intro-text">
-                  Répondez à 9 questions sur vous. On vous propose les types d&apos;entreprise qui
-                  vous correspondent le mieux, en tenant compte de votre budget.
+                  Réponds à 9 questions sur toi. On te propose les types d&apos;entreprise qui
+                  te correspondent le mieux, en tenant compte de ton budget.
                 </p>
                 <div className="quiz-meta">
                   <span>⏱ Environ 4 minutes</span>
@@ -156,18 +156,18 @@ export default function Quiz({
                 </button>
               </div>
               <div className="quiz-preview">
-                <h3>Ce que vous obtiendrez</h3>
+                <h3>Ce que tu obtiendras</h3>
                 <div className="quiz-preview-step">
                   <span className="quiz-preview-num">1</span>
                   <div>
-                    <strong>Votre profil</strong>
-                    <span>Votre façon d&apos;être et vos points forts</span>
+                    <strong>Ton profil</strong>
+                    <span>Ta façon d&apos;être et tes points forts</span>
                   </div>
                 </div>
                 <div className="quiz-preview-step">
                   <span className="quiz-preview-num">2</span>
                   <div>
-                    <strong>Votre entrepreneur</strong>
+                    <strong>Ton entrepreneur</strong>
                     <span>Créé dans Ma ville après inscription. Gratuit</span>
                   </div>
                 </div>
@@ -182,7 +182,7 @@ export default function Quiz({
                   <span className="quiz-preview-num">4</span>
                   <div>
                     <strong>Plan d&apos;action</strong>
-                    <span>Premières étapes concrètes pour vous lancer</span>
+                    <span>Premières étapes concrètes pour te lancer</span>
                   </div>
                 </div>
               </div>
@@ -225,11 +225,11 @@ export default function Quiz({
 
         {panel === 'result' && topResults[0] && personality && levels && (
           <div className="quiz-panel">
-            <span className="section-tag">Vos résultats</span>
-            <h2>Votre profil entrepreneurial</h2>
+            <span className="section-tag">Tes résultats</span>
+            <h2>Ton profil entrepreneurial</h2>
 
             <div className="quiz-profile-summary quiz-profile-summary--compact">
-              <span className="quiz-result-badge">Votre profil</span>
+              <span className="quiz-result-badge">Ton profil</span>
               <h3>{personality.label}</h3>
               <p className="profile-desc">{personality.desc}</p>
               {levels.investment.label !== 'Non renseigné' && (
@@ -269,7 +269,7 @@ export default function Quiz({
                   />
 
                   <article className="quiz-result-card primary quiz-result-card--selected">
-                    <span className="quiz-result-badge">Votre choix</span>
+                    <span className="quiz-result-badge">Ton choix</span>
                     <div className="quiz-result-header">
                       <h3>
                         {profile.icon} {profile.name}
@@ -301,7 +301,7 @@ export default function Quiz({
                     )}
                     {selectedId === 'saas' && (
                       <div className="quiz-b2-choice">
-                        <h4>Quelle cible vous correspond ?</h4>
+                        <h4>Quelle cible te correspond ?</h4>
                         <div className="quiz-b2-options">
                           <div>
                             <strong>B2B</strong>

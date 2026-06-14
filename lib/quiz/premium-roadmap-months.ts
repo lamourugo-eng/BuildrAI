@@ -41,7 +41,7 @@ export const SEMESTER_MONTH_THEMES: MonthTheme[] = [
       'Mini FAQ client', 'Email de suivi post-vente', 'Demande d\'avis ou témoignage',
       'Bilan offre actuelle',
       'Ajuster prix ou packaging', 'Test upsell léger', 'Bundle ou option premium',
-      'Documenter votre process de vente', 'Checklist livraison', 'Modèle de proposition',
+      'Documenter ton process de vente', 'Checklist livraison', 'Modèle de proposition',
       'Bilan semaine. Offre',
       'Choisir 1 canal à doubler', 'Plan contenu ou prospection 7j', 'Automatiser 1 tâche répétitive',
       'Mesurer coût d\'acquisition', 'Objectif CA mois 2', 'Rituels hebdo (30 min)',
@@ -111,7 +111,7 @@ export const SEMESTER_MONTH_THEMES: MonthTheme[] = [
       'Identifier clients et offres les plus rentables. Couper le reste.',
       'Réduire le temps passé sur les tâches à faible valeur.',
       'Automatiser ou simplifier 2 process clés.',
-      'Couper ce qui ne sert pas vos objectifs du trimestre.',
+      'Couper ce qui ne sert pas tes objectifs du trimestre.',
     ],
   },
   {
@@ -160,8 +160,8 @@ export const SEMESTER_MONTH_THEMES: MonthTheme[] = [
       'Taux de rétention / réachat', 'Interview 2 clients satisfaits', 'Interview 1 client perdu',
       'Leçon produit n°1', 'Leçon vente n°1', 'Leçons ops & rétention. Synthèse',
       'Bilan rétention semestre',
-      'Lister toutes vos tâches récurrentes', '1ère tâche à déléguer', 'Profil freelance / outil / associé',
-      'Process documenté pour déléguer', 'Budget délégation mois 7', 'Risque n°1 si vous scalez seul',
+      'Lister toutes tes tâches récurrentes', '1ère tâche à déléguer', 'Profil freelance / outil / associé',
+      'Process documenté pour déléguer', 'Budget délégation mois 7', 'Risque n°1 si tu scalez seul',
       'Bilan délégation',
       'Vision à 6 mois (1 phrase)', '3 priorités stratégiques S2 & objectifs chiffrés',
       'Roadmap trimestre 3 (high level)', 'Métriques revente. Export 12 mois', 'Data room light. Due diligence',
@@ -248,7 +248,7 @@ export function buildMonthRoadmapDays(
 
   if (process.env.NODE_ENV === 'development' && theme.dayTitles.length !== 30) {
     console.warn(
-      `[roadmap] Chapitre ${month} : ${theme.dayTitles.length} titres (attendu 30). Vérifiez SEMESTER_MONTH_THEMES.`
+      `[roadmap] Chapitre ${month} : ${theme.dayTitles.length} titres (attendu 30). Vérifie SEMESTER_MONTH_THEMES.`
     );
   }
 

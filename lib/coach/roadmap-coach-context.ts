@@ -99,12 +99,12 @@ export function buildRoadmapCoachWelcome(
   const tipLabel = ctx.businessName ?? businessName;
   const tipBlock = ctx.tip ? `\n\n**${tipLabel}**. ${ctx.tip}` : '';
 
-  return `Vous venez du parcours. **jour ${ctx.dayInMonth}** (chapitre mois ${ctx.month}).
+  return `Tu viens du parcours. **jour ${ctx.dayInMonth}** (chapitre mois ${ctx.month}).
 
 **${ctx.title}**
 ${ctx.objective}${phaseLine}${tasksBlock}${tipBlock}
 
-Quelle que soit votre question sur cette étape. Comment faire, quoi prioriser, exemple concret, texte à rédiger. Décrivez-la et on avance ensemble, adapté à ${businessName}.`;
+Quelle que soit ton question sur cette étape. Comment faire, quoi prioriser, exemple concret, texte à rédiger. Décrivez-la et on avance ensemble, adapté à ${businessName}.`;
 }
 
 /** Bloc injecté dans le prompt système quand l'utilisateur vient du parcours premium. */
@@ -127,7 +127,7 @@ export function buildRoadmapCoachReminder(ctx: RoadmapCoachContext): string {
   const tasksHint = ctx.tasks.length
     ? ` Actions du jour : ${ctx.tasks.join('. ')}.`
     : '';
-  return `[Consigne interne. Parcours jour ${ctx.day}/${TOTAL_ROADMAP_DAYS}] Contexte : « ${ctx.title} ».${tasksHint} Répondez UNIQUEMENT à la question du client sur ce jour (ou sur une autre étape du parcours si le client la cite explicitement). Pas de format coach 8 étapes imposé. Pas de répétition de la dernière action mémorisée.`;
+  return `[Consigne interne. Parcours jour ${ctx.day}/${TOTAL_ROADMAP_DAYS}] Contexte : « ${ctx.title} ».${tasksHint} Réponds UNIQUEMENT à la question du client sur ce jour (ou sur une autre étape du parcours si le client la cite explicitement). Pas de format coach 8 étapes imposé. Pas de répétition de la dernière action mémorisée.`;
 }
 
 export function buildRoadmapCoachFullSystemPrompt(

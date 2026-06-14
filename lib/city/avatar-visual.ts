@@ -179,6 +179,6 @@ export function getCustomizerPreviewAppearance(
     outfit: avatar.outfit,
     accessory: avatar.accessory,
     showFounderBadge: false,
-    evolutionLabel: 'Aperçu de vos choix actuels',
+    evolutionLabel: 'Aperçu de tes choix actuels',
   });
 }

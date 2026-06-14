@@ -65,13 +65,13 @@ export const REWARD_BADGES: RewardBadgeDef[] = [
   {
     id: 'plan_half',
     name: 'Mi-parcours',
-    description: '50 % de progression sur votre plan',
+    description: '50 % de progression sur ton plan',
     icon: '📈',
   },
   {
     id: 'plan_complete',
     name: 'Plan maîtrisé',
-    description: '100 % de progression sur votre plan',
+    description: '100 % de progression sur ton plan',
     icon: '✅',
   },
 ];
