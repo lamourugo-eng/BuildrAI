@@ -27,7 +27,7 @@ export default function SubscribeCheckout({ plan, period, email }: SubscribeChec
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan, period, email }),
+        body: JSON.stringify({ plan, period }),
       });
 
       const data = await res.json();

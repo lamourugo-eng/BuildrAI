@@ -1,7 +1,11 @@
 import type { BillingPeriod, PlanId } from '@/lib/stripe';
-import { normalizeBillingPeriod } from '@/lib/stripe';
 import { getStripe } from '@/lib/stripe';
 import { MAX_ROADMAP_MONTHS } from '@/lib/account/subscription-storage';
+import {
+  StripeSubscriptionLookupError,
+  toStripeSubscriptionLookupError,
+} from '@/lib/stripe/errors';
+import { resolveStripePlanAndPeriod } from '@/lib/stripe/plan-resolution';
 
 export interface StripeSubscriptionSnapshot {
   active: boolean;
@@ -15,40 +19,21 @@ export interface StripeSubscriptionSnapshot {
   roadmapMonthsPaid: number;
 }
 
-function planFromMetadata(
-  metadata: Record<string, string> | null | undefined
-): PlanId | null {
-  const plan = metadata?.plan;
-  if (plan === 'growth' || plan === 'starter') return plan;
-  return null;
-}
-
-function periodFromMetadata(
-  metadata: Record<string, string> | null | undefined
-): BillingPeriod | null {
-  if (!metadata?.period) return null;
-  return normalizeBillingPeriod(metadata.period);
-}
-
-function periodFromStripeRecurring(
-  interval: string | undefined,
-  intervalCount: number | undefined
-): BillingPeriod | null {
-  if (interval === 'month' && intervalCount === 6) return 'semester';
-  if (interval === 'year') return 'semester';
-  if (interval === 'month' && (intervalCount ?? 1) === 1) return 'monthly';
-  return null;
-}
+const ACTIVE_STATUSES = new Set(['active', 'trialing', 'past_due']);
 
 export async function findStripeCustomerIdByEmail(
   email: string
 ): Promise<string | null> {
-  const stripe = getStripe();
-  const customers = await stripe.customers.list({
-    email: email.trim().toLowerCase(),
-    limit: 1,
-  });
-  return customers.data[0]?.id ?? null;
+  try {
+    const stripe = getStripe();
+    const customers = await stripe.customers.list({
+      email: email.trim().toLowerCase(),
+      limit: 1,
+    });
+    return customers.data[0]?.id ?? null;
+  } catch (err) {
+    throw toStripeSubscriptionLookupError(err);
+  }
 }
 
 /** Compte les mois payés. Dès 1 facture payée, le parcours complet (6 ch.) est débloqué. */
@@ -59,25 +44,29 @@ export async function countStripePaidRoadmapMonths(
 ): Promise<number> {
   if (period === 'semester') return MAX_ROADMAP_MONTHS;
 
-  const stripe = getStripe();
-  let paidCount = 0;
-  let startingAfter: string | undefined;
+  try {
+    const stripe = getStripe();
+    let paidCount = 0;
+    let startingAfter: string | undefined;
 
-  for (;;) {
-    const page = await stripe.invoices.list({
-      customer: customerId,
-      subscription: subscriptionId,
-      status: 'paid',
-      limit: 100,
-      ...(startingAfter ? { starting_after: startingAfter } : {}),
-    });
+    for (;;) {
+      const page = await stripe.invoices.list({
+        customer: customerId,
+        subscription: subscriptionId,
+        status: 'paid',
+        limit: 100,
+        ...(startingAfter ? { starting_after: startingAfter } : {}),
+      });
 
-    paidCount += page.data.filter((inv) => inv.amount_paid > 0).length;
-    if (!page.has_more || page.data.length === 0) break;
-    startingAfter = page.data[page.data.length - 1]?.id;
+      paidCount += page.data.filter((inv) => inv.amount_paid > 0).length;
+      if (!page.has_more || page.data.length === 0) break;
+      startingAfter = page.data[page.data.length - 1]?.id;
+    }
+
+    return paidCount > 0 ? MAX_ROADMAP_MONTHS : 0;
+  } catch (err) {
+    throw toStripeSubscriptionLookupError(err);
   }
-
-  return paidCount > 0 ? MAX_ROADMAP_MONTHS : 0;
 }
 
 export async function getStripeSubscriptionSnapshot(
@@ -94,36 +83,41 @@ export async function getStripeSubscriptionSnapshot(
     roadmapMonthsPaid: 0,
   };
 
-  try {
-    const customerId = await findStripeCustomerIdByEmail(email);
-    if (!customerId) return empty;
+  const customerId = await findStripeCustomerIdByEmail(email);
+  if (!customerId) return empty;
 
+  try {
     const stripe = getStripe();
     const subscriptions = await stripe.subscriptions.list({
       customer: customerId,
       status: 'all',
       limit: 10,
+      expand: ['data.items.data.price.product'],
     });
 
     const sub =
-      subscriptions.data.find((s) => s.status === 'active' || s.status === 'trialing') ??
-      null;
+      subscriptions.data.find((s) => ACTIVE_STATUSES.has(s.status)) ?? null;
 
     if (!sub) {
       return { ...empty, customerId };
     }
 
-    const recurring = sub.items.data[0]?.price?.recurring;
+    const price = sub.items.data[0]?.price;
+    const product =
+      price?.product && typeof price.product === 'object' ? price.product : null;
+    const recurring = price?.recurring;
 
-    const planId =
-      planFromMetadata(sub.metadata) ??
-      planFromMetadata(sub.items.data[0]?.price?.metadata) ??
-      null;
-    const period =
-      periodFromMetadata(sub.metadata) ??
-      periodFromMetadata(sub.items.data[0]?.price?.metadata) ??
-      periodFromStripeRecurring(recurring?.interval, recurring?.interval_count) ??
-      'monthly';
+    const { planId, period } = resolveStripePlanAndPeriod({
+      subscriptionMetadata: sub.metadata,
+      priceMetadata: price?.metadata,
+      productMetadata:
+        product && 'metadata' in product
+          ? (product.metadata as Record<string, string>)
+          : null,
+      priceId: price?.id,
+      recurringInterval: recurring?.interval,
+      recurringIntervalCount: recurring?.interval_count,
+    });
 
     const roadmapMonthsPaid = await countStripePaidRoadmapMonths(
       customerId,
@@ -143,7 +137,9 @@ export async function getStripeSubscriptionSnapshot(
         : null,
       roadmapMonthsPaid,
     };
-  } catch {
-    return empty;
+  } catch (err) {
+    throw toStripeSubscriptionLookupError(err);
   }
 }
+
+export { StripeSubscriptionLookupError };

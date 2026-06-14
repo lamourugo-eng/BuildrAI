@@ -160,20 +160,11 @@ export default function AccountSubscription({
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: planId, period, email }),
+        body: JSON.stringify({ plan: planId, period }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erreur de paiement');
-
-      const prevMeta = loadSubscriptionMeta();
-      saveSubscriptionMeta({
-        planId,
-        period,
-        activatedAt: activatedAt || prevMeta.activatedAt || new Date().toISOString(),
-        monthsPaid: prevMeta.monthsPaid > 0 ? prevMeta.monthsPaid : MAX_ROADMAP_MONTHS,
-      });
-      setCurrentPlanId(planId);
 
       if (data.url) {
         window.location.href = data.url;

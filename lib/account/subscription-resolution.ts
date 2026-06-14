@@ -1,3 +1,4 @@
+import { getPlanFromCookie } from '@/lib/account/subscription';
 import {
   expireTrialInDb,
   getUserProfile,
@@ -8,6 +9,7 @@ import {
 } from '@/lib/account/user-profile';
 import { isAdminEmail } from '@/lib/admin';
 import type { PlanId } from '@/lib/stripe';
+import { isTransientStripeError } from '@/lib/stripe/errors';
 import { getStripeSubscriptionSnapshot } from '@/lib/stripe/subscription-sync';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -20,6 +22,7 @@ export interface ResolvedSubscription {
   trialEndsAt: string | null;
   trialExpired: boolean;
   newsletterOptIn: boolean;
+  stripeLookupFailed?: boolean;
 }
 
 async function loadProfileSafe(
@@ -48,6 +51,10 @@ async function expireTrialSafe(
   }
 }
 
+function resolvePlanFromCookies(planCookie: string | undefined): PlanId {
+  return getPlanFromCookie(planCookie) ?? 'starter';
+}
+
 /**
  * Source de vérité serveur : Stripe > essai newsletter 24 h > simulation admin > gratuit.
  * Si l'essai est expiré, l'accès Premium est révoqué (même si le cookie est encore présent).
@@ -70,8 +77,7 @@ export async function resolveUserSubscription(
 
   const adminSimulated = isAdminEmail(email) && subscriptionCookie === '1';
   if (adminSimulated) {
-    const planId: PlanId =
-      planCookie === 'growth' || planCookie === 'starter' ? planCookie : 'starter';
+    const planId = resolvePlanFromCookies(planCookie);
     return {
       active: true,
       planId,
@@ -83,16 +89,33 @@ export async function resolveUserSubscription(
   }
 
   if (email) {
-    const snapshot = await getStripeSubscriptionSnapshot(email);
-    if (snapshot.active) {
-      return {
-        active: true,
-        planId: snapshot.planId ?? 'starter',
-        source: 'stripe',
-        trialEndsAt: null,
-        trialExpired: false,
-        newsletterOptIn: false,
-      };
+    try {
+      const snapshot = await getStripeSubscriptionSnapshot(email);
+      if (snapshot.active) {
+        return {
+          active: true,
+          planId: snapshot.planId ?? 'starter',
+          source: 'stripe',
+          trialEndsAt: null,
+          trialExpired: false,
+          newsletterOptIn: false,
+        };
+      }
+    } catch (err) {
+      if (isTransientStripeError(err) && subscriptionCookie === '1') {
+        return {
+          active: true,
+          planId: resolvePlanFromCookies(planCookie),
+          source: 'stripe',
+          trialEndsAt: null,
+          trialExpired: false,
+          newsletterOptIn: false,
+          stripeLookupFailed: true,
+        };
+      }
+      if (isTransientStripeError(err)) {
+        return { ...inactive, stripeLookupFailed: true };
+      }
     }
   }
 

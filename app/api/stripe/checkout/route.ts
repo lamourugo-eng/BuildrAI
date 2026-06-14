@@ -3,19 +3,32 @@ import {
   formatStripeConfigError,
   getMissingStripeEnvKeys,
 } from '@/lib/stripe/required-env';
+import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { getPriceId, getStripe, type BillingPeriod, type PlanId } from '@/lib/stripe';
 
 /**
  * Crée une session Stripe Checkout.
- * POST { plan: 'starter' | 'growth', period: 'monthly' | 'semester', email?: string }
+ * POST { plan: 'starter' | 'growth', period: 'monthly' | 'semester' }
+ * L'utilisateur doit être connecté — l'email du compte est utilisé automatiquement.
  */
 export async function POST(request: Request) {
   try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user?.email) {
+      return NextResponse.json(
+        { error: 'Connectez-vous pour souscrire à un abonnement.' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const plan = body.plan as PlanId;
     const period = (body.period as BillingPeriod) || 'monthly';
-    const email = body.email as string | undefined;
 
     if (!['starter', 'growth'].includes(plan)) {
       return NextResponse.json({ error: 'Plan invalide' }, { status: 400 });
@@ -38,12 +51,13 @@ export async function POST(request: Request) {
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${appUrl}/espace?checkout=success`,
       cancel_url: `${appUrl}/#pricing`,
-      customer_email: email,
+      customer_email: user.email,
+      client_reference_id: user.id,
       allow_promotion_codes: true,
       subscription_data: {
-        metadata: { plan, period },
+        metadata: { plan, period, user_id: user.id },
       },
-      metadata: { plan, period },
+      metadata: { plan, period, user_id: user.id },
     });
 
     return NextResponse.json({ url: session.url });

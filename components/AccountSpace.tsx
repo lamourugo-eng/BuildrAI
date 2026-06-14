@@ -20,6 +20,39 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const CHECKOUT_PROCESSED_KEY = 'buildrai_checkout_processed';
+const CHECKOUT_RETRY_ATTEMPTS = 6;
+const CHECKOUT_RETRY_DELAY_MS = 2000;
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function syncStripeAfterCheckout() {
+  for (let attempt = 0; attempt < CHECKOUT_RETRY_ATTEMPTS; attempt += 1) {
+    const syncRes = await fetch('/api/subscription/sync-stripe', { method: 'POST' });
+    const syncData = (await syncRes.json()) as {
+      active?: boolean;
+      planId?: PlanId;
+      period?: string;
+      transient?: boolean;
+    };
+
+    if (syncRes.status === 503 && syncData.transient) {
+      await sleep(CHECKOUT_RETRY_DELAY_MS);
+      continue;
+    }
+
+    if (syncRes.ok && syncData.active) {
+      return syncData;
+    }
+
+    if (attempt < CHECKOUT_RETRY_ATTEMPTS - 1) {
+      await sleep(CHECKOUT_RETRY_DELAY_MS);
+    }
+  }
+
+  return null;
+}
 
 interface AccountSpaceProps {
   email: string;
@@ -84,7 +117,7 @@ export default function AccountSpace({
           'Votre essai Premium 24 h est terminé. Vous êtes repassé sur le plan Gratuit.'
         );
       }
-      if (Boolean(result.active) !== isSubscribed || result.trialExpired) {
+      if (!result.transient && (Boolean(result.active) !== isSubscribed || result.trialExpired)) {
         router.refresh();
       }
     });
@@ -127,14 +160,9 @@ export default function AccountSpace({
     if (sessionStorage.getItem(CHECKOUT_PROCESSED_KEY) === '1') return;
 
     async function processCheckout() {
-      const syncRes = await fetch('/api/subscription/sync-stripe', { method: 'POST' });
-      const syncData = (await syncRes.json()) as {
-        active?: boolean;
-        planId?: PlanId;
-        period?: string;
-      };
+      const syncData = await syncStripeAfterCheckout();
 
-      if (!syncRes.ok || !syncData.active) {
+      if (!syncData?.active) {
         const activateRes = await fetch('/api/subscription/activate', { method: 'POST' });
         if (!activateRes.ok) return;
         const activateData = (await activateRes.json()) as { planId?: PlanId; period?: string };

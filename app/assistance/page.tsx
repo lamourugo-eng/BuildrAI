@@ -1,8 +1,8 @@
 import AssistanceSection from '@/components/AssistanceSection';
 import AuthShell from '@/components/AuthShell';
 import DashboardHeader from '@/components/DashboardHeader';
-import { hasActiveSubscription } from '@/lib/account/subscription';
-import { isAdminEmail, SUBSCRIPTION_COOKIE } from '@/lib/admin';
+import { resolveUserSubscription } from '@/lib/account/subscription-resolution';
+import { isAdminEmail, PLAN_COOKIE, SUBSCRIPTION_COOKIE } from '@/lib/admin';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
 import { Suspense } from 'react';
@@ -27,10 +27,16 @@ export default async function AssistancePage() {
     isAdmin = isAdminEmail(userEmail);
 
     const cookieStore = await cookies();
-    isSubscribed = hasActiveSubscription(
-      userEmail,
-      cookieStore.get(SUBSCRIPTION_COOKIE)?.value
-    );
+    if (user) {
+      const resolved = await resolveUserSubscription(
+        supabase,
+        user.id,
+        user.email,
+        cookieStore.get(SUBSCRIPTION_COOKIE)?.value,
+        cookieStore.get(PLAN_COOKIE)?.value
+      );
+      isSubscribed = resolved.active;
+    }
   } catch {
     /* Supabase non configuré */
   }

@@ -2,6 +2,7 @@ import { getPlanFromCookie } from '@/lib/account/subscription';
 import { setActiveSubscriptionCookies } from '@/lib/account/subscription-cookies';
 import { isAdminEmail, PLAN_COOKIE, SUBSCRIPTION_COOKIE } from '@/lib/admin';
 import type { PlanId } from '@/lib/stripe';
+import { isTransientStripeError } from '@/lib/stripe/errors';
 import { getStripeSubscriptionSnapshot } from '@/lib/stripe/subscription-sync';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
@@ -27,7 +28,36 @@ export async function POST() {
   const adminSimulated =
     isAdminEmail(user.email) && subscriptionCookie === '1';
 
-  const snapshot = await getStripeSubscriptionSnapshot(user.email);
+  let snapshot;
+  try {
+    snapshot = await getStripeSubscriptionSnapshot(user.email);
+  } catch (err) {
+    if (isTransientStripeError(err) && (adminSimulated || subscriptionCookie === '1')) {
+      const planId: PlanId = getPlanFromCookie(planCookie) ?? 'starter';
+      const response = NextResponse.json({
+        ok: true,
+        planId,
+        period: 'monthly',
+        active: true,
+        transient: true,
+      });
+      setActiveSubscriptionCookies(response, planId);
+      return response;
+    }
+
+    if (isTransientStripeError(err)) {
+      return NextResponse.json(
+        {
+          error:
+            'Stripe est temporairement indisponible. Réessayez dans quelques instants.',
+          transient: true,
+        },
+        { status: 503 }
+      );
+    }
+
+    throw err;
+  }
 
   if (!snapshot.active && !adminSimulated) {
     return NextResponse.json(

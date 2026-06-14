@@ -81,27 +81,42 @@ export async function processNewsletterTrialOptIn(): Promise<NewsletterTrialResp
 export async function syncSubscriptionAndHandleTrialExpiry(): Promise<{
   active: boolean;
   trialExpired?: boolean;
+  transient?: boolean;
 }> {
-  const res = await fetch('/api/subscription/sync-stripe', { method: 'POST' });
-  const data = (await res.json()) as {
-    active?: boolean;
-    trialExpired?: boolean;
-    trialEndsAt?: string;
-    isNewsletterTrial?: boolean;
-  };
+  try {
+    const res = await fetch('/api/subscription/sync-stripe', { method: 'POST' });
+    const data = (await res.json()) as {
+      active?: boolean;
+      trialExpired?: boolean;
+      trialEndsAt?: string;
+      isNewsletterTrial?: boolean;
+      transient?: boolean;
+      message?: string;
+    };
 
-  if (data.trialExpired) {
-    clearSubscriptionLocal();
-    return { active: false, trialExpired: true };
+    if (res.status === 503 && data.transient) {
+      return { active: Boolean(data.active), transient: true };
+    }
+
+    if (!res.ok && res.status >= 500) {
+      return { active: true, transient: true };
+    }
+
+    if (data.trialExpired) {
+      clearSubscriptionLocal();
+      return { active: false, trialExpired: true };
+    }
+
+    if (data.active && data.isNewsletterTrial && data.trialEndsAt) {
+      applyNewsletterTrialLocal(data.trialEndsAt);
+    }
+
+    if (!data.active) {
+      clearSubscriptionLocal();
+    }
+
+    return { active: Boolean(data.active), trialExpired: data.trialExpired };
+  } catch {
+    return { active: false, transient: true };
   }
-
-  if (data.active && data.isNewsletterTrial && data.trialEndsAt) {
-    applyNewsletterTrialLocal(data.trialEndsAt);
-  }
-
-  if (!data.active) {
-    clearSubscriptionLocal();
-  }
-
-  return { active: Boolean(data.active), trialExpired: data.trialExpired };
 }

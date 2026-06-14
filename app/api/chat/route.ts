@@ -255,7 +255,7 @@ export async function POST(request: Request) {
     const recommendedTool =
       validBusinessId ?? profile?.topBusinessId
         ? getRecommendedToolSummary(
-            (validBusinessId ?? profile!.topBusinessId) as BusinessId,
+            (validBusinessId ?? profile?.topBusinessId) as BusinessId,
             profile?.techLevel
           )
         : null;

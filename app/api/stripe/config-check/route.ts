@@ -6,11 +6,28 @@ import {
 import { getStripe } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
 
+function isAuthorized(request: Request): boolean {
+  if (process.env.NODE_ENV !== 'production') return true;
+
+  const secret = process.env.STRIPE_CONFIG_CHECK_SECRET?.trim();
+  if (!secret) return false;
+
+  const header = request.headers.get('x-config-check-secret')?.trim();
+  const url = new URL(request.url);
+  const query = url.searchParams.get('secret')?.trim();
+  return header === secret || query === secret;
+}
+
 /**
  * Diagnostic Stripe (sans exposer les secrets).
  * GET /api/stripe/config-check
+ * En production : header x-config-check-secret ou ?secret= (STRIPE_CONFIG_CHECK_SECRET).
  */
-export async function GET() {
+export async function GET(request: Request) {
+  if (!isAuthorized(request)) {
+    return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+  }
+
   const missing = getMissingStripeEnvKeys();
   const required = getRequiredStripeEnvKeys();
   const secretKey = process.env.STRIPE_SECRET_KEY?.trim() ?? '';

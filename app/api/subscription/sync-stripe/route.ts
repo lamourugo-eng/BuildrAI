@@ -7,10 +7,24 @@ import { resolveUserSubscription } from '@/lib/account/subscription-resolution';
 import { MAX_ROADMAP_MONTHS } from '@/lib/account/subscription-storage';
 import { isAdminEmail, PLAN_COOKIE, SUBSCRIPTION_COOKIE } from '@/lib/admin';
 import type { PlanId } from '@/lib/stripe';
+import { isTransientStripeError } from '@/lib/stripe/errors';
 import { getStripeSubscriptionSnapshot } from '@/lib/stripe/subscription-sync';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+
+function stripeUnavailableResponse(message: string) {
+  return NextResponse.json(
+    {
+      active: false,
+      transient: true,
+      error: message,
+      message:
+        'Stripe est temporairement indisponible. Votre accès actuel est conservé. Réessayez dans quelques instants.',
+    },
+    { status: 503 }
+  );
+}
 
 /**
  * Aligne les cookies d'abonnement avec Stripe, l'essai newsletter 24 h ou la simulation admin.
@@ -29,13 +43,44 @@ export async function POST() {
   const subscriptionCookie = cookieStore.get(SUBSCRIPTION_COOKIE)?.value;
   const planCookie = cookieStore.get(PLAN_COOKIE)?.value;
 
-  const resolved = await resolveUserSubscription(
-    supabase,
-    user.id,
-    user.email,
-    subscriptionCookie,
-    planCookie
-  );
+  let resolved;
+  try {
+    resolved = await resolveUserSubscription(
+      supabase,
+      user.id,
+      user.email,
+      subscriptionCookie,
+      planCookie
+    );
+  } catch (err) {
+    if (isTransientStripeError(err)) {
+      return stripeUnavailableResponse(
+        err instanceof Error ? err.message : 'Erreur Stripe temporaire'
+      );
+    }
+    throw err;
+  }
+
+  if (resolved.stripeLookupFailed) {
+    if (resolved.active && resolved.planId) {
+      const response = NextResponse.json({
+        active: true,
+        planId: resolved.planId,
+        period: 'monthly',
+        cancelAtPeriodEnd: false,
+        currentPeriodEnd: null,
+        roadmapMonthsPaid: MAX_ROADMAP_MONTHS,
+        hasStripeCustomer: false,
+        source: 'stripe',
+        transient: true,
+        message:
+          'Stripe est temporairement indisponible. Votre accès actuel est conservé.',
+      });
+      setActiveSubscriptionCookies(response, resolved.planId);
+      return response;
+    }
+    return stripeUnavailableResponse('Impossible de vérifier Stripe pour le moment.');
+  }
 
   if (resolved.trialExpired) {
     const response = NextResponse.json({
@@ -54,8 +99,19 @@ export async function POST() {
   }
 
   if (resolved.active && resolved.source === 'stripe') {
-    const snapshot = await getStripeSubscriptionSnapshot(user.email);
-    const planId: PlanId = snapshot.planId ?? 'starter';
+    let snapshot;
+    try {
+      snapshot = await getStripeSubscriptionSnapshot(user.email);
+    } catch (err) {
+      if (isTransientStripeError(err)) {
+        return stripeUnavailableResponse(
+          err instanceof Error ? err.message : 'Erreur Stripe temporaire'
+        );
+      }
+      throw err;
+    }
+
+    const planId: PlanId = snapshot.planId ?? resolved.planId ?? 'starter';
     const response = NextResponse.json({
       active: true,
       planId,
@@ -102,7 +158,18 @@ export async function POST() {
     });
   }
 
-  const snapshot = await getStripeSubscriptionSnapshot(user.email);
+  let snapshot;
+  try {
+    snapshot = await getStripeSubscriptionSnapshot(user.email);
+  } catch (err) {
+    if (isTransientStripeError(err)) {
+      return stripeUnavailableResponse(
+        err instanceof Error ? err.message : 'Erreur Stripe temporaire'
+      );
+    }
+    throw err;
+  }
+
   const response = NextResponse.json({
     active: false,
     planId: snapshot.planId,
