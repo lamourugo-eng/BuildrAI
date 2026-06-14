@@ -38,14 +38,20 @@ export async function POST(request: Request) {
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Erreur inconnue';
     const isConfig = message.includes('manquant') || message.includes('non configuré');
+    const isMissingPrice =
+      message.includes('No such price') || message.includes('resource_missing');
+
+    let error = message;
+    if (isConfig) {
+      error = 'Stripe non configuré. Renseignez les variables dans .env.local';
+    } else if (isMissingPrice) {
+      error =
+        'Prix Stripe introuvable : la clé API (test/live) et les STRIPE_PRICE_* sur Vercel ne correspondent pas. Utilisez sk_live_... avec les price_... live, ou relancez npm.cmd run stripe:sync.';
+    }
 
     return NextResponse.json(
-      {
-        error: isConfig
-          ? 'Stripe non configuré. Renseignez les variables dans .env.local'
-          : message,
-      },
-      { status: isConfig ? 503 : 500 }
+      { error },
+      { status: isConfig ? 503 : isMissingPrice ? 503 : 500 }
     );
   }
 }
