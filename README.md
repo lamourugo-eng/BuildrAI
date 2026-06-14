@@ -30,7 +30,7 @@ Ouvrir [http://localhost:3000](http://localhost:3000).
 
 ## Production (Vercel)
 
-Site en ligne : [https://buildrai-xi.vercel.app](https://buildrai-xi.vercel.app)
+Site en ligne : [https://usebuildrai.com/
 
 ```bash
 npm run prod:checklist
