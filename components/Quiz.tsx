@@ -3,13 +3,16 @@
 import { markQuizCompleted } from '@/lib/account/analytics-storage';
 import {
   buildQuizProfileSnapshot,
+  saveChosenBusiness,
   saveQuizProfile,
+  buildActiveCoachProfile,
 } from '@/lib/quiz/profile-storage';
 import { syncQuizProfileToServer } from '@/lib/quiz/profile-sync';
 import Link from 'next/link';
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import FreeRoadmapTeaser from '@/components/FreeRoadmapTeaser';
-import { businessProfiles, quizQuestions } from '@/lib/quiz/data';
+import QuizBusinessPicker from '@/components/QuizBusinessPicker';
+import { businessProfiles, quizQuestions, type BusinessId } from '@/lib/quiz/data';
 import {
   calculateScores,
   getAdaptedFirstSteps,
@@ -18,7 +21,6 @@ import {
   getMatchLabel,
   getPersonalityType,
   getQuizLevels,
-  resultBadges,
 } from '@/lib/quiz/scoring';
 
 type QuizPanel = 'intro' | 'questions' | 'result';
@@ -40,6 +42,8 @@ export default function Quiz({
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [isResultView, setIsResultView] = useState(false);
+  const [chosenBusinessId, setChosenBusinessId] = useState<BusinessId | null>(null);
+  const savedResultsKeyRef = useRef<string | null>(null);
 
   const question = quizQuestions[step];
   const progress = ((step + 1) / quizQuestions.length) * 100;
@@ -73,6 +77,8 @@ export default function Quiz({
     setStep(0);
     setAnswers([]);
     setIsResultView(false);
+    setChosenBusinessId(null);
+    savedResultsKeyRef.current = null;
     setPanel('questions');
   }
 
@@ -83,23 +89,41 @@ export default function Quiz({
   const levels = showQuizResults ? getQuizLevels(answers) : null;
 
   useEffect(() => {
-    if (panel !== 'result' || !topResults[0] || !personality || !levels) return;
+    if (panel !== 'result' || answers.length !== quizQuestions.length) return;
+
+    const saveKey = answers.join('-');
+    if (savedResultsKeyRef.current === saveKey) return;
+    savedResultsKeyRef.current = saveKey;
+
+    const rankedResults = calculateScores(answers);
+    const topFour = rankedResults.slice(0, 4);
+    const resultPersonality = topFour[0] ? getPersonalityType(topFour[0].id) : null;
+    const resultLevels = getQuizLevels(answers);
+    if (!topFour[0] || !resultPersonality || !resultLevels) return;
+
     const investmentIndex = getInvestmentAnswerIndex(answers);
-    const adaptedSteps = getAdaptedFirstSteps(
-      topResults[0].id,
-      investmentIndex
-    );
-    const snapshot = buildQuizProfileSnapshot(topResults, personality, levels, {
+    const adaptedSteps = getAdaptedFirstSteps(topFour[0].id, investmentIndex);
+    const snapshot = buildQuizProfileSnapshot(topFour, resultPersonality, resultLevels, {
       firstSteps: adaptedSteps,
     });
     if (snapshot) {
       saveQuizProfile(snapshot);
       markQuizCompleted();
-      void syncQuizProfileToServer(snapshot).then(() => {
+      const initialId = topFour[0].id;
+      saveChosenBusiness(initialId);
+      setChosenBusinessId(initialId);
+      void syncQuizProfileToServer(snapshot, initialId).then(() => {
         onProfileSaved?.();
       });
     }
-  }, [panel, topResults, personality, levels, answers, onProfileSaved]);
+  }, [panel, answers, onProfileSaved]);
+
+  function handleChooseBusiness(businessId: BusinessId) {
+    if (chosenBusinessId === businessId) return;
+    setChosenBusinessId(businessId);
+    saveChosenBusiness(businessId);
+    void syncQuizProfileToServer(undefined, businessId);
+  }
 
   return (
     <section className="quiz" id="quiz">
@@ -150,8 +174,8 @@ export default function Quiz({
                 <div className="quiz-preview-step">
                   <span className="quiz-preview-num">3</span>
                   <div>
-                    <strong>4 types d&apos;activité (SaaS, freelance…)</strong>
-                    <span>1 recommandé + 3 autres options avec score</span>
+                    <strong>Tous les modèles business</strong>
+                    <span>4 scores de compatibilité + choix libre parmi les autres</span>
                   </div>
                 </div>
                 <div className="quiz-preview-step">
@@ -216,37 +240,53 @@ export default function Quiz({
             </div>
 
             {(() => {
-              const primary = topResults[0];
-              const profile = businessProfiles[primary.id];
-              const alternatives = topResults.slice(1);
+              const selectedId = chosenBusinessId ?? topResults[0].id;
               const investmentIndex = getInvestmentAnswerIndex(answers);
+              const quizSnapshot = buildQuizProfileSnapshot(topResults, personality, levels, {
+                firstSteps:
+                  investmentIndex !== null
+                    ? getAdaptedFirstSteps(selectedId, investmentIndex)
+                    : businessProfiles[selectedId].firstSteps,
+              });
+              const profile = businessProfiles[selectedId];
+              const matchPercent =
+                topResults.find((item) => item.id === selectedId)?.percent ?? null;
               const budgetFit =
-                investmentIndex !== null
-                  ? getBudgetFit(primary.id, investmentIndex)
-                  : null;
+                investmentIndex !== null ? getBudgetFit(selectedId, investmentIndex) : null;
               const adaptedSteps =
                 investmentIndex !== null
-                  ? getAdaptedFirstSteps(primary.id, investmentIndex)
+                  ? getAdaptedFirstSteps(selectedId, investmentIndex)
                   : profile.firstSteps;
+
+              if (!quizSnapshot) return null;
 
               return (
                 <>
-                  <h3 className="quiz-results-title">Votre modèle le plus adapté</h3>
-                  <article className="quiz-result-card primary">
-                    <span className="quiz-result-badge">{resultBadges[0]}</span>
+                  <QuizBusinessPicker
+                    profile={quizSnapshot}
+                    selectedId={selectedId}
+                    onSelect={handleChooseBusiness}
+                  />
+
+                  <article className="quiz-result-card primary quiz-result-card--selected">
+                    <span className="quiz-result-badge">Votre choix</span>
                     <div className="quiz-result-header">
                       <h3>
                         {profile.icon} {profile.name}
                       </h3>
-                      <div
-                        className="quiz-match-ring"
-                        style={{ '--pct': primary.percent } as CSSProperties}
-                      >
-                        <span>{primary.percent}%</span>
-                      </div>
+                      {matchPercent != null && (
+                        <div
+                          className="quiz-match-ring"
+                          style={{ '--pct': matchPercent } as CSSProperties}
+                        >
+                          <span>{matchPercent}%</span>
+                        </div>
+                      )}
                     </div>
                     <p className="match-score">
-                      {getMatchLabel(primary.percent)}. Ex. {profile.examples}
+                      {matchPercent != null
+                        ? `${getMatchLabel(matchPercent)}. Ex. ${profile.examples}`
+                        : `Choix libre. Ex. ${profile.examples}`}
                     </p>
                     <p className="quiz-result-desc">{profile.description}</p>
                     {budgetFit && (
@@ -259,7 +299,7 @@ export default function Quiz({
                         </span>
                       </div>
                     )}
-                    {primary.id === 'saas' && (
+                    {selectedId === 'saas' && (
                       <div className="quiz-b2-choice">
                         <h4>Quelle cible vous correspond ?</h4>
                         <div className="quiz-b2-options">
@@ -283,53 +323,24 @@ export default function Quiz({
                       </ul>
                     </div>
                   </article>
-
-                  {alternatives.length > 0 && (
-                    <details className="quiz-alternatives">
-                      <summary>
-                        Voir les autres options ({alternatives.length})
-                      </summary>
-                      <div className="quiz-alternatives-list">
-                        {alternatives.map((item, i) => {
-                          const alt = businessProfiles[item.id];
-                          return (
-                            <article key={item.id} className="quiz-result-card compact">
-                              <span className="quiz-result-badge">{resultBadges[i + 1]}</span>
-                              <div className="quiz-result-header">
-                                <h3>
-                                  {alt.icon} {alt.name}
-                                </h3>
-                                <div
-                                  className="quiz-match-ring"
-                                  style={{ '--pct': item.percent } as CSSProperties}
-                                >
-                                  <span>{item.percent}%</span>
-                                </div>
-                              </div>
-                              <p className="match-score">
-                                {getMatchLabel(item.percent)}. Ex. {alt.examples}
-                              </p>
-                              <p className="quiz-result-desc">{alt.description}</p>
-                            </article>
-                          );
-                        })}
-                      </div>
-                    </details>
-                  )}
                 </>
               );
             })()}
 
             {(() => {
+              const selectedId = chosenBusinessId ?? topResults[0].id;
               const roadmapProfile = buildQuizProfileSnapshot(topResults, personality, levels, {
                 firstSteps: getAdaptedFirstSteps(
-                  topResults[0].id,
+                  selectedId,
                   getInvestmentAnswerIndex(answers)
                 ),
               });
+              const activeProfile = roadmapProfile
+                ? buildActiveCoachProfile(roadmapProfile, selectedId)
+                : null;
               return (
                 <FreeRoadmapTeaser
-                  profile={roadmapProfile}
+                  profile={activeProfile}
                   variant="quiz"
                   showUpgradeCta={false}
                 />

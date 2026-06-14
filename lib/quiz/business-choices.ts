@@ -20,11 +20,11 @@ export function getBusinessMatchPercent(
   return top3.find((item) => item.id === businessId)?.percent ?? null;
 }
 
-/** Tous les modèles business : recommandations du quiz en tête, puis le reste. */
+/** Tous les modèles business : top 4 du quiz en tête (avec %), puis le reste. */
 export function buildBusinessChoiceOptions(
   top3: { id: BusinessId; name: string; percent: number }[]
 ): BusinessChoiceOption[] {
-  const top3Ids = new Set(top3.map((item) => item.id));
+  const rankedIds = new Set(top3.map((item) => item.id));
 
   const recommended = top3.map((item) => ({
     id: item.id,
@@ -33,7 +33,7 @@ export function buildBusinessChoiceOptions(
     recommended: true,
   }));
 
-  const others = ALL_BUSINESS_IDS.filter((id) => !top3Ids.has(id)).map((id) => ({
+  const others = ALL_BUSINESS_IDS.filter((id) => !rankedIds.has(id)).map((id) => ({
     id,
     name: businessProfiles[id].name,
     percent: null,
