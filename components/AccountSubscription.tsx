@@ -34,7 +34,6 @@ export default function AccountSubscription({
   const [error, setError] = useState('');
   const [cancelNotice, setCancelNotice] = useState<string | null>(null);
   const [cancelEndDate, setCancelEndDate] = useState<string | null>(null);
-  const [hasStripeCustomer, setHasStripeCustomer] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -52,8 +51,6 @@ export default function AccountSubscription({
       const res = await fetch('/api/subscription/sync-stripe', { method: 'POST' });
       const data = await res.json();
       if (!res.ok) return;
-
-      setHasStripeCustomer(data.hasStripeCustomer === true);
 
       if (data.cancelAtPeriodEnd && data.currentPeriodEnd) {
         setCancelEndDate(
@@ -119,10 +116,7 @@ export default function AccountSubscription({
   }, []);
 
   useEffect(() => {
-    if (!isSubscribed) {
-      setHasStripeCustomer(false);
-      return;
-    }
+    if (!isSubscribed) return;
     void syncStripeStatus();
     if (searchParams.get('billing') === 'return') {
       setCancelNotice(
@@ -296,6 +290,28 @@ export default function AccountSubscription({
               <li key={f}>{f}</li>
             ))}
           </ul>
+          {!isNewsletterTrial && (
+            <div className="account-subscription-current-actions">
+              {cancelEndDate && (
+                <p className="account-subscription-cancel-scheduled">
+                  Résiliation programmée. Accès Premium jusqu&apos;au{' '}
+                  <strong>{cancelEndDate}</strong>.
+                </p>
+              )}
+              <button
+                type="button"
+                className="btn btn-outline account-subscription-resilier-btn"
+                onClick={() => void handleManageBilling()}
+                disabled={loadingPortal || loadingPlan !== null}
+              >
+                {loadingPortal ? 'Ouverture…' : 'Résiliez'}
+              </button>
+              <p className="account-subscription-resilier-hint">
+                Annulation en un clic via Stripe. Accès conservé jusqu&apos;à la fin de la période
+                payée.
+              </p>
+            </div>
+          )}
         </article>
       )}
 
@@ -400,32 +416,20 @@ export default function AccountSubscription({
         </div>
       )}
 
-      {isSubscribed && hasStripeCustomer && !isNewsletterTrial && (
+      {isSubscribed && !isNewsletterTrial && (
         <article className="account-card account-card--wide account-subscription-cancel">
           <div className="account-subscription-cancel-head">
             <span className="account-subscription-cancel-icon" aria-hidden="true">
               ⏸
             </span>
             <div>
-              <h3>Résilier mon abonnement</h3>
+              <h3>Besoin d&apos;aide pour résilier ?</h3>
               <p>
-                Vous pouvez annuler à tout moment. Votre accès Premium reste actif jusqu&apos;à la
-                fin de la période déjà payée. Pas de frais cachés.
+                Le bouton « Résiliez » ci-dessus ouvre le portail Stripe : factures, carte
+                bancaire et annulation d&apos;abonnement.
               </p>
             </div>
           </div>
-
-          {cancelEndDate && (
-            <p className="account-subscription-cancel-scheduled">
-              Résiliation programmée. Accès Premium jusqu&apos;au <strong>{cancelEndDate}</strong>.
-            </p>
-          )}
-
-          <ol className="account-subscription-cancel-steps">
-            <li>Cliquez sur le bouton ci-dessous pour ouvrir l&apos;espace sécurisé Stripe.</li>
-            <li>Choisissez « Annuler l&apos;abonnement » dans le portail client.</li>
-            <li>Revenez ici : votre statut sera mis à jour automatiquement.</li>
-          </ol>
 
           <button
             type="button"
@@ -433,12 +437,11 @@ export default function AccountSubscription({
             onClick={() => void handleManageBilling()}
             disabled={loadingPortal || loadingPlan !== null}
           >
-            {loadingPortal ? 'Ouverture…' : 'Gérer ou résilier mon abonnement'}
+            {loadingPortal ? 'Ouverture…' : 'Résiliez mon abonnement'}
           </button>
 
           <p className="account-subscription-cancel-hint">
-            Factures, moyen de paiement et résiliation sont gérés via Stripe, notre prestataire de
-            paiement sécurisé.
+            Paiement sécurisé par Stripe. Pas de frais cachés.
           </p>
         </article>
       )}
@@ -447,7 +450,7 @@ export default function AccountSubscription({
         <h3>Gestion & facturation</h3>
         <ul className="account-subscription-help-list">
           <li>Plan gratuit disponible sans carte bancaire pour découvrir votre profil.</li>
-          <li>Résiliation en libre-service depuis la section ci-dessus (abonnements Stripe).</li>
+          <li>Résiliation en libre-service via le bouton « Résiliez » (abonnements Stripe).</li>
           <li>
             Assistance par email (contact direct avec le créateur du site) :{' '}
             <a href="mailto:Buildraimail@gmail.com">Buildraimail@gmail.com</a>

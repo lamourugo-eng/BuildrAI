@@ -5803,6 +5803,33 @@ ul { list-style: none; }
   color: var(--blue-light);
 }
 
+.account-subscription-current-actions {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.account-subscription-resilier-btn {
+  width: 100%;
+  max-width: 280px;
+  border-color: rgba(251, 191, 36, 0.45);
+  color: #fcd34d;
+}
+
+.account-subscription-resilier-btn:hover:not(:disabled) {
+  border-color: rgba(251, 191, 36, 0.65);
+  background: rgba(251, 191, 36, 0.1);
+  color: #fde68a;
+}
+
+.account-subscription-resilier-hint {
+  margin: 10px 0 0;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  max-width: 420px;
+}
+
 .account-subscription-upgrade-banner {
   display: flex;
   align-items: flex-start;
