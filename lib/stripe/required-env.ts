@@ -46,10 +46,18 @@ export function formatStripeConfigError(
   const where =
     process.env.VERCEL === '1'
       ? 'Vercel → Settings → Environment Variables → Production, puis Redeploy'
-      : '.env.local';
+      : '.env.local (puis redémarrez le serveur : arrêtez npm run dev et relancez-le)';
 
   const scope =
     plan && period ? ` (plan ${plan}, période ${period})` : '';
 
-  return `Configuration Stripe incomplète${scope} : ${missing.join(', ')} manquant(s). Ajoutez-les dans ${where}.`;
+  const onlySecretKey =
+    missing.length === 1 && missing[0] === 'STRIPE_SECRET_KEY';
+
+  const extra =
+    onlySecretKey && process.env.VERCEL !== '1'
+      ? ' Après modification de .env.local, Next.js ne recharge pas les variables tant que le serveur n\'est pas redémarré.'
+      : '';
+
+  return `Configuration Stripe incomplète${scope} : ${missing.join(', ')} manquant(s). Ajoutez-les dans ${where}.${extra}`;
 }

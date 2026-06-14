@@ -3,6 +3,7 @@ import {
   getMissingStripeEnvKeys,
   getRequiredStripeEnvKeys,
 } from '@/lib/stripe/required-env';
+import { getStripe } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
 
 /**
@@ -19,14 +20,47 @@ export async function GET() {
       ? 'test'
       : 'unknown';
 
+  const invalidPrices: string[] = [];
+
+  if (missing.length === 0) {
+    try {
+      const stripe = getStripe();
+      for (const key of required.filter((k) => k.startsWith('STRIPE_PRICE_'))) {
+        const priceId = process.env[key]?.trim();
+        if (!priceId) continue;
+        try {
+          const price = await stripe.prices.retrieve(priceId);
+          if (mode === 'live' && !price.livemode) {
+            invalidPrices.push(`${key} (price test avec clé live)`);
+          }
+          if (mode === 'test' && price.livemode) {
+            invalidPrices.push(`${key} (price live avec clé test)`);
+          }
+        } catch {
+          invalidPrices.push(`${key} (introuvable pour cette clé)`);
+        }
+      }
+    } catch {
+      /* clé invalide — missing/invalid géré ailleurs */
+    }
+  }
+
+  const ok = missing.length === 0 && invalidPrices.length === 0;
+
+  let hint = 'Stripe semble configuré côté serveur.';
+  if (missing.length > 0) {
+    hint = formatStripeConfigError(missing);
+  } else if (invalidPrices.length > 0) {
+    hint =
+      'Les STRIPE_PRICE_* sur Vercel ne correspondent pas au mode live/test de STRIPE_SECRET_KEY. Relancez npm.cmd run stripe:sync, copiez les nouveaux price_... sur Vercel, puis redeploy.';
+  }
+
   return NextResponse.json({
-    ok: missing.length === 0,
+    ok,
     mode,
     missing,
+    invalidPrices,
     required,
-    hint:
-      missing.length > 0
-        ? formatStripeConfigError(missing)
-        : 'Stripe semble configuré côté serveur.',
+    hint,
   });
 }
