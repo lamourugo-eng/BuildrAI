@@ -313,7 +313,7 @@ export default function AccountSubscription({
             🔒
           </span>
           <div>
-            <strong>Passez à Business Accelerator. 99 €/mois</strong>
+            <strong>Passez à Business Accelerator. 79 €/mois</strong>
             <p>
               L&apos;analyse hebdomadaire et la bibliothèque de ressources sont incluses dans cette
               formule. Votre coach IA et votre parcours 180 jours restent actifs.
@@ -328,7 +328,7 @@ export default function AccountSubscription({
             🔒
           </span>
           <div>
-            <strong>Business Accelerator. 99 €/mois</strong>
+            <strong>Business Accelerator. 79 €/mois</strong>
             <p>
               Analyse hebdomadaire approfondie et bibliothèque complète de templates & prompts IA.
             </p>

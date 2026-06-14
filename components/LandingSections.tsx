@@ -339,7 +339,7 @@ type FeatureTier = 'free' | 'premium' | 'accelerator';
 const FEATURE_TIER_LABELS: Record<FeatureTier, string> = {
   free: 'Gratuit',
   premium: 'Premium. 29 €',
-  accelerator: 'Accelerator. 99 €',
+  accelerator: 'Accelerator. 79 €',
 };
 
 const FEATURE_GROUPS: {
@@ -399,7 +399,7 @@ const FEATURE_GROUPS: {
   },
   {
     tier: 'accelerator',
-    title: 'Accelerator. 99 €/mois',
+    title: 'Accelerator. 79 €/mois',
     subtitle: 'Tout Premium, plus analyse hebdo et bibliothèque complète.',
     items: [
       {
@@ -662,7 +662,7 @@ export function FAQ() {
       a: 'Le questionnaire entrepreneurial, l\'analyse de profil, les modèles business adaptés, un aperçu du parcours et votre espace personnel (vue d\'ensemble, profil, bloc-notes). Le coach IA, le parcours détaillé et Ma ville complète nécessitent Premium.',
     },
     {
-      q: 'Quelle différence entre Premium (29 €) et Accelerator (99 €) ?',
+      q: 'Quelle différence entre Premium (29 €) et Accelerator (79 €) ?',
       a: 'Premium inclut le coach IA illimité avec mémoire, le parcours 180 jours, Ma ville gamifiée et le suivi d\'activité. Accelerator ajoute l\'analyse hebdomadaire approfondie et la bibliothèque complète de ressources (templates, scripts, prompts IA).',
     },
     {
@@ -810,7 +810,7 @@ export function Footer() {
             <li><Link href="/assistance">Centre d&apos;aide</Link></li>
             <li><a href="mailto:Buildraimail@gmail.com">Buildraimail@gmail.com</a></li>
             <li><a href="#pricing">Premium. 29 €</a></li>
-            <li><a href="#pricing">Accelerator. 99 €</a></li>
+            <li><a href="#pricing">Accelerator. 79 €</a></li>
           </ul>
         </div>
       </div>

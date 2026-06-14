@@ -15,7 +15,7 @@ export function getPlanFromCookie(planCookie: string | undefined): PlanId | null
   return null;
 }
 
-/** Analyse hebdomadaire approfondie. Réservée au plan Business Accelerator (99 €/mois). */
+/** Analyse hebdomadaire approfondie. Réservée au plan Business Accelerator (79 €/mois). */
 export function hasGrowthSubscription(
   email: string | null | undefined,
   subscriptionCookie: string | undefined,

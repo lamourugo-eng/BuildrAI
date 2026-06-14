@@ -77,8 +77,8 @@ export const BILLING_PLANS: BillingPlan[] = [
     id: 'growth',
     name: 'Premium. Business Accelerator',
     desc: 'Pour aller plus loin. Analyses poussées, ressources et parcours business avancé.',
-    monthly: 99,
-    semester: semesterMonthlyEquivalent(99),
+    monthly: 79,
+    semester: semesterMonthlyEquivalent(79),
     features: [
       'Tout Premium (29 €), plus :',
       'Analyse hebdomadaire IA. Synchronisée parcours & coach',

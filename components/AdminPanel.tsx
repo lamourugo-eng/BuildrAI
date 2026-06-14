@@ -42,7 +42,7 @@ const SIMULATION_PRESETS: SimulationPreset[] = [
   },
   {
     id: 'growth-monthly',
-    label: 'Accelerator. 99 €/mois',
+    label: `Accelerator. ${BILLING_PLANS.find((p) => p.id === 'growth')!.monthly} €/mois`,
     hint: 'Premium + analyse hebdo + ressources',
     planId: 'growth',
     period: 'monthly',
@@ -183,7 +183,7 @@ export default function AdminPanel({ email, isSubscribed, currentPlanId }: Admin
                 <span
                   className={`admin-simulation-preset-tier admin-simulation-preset-tier--${preset.planId}`}
                 >
-                  {preset.planId === 'growth' ? '99 €' : '29 €'}
+                  {preset.planId === 'growth' ? `${getPlanById('growth')!.monthly} €` : '29 €'}
                 </span>
                 <strong>{preset.label}</strong>
                 <span>{preset.hint}</span>

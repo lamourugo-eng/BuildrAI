@@ -76,7 +76,7 @@ Chaque client connecté dispose d'un **dossier de suivi** persisté dans Supabas
 | ID interne | Nom Stripe | Mensuel | Semestriel (−30 %, 6 mois) |
 |------------|------------|---------|------------------------------|
 | `starter` | Premium | 29 € | 120 € (20 €/mois) |
-| `growth` | Premium — Business Accelerator | 99 € | 414 € (69 €/mois) |
+| `growth` | Premium — Business Accelerator | 79 € | 330 € (55 €/mois) |
 
 Pas d'essai gratuit 14 jours. Le plan **Gratuit** reste côté app uniquement (sans Stripe).
 

@@ -63,7 +63,7 @@ const DASHBOARD_SECTION_MAP: Record<DashboardSection, DashboardSectionDef> = {
     id: 'analyse',
     label: 'Analyse hebdo',
     icon: 'flow',
-    description: 'Bilan approfondi. Business Accelerator (99 €/mois)',
+    description: 'Bilan approfondi. Business Accelerator (79 €/mois)',
     href: '/espace?section=analyse',
     growthOnly: true,
   },

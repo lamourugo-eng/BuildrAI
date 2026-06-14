@@ -35,7 +35,7 @@ export function simplifyTerms(text: string, tier: CopyTier): string {
     [/\bAccelerator\b/g, 'formule avancée'],
     [/\bsynchronis(?:ée?|és?)\b/gi, 'alignée'],
     [/\broadmap\b/gi, 'plan d\'action'],
-    [/\bBusiness Accelerator\b/g, 'formule avancée (99 €)'],
+    [/\bBusiness Accelerator\b/g, 'formule avancée (79 €)'],
   ];
 
   let out = text;
@@ -165,11 +165,11 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
       analyse: pickCopy(tier, {
         beginner: {
           label: 'Bilan hebdo',
-          description: 'Résumé chaque semaine. Formule 99 €',
+          description: 'Résumé chaque semaine. Formule 79 €',
         },
         intermediate: {
           label: 'Analyse hebdo',
-          description: 'Bilan approfondi. Formule avancée (99 €)',
+          description: 'Bilan approfondi. Formule avancée (79 €)',
         },
         experienced: {
           label: 'Analyse hebdo',
@@ -179,7 +179,7 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
       ressources: pickCopy(tier, {
         beginner: {
           label: 'Modèles & aides',
-          description: 'Textes prêts à copier. Formule 99 €',
+          description: 'Textes prêts à copier. Formule 79 €',
         },
         intermediate: {
           label: 'Ressources',
@@ -433,7 +433,7 @@ Complétez le profil quiz ou décrivez directement votre contexte et vos contrai
     },
     resources: {
       lockedKicker: pickCopy(tier, {
-        beginner: 'Réservé formule 99 €',
+        beginner: 'Réservé formule 79 €',
         intermediate: 'Exclusif formule avancée',
         experienced: 'Business Accelerator',
       }),
@@ -444,17 +444,17 @@ Complétez le profil quiz ou décrivez directement votre contexte et vos contrai
       }),
       lockedBody: pickCopy(tier, {
         beginner:
-          'Votre formule actuelle inclut déjà le coach et le plan jour par jour. Les modèles complets (emails, pages web, scripts) sont dans la formule à 99 €/mois.',
+          'Votre formule actuelle inclut déjà le coach et le plan jour par jour. Les modèles complets (emails, pages web, scripts) sont dans la formule à 79 €/mois.',
         intermediate:
-          'Premium inclut coach et parcours 180 j. La bibliothèque complète est réservée à Business Accelerator (99 €/mois).',
+          'Premium inclut coach et parcours 180 j. La bibliothèque complète est réservée à Business Accelerator (79 €/mois).',
         experienced:
           'Premium couvre coach + roadmap 180j. Bibliothèque complète (22+ assets). Upgrade Accelerator.',
       }),
     },
     weekly: {
       lockedKicker: pickCopy(tier, {
-        beginner: 'Formule 99 €/mois',
-        intermediate: 'Exclusif 99 €/mois',
+        beginner: 'Formule 79 €/mois',
+        intermediate: 'Exclusif 79 €/mois',
         experienced: 'Business Accelerator',
       }),
       lockedTitle: pickCopy(tier, {
@@ -464,7 +464,7 @@ Complétez le profil quiz ou décrivez directement votre contexte et vos contrai
       }),
       lockedBody: pickCopy(tier, {
         beginner:
-          'Chaque semaine, un résumé clair de ce que vous avez fait et quoi faire ensuite. Disponible avec la formule à 99 €/mois.',
+          'Chaque semaine, un résumé clair de ce que vous avez fait et quoi faire ensuite. Disponible avec la formule à 79 €/mois.',
         intermediate:
           'Votre formule Premium inclut coach et parcours. L\'analyse approfondie est réservée au plan Business Accelerator.',
         experienced:

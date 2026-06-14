@@ -36,8 +36,8 @@ const PLANS = [
     name: 'Premium — Business Accelerator',
     description:
       'Pour aller plus loin — analyses poussées, ressources et roadmap business avancée.',
-    monthly: 99,
-    semesterMonthly: Math.round(99 * (1 - SEMESTER_DISCOUNT_PERCENT / 100)),
+    monthly: 79,
+    semesterMonthly: Math.round(79 * (1 - SEMESTER_DISCOUNT_PERCENT / 100)),
   },
 ];
 
@@ -268,7 +268,7 @@ async function main() {
     `  Premium — 29 €/mois · 120 € / 6 mois (20 €/mois équivalent, -${SEMESTER_DISCOUNT_PERCENT} %)`
   );
   console.log(
-    `  Premium — Business Accelerator — 99 €/mois · 414 € / 6 mois (69 €/mois équivalent, -${SEMESTER_DISCOUNT_PERCENT} %)`
+    `  Premium — Business Accelerator — 79 €/mois · 330 € / 6 mois (55 €/mois équivalent, -${SEMESTER_DISCOUNT_PERCENT} %)`
   );
   console.log('  Sans essai gratuit · Plan Scale archivé si présent\n');
 

@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error:
-            'Analyse hebdomadaire réservée au plan Premium. Business Accelerator (99 €/mois).',
+            'Analyse hebdomadaire réservée au plan Premium. Business Accelerator (79 €/mois).',
         },
         { status: 403 }
       );

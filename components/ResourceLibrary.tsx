@@ -332,13 +332,13 @@ export default function ResourceLibrary({
             <p>
               Templates, scripts, prompts et checklists expliqués pas à pas. Le complément
               idéal du coach IA et du parcours 180 jours. Inclus dans la formule{' '}
-              <strong>99 €/mois</strong> (Premium 29 € = coach + parcours sans cette bibliothèque).
+              <strong>79 €/mois</strong> (Premium 29 € = coach + parcours sans cette bibliothèque).
             </p>
           </div>
         </header>
         <LockedPreview />
         <Link href="/subscribe?plan=growth&period=monthly" className="btn btn-primary btn-lg">
-          Passer à Business Accelerator. 99 €/mois
+          Passer à Business Accelerator. 79 €/mois
         </Link>
       </div>
     );

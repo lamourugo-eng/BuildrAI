@@ -424,7 +424,7 @@ export default function WeeklyDeepAnalysis({
           />
         </div>
         <Link href="/subscribe?plan=growth&period=monthly" className="btn btn-primary btn-lg">
-          Passer à Business Accelerator. 99 €/mois
+          Passer à Business Accelerator. 79 €/mois
         </Link>
       </div>
     );

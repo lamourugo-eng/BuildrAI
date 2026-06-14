@@ -168,7 +168,7 @@ export default function DashboardHeader({
               href: nav.href,
               active: activeSection === section.id,
               locked: nav.locked,
-              badge: nav.growthBadge ? '99€' : undefined,
+              badge: nav.growthBadge ? `${getPlanById('growth')?.monthly ?? 79}€` : undefined,
             } satisfies SideNavItem;
           }),
         })),

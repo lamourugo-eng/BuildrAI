@@ -29,7 +29,7 @@ export function resolveSubscriptionTier(
   return 'starter';
 }
 
-/** Business Accelerator (99 €). Analyse hebdo + bibliothèque. */
+/** Business Accelerator (79 €). Analyse hebdo + bibliothèque. */
 export function hasGrowthAccess(
   isSubscribed: boolean,
   serverPlanId?: PlanId | null,

@@ -500,8 +500,8 @@ export default function AccountDashboard({
                           <p className="dash-card-value">Business Accelerator</p>
                           <p className="dash-card-meta">
                             {isSubscribed
-                              ? 'Inclus dans la formule 99 €/mois. Cliquez pour upgrader'
-                              : 'Bilan stratégique chaque semaine. Formule 99 €/mois'}
+                              ? 'Inclus dans la formule 79 €/mois. Cliquez pour upgrader'
+                              : 'Bilan stratégique chaque semaine. Formule 79 €/mois'}
                           </p>
                         </article>
                         <article
@@ -527,8 +527,8 @@ export default function AccountDashboard({
                           <p className="dash-card-value">Bibliothèque</p>
                           <p className="dash-card-meta">
                             {isSubscribed
-                              ? 'Templates & prompts. Formule 99 €/mois'
-                              : 'Templates, scripts & prompts. Formule 99 €/mois'}
+                              ? 'Templates & prompts. Formule 79 €/mois'
+                              : 'Templates, scripts & prompts. Formule 79 €/mois'}
                           </p>
                         </article>
                       </>

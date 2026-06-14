@@ -727,7 +727,7 @@ Budget de lancement : [serré / moyen / confortable]`,
           title: 'Tableau de suivi des objectifs',
           description: 'KPIs hebdomadaires à synchroniser avec l’analyse hebdo Accelerator.',
           howToUse:
-            'Copiez le tableau, mettez à jour chaque dimanche. Comparez avec votre analyse hebdomadaire si vous êtes en formule 99 €.',
+            'Copiez le tableau, mettez à jour chaque dimanche. Comparez avec votre analyse hebdomadaire si vous êtes en formule 79 €.',
           timeEstimate: '10 min / semaine',
           coachPhase: 8,
           roadmapChapter: 2,

@@ -243,7 +243,7 @@ export const RESOURCE_UI: Record<
 export const RESOURCE_FAQ = [
   {
     q: 'Cette bibliothèque est incluse dans quelle formule ?',
-    a: 'Exclusivement dans Business Accelerator (99 €/mois). Premium (29 €) inclut le coach IA et le parcours 180 jours, pas cette bibliothèque complète.',
+    a: 'Exclusivement dans Business Accelerator (79 €/mois). Premium (29 €) inclut le coach IA et le parcours 180 jours, pas cette bibliothèque complète.',
   },
   {
     q: 'Dois-je tout lire avant de commencer ?',
