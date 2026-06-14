@@ -44,7 +44,7 @@ Sur **Settings → Environment Variables** (Production), copiez depuis `.env.loc
 
 | Variable | Valeur prod |
 |----------|-------------|
-| `NEXT_PUBLIC_APP_URL` | `https://buildrai-xi.vercel.app` |
+| `NEXT_PUBLIC_APP_URL` | `https://usebuildrai.com` |
 | Autres clés | Identiques à `.env.local` (Supabase, OpenAI, Stripe, ADMIN_EMAILS) |
 
 Ne jamais mettre `http://localhost:3000` en production sur Vercel.
@@ -53,8 +53,8 @@ Ne jamais mettre `http://localhost:3000` en production sur Vercel.
 
 1. Copier l'URL et les clés dans `.env.local`
 2. Dashboard Supabase → **Authentication → URL Configuration** :
-   - Site URL : `https://buildrai-xi.vercel.app`
-   - Redirect URLs : `https://buildrai-xi.vercel.app/auth/callback/**` et `http://localhost:3000/auth/callback/**`
+   - Site URL : `https://usebuildrai.com`
+   - Redirect URLs : `https://usebuildrai.com/auth/callback/**` et `http://localhost:3000/auth/callback/**`
    - En local, les liens email ne fonctionnent pas sur téléphone (localhost). Utilisez l'URL de prod.
 3. Vercel : `NEXT_PUBLIC_APP_URL` = même URL que le Site URL Supabase
 4. `/login` — inscription / connexion par email
