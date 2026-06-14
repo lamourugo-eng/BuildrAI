@@ -30,15 +30,15 @@ export default function LandingStickyCta({ onOpenQuiz, enabled }: LandingStickyC
     <div className="landing-sticky-cta" role="region" aria-label="Commencer maintenant">
       <div className="container landing-sticky-cta-inner">
         <p className="landing-sticky-cta-copy">
-          <strong>Prêt à avancer ?</strong>
-          <span>Quiz 4 min · sans carte bancaire</span>
+          <strong>Passez de l&apos;idée à l&apos;action</strong>
+          <span>Sans carte · accès immédiat</span>
         </p>
         <div className="landing-sticky-cta-actions">
-          <button type="button" className="btn btn-primary" onClick={onOpenQuiz}>
-            Quiz gratuit
+          <button type="button" className="btn btn-primary landing-cta-primary" onClick={onOpenQuiz}>
+            Créer mon plan
           </button>
           <Link href="/#newsletter" className="btn btn-outline">
-            Essai 24 h
+            Coach 24h
           </Link>
         </div>
       </div>

@@ -15,7 +15,9 @@ import {
   Footer,
   Hero,
   How,
+  LandingJourney,
   LandingOfferStrip,
+  LandingTrust,
   Pricing,
   ScrollAnimations,
 } from './LandingSections';
@@ -90,6 +92,8 @@ export default function HomePage({
             onOpenLogin={() => setLoginOpen(true)}
           />
           <LandingOfferStrip userEmail={userEmail} onOpenQuiz={openQuiz} />
+          <LandingJourney onOpenQuiz={openQuiz} />
+          <LandingTrust />
           <How onOpenQuiz={openQuiz} />
           <Features onOpenQuiz={openQuiz} />
           <Pricing onOpenLogin={() => setLoginOpen(true)} userEmail={userEmail} />

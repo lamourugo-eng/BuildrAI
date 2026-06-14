@@ -5,7 +5,7 @@ import LandingNewsletter from '@/components/LandingNewsletter';
 import { getPublicPricingPlans, SEMESTER_DISCOUNT_PERCENT, formatSemesterBillingHint } from '@/lib/stripe/plans';
 import type { BillingPeriod } from '@/lib/stripe';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 
 interface LandingSectionsProps {
   onOpenQuiz?: () => void;
@@ -17,9 +17,10 @@ interface HeroProps extends LandingSectionsProps {
 }
 
 const LANDING_TRUST_ITEMS = [
-  'Compte gratuit',
-  'Sans carte bancaire',
-  'Annulation à tout moment',
+  'Plan adapté à votre profil',
+  'Coach disponible 24/7',
+  'Parcours progressif 180 jours',
+  'Sans engagement',
 ] as const;
 
 const LANDING_SOCIAL_PROOF = [
@@ -27,6 +28,33 @@ const LANDING_SOCIAL_PROOF = [
   { value: '180 j', label: 'de parcours guidé' },
   { value: '24 h', label: 'Premium offertes' },
   { value: '0 €', label: 'pour commencer' },
+] as const;
+
+const JOURNEY_PIPELINE = [
+  { icon: '🎯', label: 'Quiz', desc: '9 questions sur vous' },
+  { icon: '◎', label: 'Analyse du profil', desc: 'Forces & personnalité' },
+  { icon: '◈', label: 'Choix du business', desc: 'SaaS, freelance, OFM…' },
+  { icon: '🗺️', label: 'Plan 180 jours', desc: 'Tâches jour par jour' },
+  { icon: '🧠', label: 'Coach IA quotidien', desc: 'Guidé étape par étape' },
+  { icon: '🏙️', label: 'Évolution', desc: 'Ville & progression' },
+] as const;
+
+const GAMIFICATION_HIGHLIGHTS = [
+  {
+    icon: '👤',
+    title: 'Personnage qui évolue',
+    desc: 'Votre avatar fondateur grandit avec votre régularité et vos victoires.',
+  },
+  {
+    icon: '🏗️',
+    title: 'Ville qui se construit',
+    desc: 'Chaque action coach et parcours débloque des bâtiments dans votre empire.',
+  },
+  {
+    icon: '📈',
+    title: 'Progression visible',
+    desc: 'Jours cochés, chapitres, XP : vous voyez concrètement avancer.',
+  },
 ] as const;
 
 export function LandingOfferStrip({
@@ -50,15 +78,15 @@ export function LandingOfferStrip({
         </div>
         <div className="landing-offer-strip-actions">
           <Link href="/#newsletter" className="btn btn-primary">
-            Activer l&apos;essai 24 h
+            Tester le coach IA Premium 24h
           </Link>
           {onOpenQuiz ? (
             <button type="button" className="btn btn-outline" onClick={onOpenQuiz}>
-              Quiz d&apos;abord
+              Créer mon plan gratuitement
             </button>
           ) : (
             <Link href="/?quiz=1" className="btn btn-outline">
-              Quiz d&apos;abord
+              Créer mon plan gratuitement
             </Link>
           )}
         </div>
@@ -73,43 +101,56 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
       <div className="hero-glow" aria-hidden="true">
         <span className="hero-orb hero-orb--1" />
         <span className="hero-orb hero-orb--2" />
+        <span className="hero-orb hero-orb--3" />
       </div>
       <div className="container hero-grid">
         <div className="hero-content hero-reveal">
           <div className="badge">
             <span className="badge-dot" />
-            24 h Premium offertes · sans carte bancaire
+            Parcours entrepreneurial · 180 jours
           </div>
+          <p className="hero-lead">
+            Vous avez une idée de business mais ne savez pas quoi faire ensuite ?
+          </p>
           <h1>
-            Lancez votre business
-            <em>avec un plan clair jour par jour</em>
+            Trouvez votre business idéal et construisez-le
+            <em> avec un coach IA personnalisé pendant 180 jours</em>
           </h1>
           <p className="hero-subtitle">
-            Quiz gratuit en 4 minutes, coach IA qui connaît votre projet et parcours 180 jours
-            calibré sur votre modèle (SaaS, freelance, OFM…). Tout au même endroit.
+            BuildrAI vous accompagne de l&apos;idée à l&apos;action : découvrez le modèle qui
+            correspond à votre profil, recevez un plan sur mesure et avancez chaque jour avec
+            votre coach.
           </p>
+          <ul className="hero-benefits">
+            <li>Découvrez quel business correspond à votre profil</li>
+            <li>L&apos;IA crée un plan personnalisé sur 180 jours</li>
+            <li>Le coach vous accompagne au quotidien, étape par étape</li>
+          </ul>
           <div className="hero-cta">
             <a
               href="#quiz"
-              className="btn btn-primary btn-lg"
+              className="btn btn-primary btn-lg landing-cta-primary"
               id="hero-quiz-cta"
               onClick={(e) => {
                 e.preventDefault();
                 onOpenQuiz?.();
               }}
             >
-              Faire le quiz gratuit · 4 min
+              Créer mon plan gratuitement
             </a>
             {!userEmail ? (
-              <Link href="/#newsletter" className="btn btn-outline btn-lg">
-                Essai Premium 24 h
+              <Link href="/#newsletter" className="btn btn-outline btn-lg landing-cta-secondary">
+                Tester le coach IA Premium 24h
               </Link>
             ) : (
-              <Link href="/#features" className="btn btn-outline btn-lg">
-                Voir les outils
+              <Link href="/espace" className="btn btn-outline btn-lg landing-cta-secondary">
+                Accéder à mon espace
               </Link>
             )}
           </div>
+          <p className="hero-cta-note">
+            Sans carte bancaire · Accès immédiat · Essai coach 24 h offert
+          </p>
           <ul className="landing-trust-row" aria-label="Garanties">
             {LANDING_TRUST_ITEMS.map((item) => (
               <li key={item}>{item}</li>
@@ -131,12 +172,10 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
                 </svg>
               </span>
               <div className="hero-free-hint-body">
-                <strong>Compte gratuit. Sans carte bancaire</strong>
+                <strong>Passez de l&apos;idée à l&apos;action, sans vous perdre</strong>
                 <p>
-                  Questionnaire, profil entrepreneurial, modèles business adaptés et aperçu du
-                  parcours. Passez à Premium (29 €/mois) pour le coach IA, le parcours complet
-                  et Ma ville. Ou Accelerator (99 €/mois) pour l&apos;analyse hebdo et les
-                  ressources.
+                  Quiz gratuit en 4 minutes, profil entrepreneurial, modèle business adapté et
+                  aperçu du parcours. Puis testez Premium 24 h pour le coach IA et Ma ville.
                 </p>
                 {onOpenLogin ? (
                   <button type="button" className="hero-free-hint-link" onClick={onOpenLogin}>
@@ -204,6 +243,97 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
             </div>
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+/** Parcours produit : différenciation vs simple chatbot + gamification */
+export function LandingJourney({ onOpenQuiz }: LandingSectionsProps = {}) {
+  return (
+    <section className="landing-section landing-section--journey" id="journey">
+      <div className="landing-journey-glow" aria-hidden="true" />
+      <div className="container">
+        <div className="section-header landing-section-header landing-section-header--center">
+          <span className="section-tag">La méthode BuildrAI</span>
+          <h2>Plus qu&apos;un chatbot IA : un parcours complet</h2>
+          <p>
+            De votre profil à votre empire entrepreneurial — chaque étape est connectée,
+            personnalisée et visible. Vous ne discutez pas avec une IA : vous construisez
+            votre business.
+          </p>
+        </div>
+
+        <div className="landing-journey-flow" aria-label="Parcours BuildrAI">
+          {JOURNEY_PIPELINE.map((step, index) => (
+            <article
+              key={step.label}
+              className="landing-journey-node animate-on-scroll"
+              style={{ '--journey-i': index } as CSSProperties}
+            >
+              <div className="landing-journey-node-icon">{step.icon}</div>
+              <strong>{step.label}</strong>
+              <span>{step.desc}</span>
+              {index < JOURNEY_PIPELINE.length - 1 && (
+                <span className="landing-journey-connector" aria-hidden="true" />
+              )}
+            </article>
+          ))}
+        </div>
+
+        <div className="landing-gamification">
+          <header className="landing-gamification-head animate-on-scroll">
+            <span className="section-tag">Motivation intégrée</span>
+            <h3>Votre progression devient visible</h3>
+            <p>
+              BuildrAI gamifie votre lancement pour que chaque jour compte — sans perdre le
+              sérieux du parcours business.
+            </p>
+          </header>
+          <div className="landing-gamification-grid">
+            {GAMIFICATION_HIGHLIGHTS.map((item) => (
+              <article key={item.title} className="landing-gamification-card animate-on-scroll">
+                <span className="landing-gamification-icon" aria-hidden="true">
+                  {item.icon}
+                </span>
+                <h4>{item.title}</h4>
+                <p>{item.desc}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div className="landing-journey-cta animate-on-scroll">
+          {onOpenQuiz ? (
+            <button type="button" className="btn btn-primary btn-lg landing-cta-primary" onClick={onOpenQuiz}>
+              Créer mon plan gratuitement
+            </button>
+          ) : (
+            <Link href="/?quiz=1" className="btn btn-primary btn-lg landing-cta-primary">
+              Créer mon plan gratuitement
+            </Link>
+          )}
+          <Link href="/#newsletter" className="btn btn-outline btn-lg">
+            Tester le coach IA Premium 24h
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function LandingTrust() {
+  return (
+    <section className="landing-trust-band" aria-label="Réassurance">
+      <div className="container">
+        <ul className="landing-trust-band-grid">
+          {LANDING_TRUST_ITEMS.map((item) => (
+            <li key={item} className="landing-trust-band-item animate-on-scroll">
+              <span className="landing-trust-band-icon" aria-hidden="true">✓</span>
+              {item}
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
@@ -350,23 +480,23 @@ export function How({ onOpenQuiz }: LandingSectionsProps = {}) {
   const steps = [
     {
       num: '01',
-      title: 'Quiz gratuit · 4 min',
-      desc: '9 questions pour découvrir votre profil, budget et modèles business adaptés (SaaS, freelance, OFM…).',
+      title: 'Découvrez votre profil entrepreneurial',
+      desc: '9 questions en 4 minutes : personnalité, budget, niveau tech. Vous savez enfin quel type de business vous correspond.',
     },
     {
       num: '02',
-      title: 'Compte gratuit',
-      desc: 'Espace personnel, profil détaillé, bloc-notes et aperçu du parcours. Sans carte bancaire.',
+      title: 'Recevez votre stratégie personnalisée',
+      desc: 'Analyse de profil, modèles business adaptés (SaaS, freelance, e-commerce…) et plan 180 jours calibré sur votre choix.',
     },
     {
       num: '03',
-      title: 'Essai Premium 24 h',
-      desc: 'Newsletter = coach IA, parcours 180 jours et Ma ville offerts 24 h. Retour auto au plan Gratuit.',
+      title: 'Avancez chaque jour avec votre coach IA',
+      desc: 'Micro-étapes concrètes, outils recommandés, mémoire de votre projet. Le coach connaît votre parcours jour J.',
     },
     {
       num: '04',
-      title: 'Premium ou Accelerator',
-      desc: '29 €/mois pour construire au quotidien. 99 €/mois pour analyse hebdo et ressources avancées.',
+      title: 'Construisez votre empire entrepreneurial',
+      desc: 'Cochez vos jours, débloquez Ma ville, suivez votre progression. De l\'idée aux premiers clients, sans vous perdre.',
     },
   ];
 
@@ -375,9 +505,10 @@ export function How({ onOpenQuiz }: LandingSectionsProps = {}) {
       <div className="container">
         <div className="section-header landing-section-header">
           <span className="section-tag">Comment ça marche</span>
-          <h2>De l&apos;idée à l&apos;action en 4 étapes</h2>
+          <h2>De l&apos;idée à l&apos;action, étape par étape</h2>
           <p>
-            Commencez sans risque. Chaque étape vous rapproche de vos premiers clients.
+            Une expérience de lancement structurée — pas une simple conversation avec une IA.
+            Commencez gratuitement, testez Premium 24 h, avancez à votre rythme.
           </p>
         </div>
         <div className="landing-steps">
@@ -395,16 +526,16 @@ export function How({ onOpenQuiz }: LandingSectionsProps = {}) {
         </div>
         <div className="landing-how-cta">
           {onOpenQuiz ? (
-            <button type="button" className="btn btn-primary btn-lg" onClick={onOpenQuiz}>
-              Commencer par le quiz
+            <button type="button" className="btn btn-primary btn-lg landing-cta-primary" onClick={onOpenQuiz}>
+              Créer mon plan gratuitement
             </button>
           ) : (
-            <Link href="/?quiz=1" className="btn btn-primary btn-lg">
-              Commencer par le quiz
+            <Link href="/?quiz=1" className="btn btn-primary btn-lg landing-cta-primary">
+              Créer mon plan gratuitement
             </Link>
           )}
           <Link href="/#newsletter" className="btn btn-outline btn-lg">
-            Essai Premium 24 h
+            Tester le coach IA Premium 24h
           </Link>
         </div>
       </div>
@@ -606,33 +737,35 @@ export function CTA({ onOpenQuiz, userEmail = null }: CTAProps = {}) {
     <section className="cta landing-section landing-section--cta">
       <div className="container">
         <div className="cta-box landing-cta-box">
-          <span className="section-tag">Prêt à commencer ?</span>
-          <h2>Votre profil entrepreneurial en 4 minutes</h2>
+          <span className="section-tag">Prêt à lancer ?</span>
+          <h2>Passez de l&apos;idée à l&apos;action dès aujourd&apos;hui</h2>
           <p>
-            Faites le quiz, créez votre compte gratuit et testez Premium 24 h si vous le souhaitez.
-            Vous avancez à votre rythme, sans engagement.
+            Créez votre plan personnalisé en 4 minutes, testez le coach IA Premium 24 h sans
+            carte bancaire, puis avancez jour après jour — sans engagement.
           </p>
           <div className="landing-cta-actions">
             {onOpenQuiz ? (
-              <button type="button" className="btn btn-primary btn-lg" onClick={onOpenQuiz}>
-                Faire le quiz gratuit
+              <button type="button" className="btn btn-primary btn-lg landing-cta-primary" onClick={onOpenQuiz}>
+                Créer mon plan gratuitement
               </button>
             ) : (
-              <Link href="/?quiz=1" className="btn btn-primary btn-lg">
-                Faire le quiz gratuit
+              <Link href="/?quiz=1" className="btn btn-primary btn-lg landing-cta-primary">
+                Créer mon plan gratuitement
               </Link>
             )}
             {!userEmail ? (
               <Link href="/#newsletter" className="btn btn-outline btn-lg">
-                Essai Premium 24 h
+                Tester le coach IA Premium 24h
               </Link>
             ) : (
-              <Link href="/#pricing" className="btn btn-outline btn-lg">
-                Voir les tarifs
+              <Link href="/espace" className="btn btn-outline btn-lg">
+                Mon espace
               </Link>
             )}
           </div>
-          <span className="cta-note">Gratuit pour commencer · Sans carte bancaire · 1 essai 24 h par compte</span>
+          <span className="cta-note">
+            Plan adapté à votre profil · Coach 24/7 · Parcours 180 jours · Sans engagement
+          </span>
           {!userEmail && (
             <LandingNewsletter userEmail={userEmail} variant="compact" />
           )}
@@ -651,13 +784,14 @@ export function Footer() {
             <span className="logo-icon">◈</span>
             BuildrAI
           </a>
-          <p>Un coach IA et un parcours structuré pour les créateurs qui veulent passer à l&apos;action.</p>
+          <p>Un parcours entrepreneurial structuré — du profil à l&apos;action, avec un coach IA à vos côtés.</p>
         </div>
         <div className="footer-links">
           <h4>Produit</h4>
           <ul>
             <li><a href="#features">Outils</a></li>
             <li><a href="#pricing">Tarifs</a></li>
+            <li><a href="#journey">La méthode</a></li>
             <li><a href="#how">Comment ça marche</a></li>
             <li><a href="#faq">FAQ</a></li>
           </ul>
