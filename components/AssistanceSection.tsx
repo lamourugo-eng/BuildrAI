@@ -7,7 +7,7 @@ const CONTACT_EMAIL = 'Buildraimail@gmail.com';
 const VISITOR_TOPICS = [
   {
     q: 'Comment découvrir mon profil entrepreneurial ?',
-    a: 'Le questionnaire est gratuit et accessible sans compte. Depuis l\'accueil, clique sur « Découvrir mon profil » et répondez aux 9 questions.',
+    a: 'Le questionnaire est gratuit et accessible sans compte. Depuis l\'accueil, clique sur « Découvrir mon profil » et réponds aux 9 questions.',
   },
   {
     q: 'Dois-je créer un compte ?',
@@ -23,14 +23,14 @@ const VISITOR_TOPICS = [
   },
   {
     q: 'Je n\'arrive pas à créer mon compte',
-    a: 'Vérifie que ton mot de passe fait au moins 6 caractères. Si tu ne recevez pas l\'email de confirmation, attendez une heure (limite d\'envoi) ou contactez-nous.',
+    a: 'Vérifie que ton mot de passe fait au moins 6 caractères. Si tu ne reçois pas l\'email de confirmation, attends une heure (limite d\'envoi) ou contacte-nous.',
   },
 ];
 
 const ACCOUNT_TOPICS = [
   {
     q: 'Où retrouver mon profil et mon espace ?',
-    a: 'Connecte-toi puis ouvrez « Mon espace » (/espace). Ton profil entrepreneurial et ton tableau de bord y sont accessibles.',
+    a: 'Connecte-toi puis ouvre « Mon espace » (/espace). Ton profil entrepreneurial et ton tableau de bord y sont accessibles.',
   },
   {
     q: 'Comment débloquer le coach IA ?',
@@ -38,18 +38,18 @@ const ACCOUNT_TOPICS = [
   },
   {
     q: 'Mot de passe oublié',
-    a: 'Sur la page Connexion, utilisez « Mot de passe oublié ? ». Si l\'email n\'arrive pas, contactez-nous depuis l\'assistance une fois abonné Premium.',
+    a: 'Sur la page Connexion, utilise « Mot de passe oublié ? ». Si l\'email n\'arrive pas, contacte-nous depuis l\'assistance une fois abonné Premium.',
   },
   {
     q: 'Comment annuler mon abonnement ?',
-    a: 'Espace → Abonnement → « Gérer ou résilier mon abonnement ». Le portail Stripe sécurisé s\'ouvre pour annuler en un clic. Tu conservez l\'accès jusqu\'à la fin de la période payée.',
+    a: 'Espace → Abonnement → « Gérer ou résilier mon abonnement ». Le portail Stripe sécurisé s\'ouvre pour annuler en un clic. Tu conserves l\'accès jusqu\'à la fin de la période payée.',
   },
 ];
 
 const PREMIUM_TOPICS = [
   {
     q: 'Le coach ne répond pas',
-    a: 'Vérifie ton connexion et réessayez. Si le problème persiste, déconnecte-toi puis reconnecte-toi. Contacte directement le créateur du site par email en précisant l\'heure du incident.',
+    a: 'Vérifie ta connexion et réessaie. Si le problème persiste, déconnecte-toi puis reconnecte-toi. Contacte directement le créateur du site par email en précisant l\'heure de l\'incident.',
   },
   {
     q: 'Ma progression n\'est pas sauvegardée',
@@ -57,7 +57,7 @@ const PREMIUM_TOPICS = [
   },
   {
     q: 'Comment nous contacter ?',
-    a: `Utilise la section « Une question sans réponse ? » en bas de cette page. Tu contactez directement le créateur du site (${CONTACT_EMAIL}), réservé aux abonnés Premium.`,
+    a: `Utilise la section « Une question sans réponse ? » en bas de cette page. Tu contactes directement le créateur du site (${CONTACT_EMAIL}), réservé aux abonnés Premium.`,
   },
 ];
 
@@ -95,8 +95,8 @@ export default function AssistanceSection({
           <h2>Comment puis-je t'aider ?</h2>
           <p>
             {isLoggedIn
-              ? `Connecté en tant que ${userEmail}. Retrouvez ici les réponses aux questions les plus fréquentes.`
-              : 'Que tu ayez un compte ou non, trouvez rapidement une réponse. Les abonnés Premium peuvent écrire directement au créateur du site.'}
+              ? `Connecté en tant que ${userEmail}. Retrouve ici les réponses aux questions les plus fréquentes.`
+              : 'Que tu ayez un compte ou non, trouve rapidement une réponse. Les abonnés Premium peuvent écrire directement au créateur du site.'}
           </p>
         </header>
       )}
@@ -104,7 +104,7 @@ export default function AssistanceSection({
       {variant === 'dashboard' && (
         <p className="account-panel-intro">
           {isSubscribed
-            ? 'Besoin d\'aide ? Consulte les guides ci-dessous ou contactez directement le créateur du site par email. Réponse sous 24 à 48 h ouvrées.'
+            ? 'Besoin d\'aide ? Consulte les guides ci-dessous ou contacte directement le créateur du site par email. Réponse sous 24 à 48 h ouvrées.'
             : 'Besoin d\'aide ? Consulte les guides ci-dessous. Le contact par email (directement avec le créateur du site) est réservé aux abonnés Premium.'}
         </p>
       )}
@@ -231,7 +231,7 @@ export default function AssistanceSection({
             <h3>Une question sans réponse ?</h3>
             <p>
               Le contact par email (directement avec le créateur du site) est réservé aux abonnés
-              Premium et Business Accelerator. Consulte les FAQ ci-dessus ou passez à une formule
+              Premium et Business Accelerator. Consulte les FAQ ci-dessus ou passe à une formule
               payante pour lui écrire.
             </p>
           </div>

@@ -83,7 +83,7 @@ export default function ResetPasswordForm() {
       setErrorMsg(
         err instanceof Error
           ? err.message
-          : 'Impossible de mettre à jour le mot de passe. Réessayez.'
+          : 'Impossible de mettre à jour le mot de passe. Réessaie.'
       );
     }
   }
@@ -94,7 +94,7 @@ export default function ResetPasswordForm() {
         <p className="auth-note">Vérification du lien de réinitialisation…</p>
         <p className="auth-note">
           Si rien ne se passe, le lien a peut-être expiré.{' '}
-          <a href="/login">Demandez-en un nouveau</a>.
+          <a href="/login">Demande-en un nouveau</a>.
         </p>
       </div>
     );

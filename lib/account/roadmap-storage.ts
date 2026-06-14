@@ -1,6 +1,7 @@
 import type { BusinessId } from '@/lib/quiz/data';
 
 export const ROADMAP_PROGRESS_KEY = 'buildrai_roadmap_progress';
+export const ROADMAP_PROGRESS_EVENT = 'buildrai:roadmap-progress';
 
 export interface RoadmapProgress {
   businessId: BusinessId;
@@ -21,9 +22,19 @@ export function loadRoadmapProgress(): RoadmapProgress | null {
   }
 }
 
-export function saveRoadmapProgress(progress: RoadmapProgress): void {
+export function saveRoadmapProgress(
+  progress: RoadmapProgress,
+  options?: { skipServerSync?: boolean }
+): void {
   if (typeof window === 'undefined') return;
   localStorage.setItem(ROADMAP_PROGRESS_KEY, JSON.stringify(progress));
+  window.dispatchEvent(new Event(ROADMAP_PROGRESS_EVENT));
+
+  if (!options?.skipServerSync) {
+    void import('@/lib/account/roadmap-sync').then(({ syncRoadmapProgressToServer }) => {
+      void syncRoadmapProgressToServer(progress);
+    });
+  }
 }
 
 export function toggleRoadmapDay(

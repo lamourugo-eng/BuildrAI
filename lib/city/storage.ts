@@ -6,6 +6,7 @@ import {
   type EntrepreneurProfile,
   type FounderAvatar,
 } from '@/lib/city/avatar-data';
+import { emitCityRefresh } from '@/lib/city/events';
 
 export const CITY_KEY = 'buildrai_city';
 const LEGACY_REWARDS_KEY = 'buildrai_rewards';
@@ -69,7 +70,11 @@ function normalizeAvatar(raw: unknown): FounderAvatar | null {
     a.createdAt
   ) {
     const { hairstyle: _h, ...rest } = a as Partial<FounderAvatar & { hairstyle?: string }>;
-    return { ...rest, name: rest.name || 'Fondateur', gender: 'neutral' } as FounderAvatar;
+    return {
+      ...rest,
+      name: rest.name || 'Fondateur',
+      gender: rest.gender ?? 'neutral',
+    } as FounderAvatar;
   }
 
   return null;
@@ -109,6 +114,10 @@ export function loadCityStorage(): CityStorageData {
 function saveCity(data: CityStorageData) {
   if (typeof window === 'undefined') return;
   localStorage.setItem(CITY_KEY, JSON.stringify(data));
+  emitCityRefresh();
+  void import('@/lib/city/city-sync').then(({ syncCityDataToServer }) => {
+    void syncCityDataToServer(data);
+  });
 }
 
 export function loadFounderAvatar(): FounderAvatar | null {

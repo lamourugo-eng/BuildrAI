@@ -5,8 +5,8 @@ import AssistanceSection from '@/components/AssistanceSection';
 import AccountNotepad from '@/components/AccountNotepad';
 import AccountProfile from '@/components/AccountProfile';
 import CityView from '@/components/CityView';
+import DashFounderPath from '@/components/dashboard/DashFounderPath';
 import DashCityPreview from '@/components/dashboard/DashCityPreview';
-import DashNextStep from '@/components/dashboard/DashNextStep';
 import { DashMobileNav, DashSidebar } from '@/components/dashboard/DashWorkspaceNav';
 import { useEntrepreneurCopy } from '@/components/EntrepreneurCopyProvider';
 import AccountSubscription from '@/components/AccountSubscription';
@@ -16,7 +16,8 @@ import { loadLocalNotepad, notepadPreview } from '@/lib/account/notepad-storage'
 import { getPlanById } from '@/lib/stripe/plans';
 import { businessProfiles, type BusinessId } from '@/lib/quiz/data';
 import { loadChosenBusiness, loadQuizProfile } from '@/lib/quiz/profile-storage';
-import { hydrateQuizProfileFromServer } from '@/lib/quiz/profile-sync';
+import { resolveActiveBusinessId } from '@/lib/quiz/resolve-active-business';
+import { hydrateUserDataFromServer } from '@/lib/account/user-data-sync';
 import { computeCitySnapshot } from '@/lib/city/engine';
 import { CITY_REFRESH_EVENT } from '@/lib/city/events';
 import {
@@ -47,7 +48,7 @@ import {
 } from '@/lib/dashboard/sections';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import type { PlanId } from '@/lib/stripe';
 
 export type { DashboardSection };
@@ -74,8 +75,8 @@ export default function AccountDashboard({
   const [city, setCity] = useState(() =>
     computeCitySnapshot(loadAccountAnalytics(), isSubscribed)
   );
-  const [profile, setProfile] = useState(loadQuizProfile());
-  const [chosenId, setChosenId] = useState(loadChosenBusiness());
+  const [profile, setProfile] = useState<ReturnType<typeof loadQuizProfile>>(null);
+  const [chosenId, setChosenId] = useState<BusinessId | null>(null);
   const [newBuildings, setNewBuildings] = useState<string[]>([]);
   const [notepadSnippet, setNotepadSnippet] = useState('');
   const [planName, setPlanName] = useState('Premium');
@@ -92,7 +93,7 @@ export default function AccountDashboard({
     const effectivePlanId = serverPlanId ?? subMeta.planId;
     setPlanName(getPlanById(effectivePlanId)?.name ?? 'Premium');
     setIsGrowth(hasGrowthAccess(isSubscribed, serverPlanId, subMeta) || isGrowthFromServer);
-    const biz = loadChosenBusiness() ?? loadQuizProfile()?.topBusinessId ?? null;
+    const biz = resolveActiveBusinessId();
     const storedRoadmap = loadRoadmapProgress();
     const unlockedDays = isSubscribed
       ? getTotalUnlockedRoadmapDays(getUnlockedRoadmapMonths(subMeta))
@@ -114,12 +115,14 @@ export default function AccountDashboard({
     }
   }
 
+  useLayoutEffect(() => {
+    setProfile(loadQuizProfile());
+    setChosenId(loadChosenBusiness());
+  }, []);
+
   useEffect(() => {
-    void hydrateQuizProfileFromServer().then((saved) => {
-      if (saved) {
-        setProfile(saved);
-        setChosenId(loadChosenBusiness());
-      }
+    void hydrateUserDataFromServer().then(() => {
+      refresh();
     });
   }, []);
 
@@ -164,11 +167,13 @@ export default function AccountDashboard({
     refresh();
   }
 
-  function goTo(next: DashboardSection) {
+  function goTo(next: DashboardSection, options?: { quiz?: boolean }) {
     const params = new URLSearchParams(searchParams.toString());
     if (next === 'overview') params.delete('section');
     else params.set('section', next);
     params.delete('upgrade');
+    if (options?.quiz) params.set('quiz', '1');
+    else params.delete('quiz');
     const qs = params.toString();
     router.replace(qs ? `/espace?${qs}` : '/espace', { scroll: false });
   }
@@ -182,7 +187,7 @@ export default function AccountDashboard({
 
   const coachProgress = Math.min(100, stats.coachMessages * 12);
   const planProgress = isSubscribed && roadmapProgress > 0 ? roadmapProgress : coachProgress;
-  const activeId = profile ? ((chosenId ?? profile.topBusinessId) as BusinessId) : null;
+  const activeId = resolveActiveBusinessId() ?? (profile ? ((chosenId ?? profile.topBusinessId) as BusinessId) : null);
   const activeBiz = activeId ? businessProfiles[activeId] : null;
 
   const unlockedBuildings = city.buildings.filter((b) => b.unlocked);
@@ -353,12 +358,25 @@ export default function AccountDashboard({
                 </div>
               </section>
 
-              <DashNextStep
+              <div className="dash-overview-roadmap dash-overview-roadmap--priority">
+                {isSubscribed ? (
+                  <PremiumRoadmap
+                    businessId={activeId}
+                    isSubscribed={isSubscribed}
+                    variant="compact"
+                    onProgressChange={setRoadmapProgress}
+                  />
+                ) : (
+                  profile && <FreeRoadmapTeaser profile={profile} variant="dashboard" />
+                )}
+              </div>
+
+              <DashFounderPath
                 isSubscribed={isSubscribed}
-                hasProfile={Boolean(profile)}
+                hasProfile={Boolean(profile || activeId)}
+                businessId={activeId}
                 coachMessages={stats.coachMessages}
                 roadmapProgress={roadmapProgress}
-                completedDayNumbers={roadmapDays}
                 onGo={goTo}
               />
 
@@ -369,13 +387,13 @@ export default function AccountDashboard({
                   onOpen={() => goTo('ville')}
                 />
 
-                <div className="dash-overview-aside">
-                  <header className="dash-overview-section-head">
+                <div className="dash-overview-aside dash-overview-aside--compact">
+                  <header className="dash-overview-section-head dash-overview-section-head--compact">
                     <h3>Explorer ton espace</h3>
-                    <p>Profil, notes, activité et formules. Tout est regroupé ici.</p>
+                    <p>Raccourcis vers profil, notes et formules.</p>
                   </header>
 
-                  <div className="dash-overview-grid">
+                  <div className="dash-overview-grid dash-overview-grid--compact">
                     {isSubscribed && (
                       <>
                         <article
@@ -644,37 +662,65 @@ export default function AccountDashboard({
                   </div>
                 </div>
               </div>
-
-              <div className="dash-overview-roadmap">
-                {isSubscribed ? (
-                  <PremiumRoadmap
-                    businessId={activeId}
-                    isSubscribed={isSubscribed}
-                    variant="compact"
-                    onProgressChange={setRoadmapProgress}
-                  />
-                ) : (
-                  profile && <FreeRoadmapTeaser profile={profile} variant="dashboard" />
-                )}
-              </div>
             </div>
           )}
 
-          {section === 'parcours' && (
-            <PremiumRoadmap
-              businessId={activeId}
-              isSubscribed={isSubscribed}
-              onProgressChange={setRoadmapProgress}
-            />
-          )}
+          {section === 'parcours' &&
+            (isSubscribed ? (
+              <>
+                <DashFounderPath
+                  isSubscribed={isSubscribed}
+                  hasProfile={Boolean(profile || activeId)}
+                  businessId={activeId}
+                  coachMessages={stats.coachMessages}
+                  roadmapProgress={roadmapProgress}
+                  onGo={goTo}
+                  variant="compact"
+                />
+                <PremiumRoadmap
+                  businessId={activeId}
+                  isSubscribed={isSubscribed}
+                  onProgressChange={setRoadmapProgress}
+                />
+              </>
+            ) : profile || activeId ? (
+              <FreeRoadmapTeaser
+                profile={profile ?? loadQuizProfile()}
+                variant="dashboard"
+              />
+            ) : (
+              <section className="premium-roadmap premium-roadmap--empty">
+                <div className="premium-roadmap-header">
+                  <span className="section-tag">Mon plan</span>
+                  <h3>Commence par ton profil</h3>
+                  <p>
+                    Réponds au questionnaire pour voir ton parcours personnalisé en aperçu.
+                  </p>
+                </div>
+                <Link href="/espace?section=profil&quiz=1" className="btn btn-primary">
+                  Faire le questionnaire
+                </Link>
+              </section>
+            ))}
 
           {section === 'coach' && (
-            <Coach
-              isSubscribed={isSubscribed}
-              serverPlanId={serverPlanId}
-              isGrowth={isGrowth}
-              loggedIn
-            />
+            <>
+              <DashFounderPath
+                isSubscribed={isSubscribed}
+                hasProfile={Boolean(profile || activeId)}
+                businessId={activeId}
+                coachMessages={stats.coachMessages}
+                roadmapProgress={roadmapProgress}
+                onGo={goTo}
+                variant="compact"
+              />
+              <Coach
+                isSubscribed={isSubscribed}
+                serverPlanId={serverPlanId}
+                isGrowth={isGrowth}
+                loggedIn
+              />
+            </>
           )}
 
           {section === 'profil' &&

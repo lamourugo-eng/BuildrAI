@@ -28,13 +28,13 @@ export default function LandingNewsletter({
     const trimmed = email.trim();
 
     if (!trimmed) {
-      setErrorMsg('Indiquez ton adresse email.');
+      setErrorMsg('Indique ton adresse email.');
       setStatus('error');
       return;
     }
 
     if (!newsletterOptIn) {
-      setErrorMsg('Cochez la case pour recevoir nos emails et activer l\'essai 24 h.');
+      setErrorMsg('Coche la case pour recevoir nos emails et activer l\'essai 24 h.');
       setStatus('error');
       return;
     }
@@ -56,7 +56,7 @@ export default function LandingNewsletter({
       } else if (data?.error) {
         setErrorMsg(data.error);
       } else {
-        setErrorMsg('Impossible d\'activer l\'essai. Réessayez dans un instant.');
+        setErrorMsg('Impossible d\'activer l\'essai. Réessaie dans un instant.');
       }
       setStatus('error');
       return;
@@ -139,10 +139,10 @@ export default function LandingNewsletter({
       <div className="container">
         <div className="landing-newsletter-box">
           <span className="section-tag">Newsletter</span>
-          <h2>24 h de Premium offertes en tu inscrivant</h2>
+          <h2>24 h de Premium offertes en t&apos;inscrivant</h2>
           <p>
-            Laissez ton email, acceptez de recevoir nos conseils entrepreneuriaux et testez le
-            coach IA, le parcours 180 jours et Ma ville. Puis repassez automatiquement au plan
+            Laisse ton email, accepte de recevoir nos conseils entrepreneuriaux et teste le
+            coach IA, le parcours 180 jours et Ma ville. Puis repasse automatiquement au plan
             Gratuit.
           </p>
           {form}

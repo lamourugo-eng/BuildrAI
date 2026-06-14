@@ -23,7 +23,7 @@ export async function POST() {
       return NextResponse.json(
         {
           error:
-            'Aucun abonnement Stripe trouvé pour ce compte. Si tu as souscrit avec un autre email, contactez le support.',
+            'Aucun abonnement Stripe trouvé pour ce compte. Si tu as souscrit avec un autre email, contacte le support.',
         },
         { status: 404 }
       );

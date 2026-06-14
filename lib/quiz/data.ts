@@ -325,9 +325,9 @@ export const levelSummaries: Record<
     { label: 'Expérimenté', desc: 'Tu as déjà lancé ou fait tourner un business.' },
   ],
   tech: [
-    { label: 'Débutant', desc: 'Peu à l\'aise avec l\'informatique. Tu préférez des outils simples et guidés.' },
+    { label: 'Débutant', desc: 'Peu à l\'aise avec l\'informatique. Tu préfères des outils simples et guidés.' },
     { label: 'Intermédiaire', desc: 'À l\'aise au quotidien : sites, apps, réseaux sociaux, outils en ligne.' },
-    { label: 'Avancé', desc: 'Bon niveau technique. Tu codez, automatisez ou configurez des systèmes.' },
+    { label: 'Avancé', desc: 'Bon niveau technique. Tu codes, automatises ou configures des systèmes.' },
   ],
 };
 
@@ -388,7 +388,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
   },
   {
-    question: 'Pour gagner de l\'argent, tu préférez…',
+    question: 'Pour gagner de l\'argent, tu préfères…',
     options: [
       { icon: '🔄', label: 'Chaque mois (abonnement)', desc: 'Des revenus réguliers et prévisibles', scores: { saas: 3, content: 1, agency: 1 } },
       { icon: '💼', label: 'Par mission ou projet', desc: 'Facturer au temps ou à la prestation', scores: { freelance: 3, ofm: 2, consulting: 2, agency: 2 } },

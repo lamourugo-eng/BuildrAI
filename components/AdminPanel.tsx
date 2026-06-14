@@ -124,7 +124,7 @@ export default function AdminPanel({ email, isSubscribed, currentPlanId }: Admin
         <span className="section-tag">Mode administrateur</span>
         <h1>Panneau admin</h1>
         <p>
-          Connecté en tant que <strong>{email}</strong>. Simulez n&apos;importe quelle formule
+          Connecté en tant que <strong>{email}</strong>. Simule n&apos;importe quelle formule
           d&apos;abonnement sans Stripe pour tester l&apos;espace client.
         </p>
       </div>
@@ -300,7 +300,7 @@ export default function AdminPanel({ email, isSubscribed, currentPlanId }: Admin
       {error && <p className="auth-error">{error}</p>}
 
       <p className="admin-note">
-        Configurez ton email dans <code>ADMIN_EMAILS</code> du fichier <code>.env.local</code>.
+        Configure ton email dans <code>ADMIN_EMAILS</code> du fichier <code>.env.local</code>.
       </p>
     </div>
   );

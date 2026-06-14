@@ -286,5 +286,5 @@ export function buildProductResumeWelcome(memory: CoachProductMemory): string {
 
 Dernière fois : ${point}.${actionBlock}${summaryBlock}
 
-Dites « Continuer » pour reprendre, ou décrivez ton avancement.`;
+Dis « Continuer » pour reprendre, ou décris ton avancement.`;
 }

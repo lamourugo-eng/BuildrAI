@@ -773,7 +773,7 @@ export default function Coach({
             <input
               type="text"
               className="coach-composer-input"
-              placeholder="Pose ton question ou décrivez ton avancement…"
+              placeholder="Pose ta question ou décris ton avancement…"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={loading || initializing || coachLimitReached}

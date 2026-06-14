@@ -29,9 +29,7 @@ type EntrepreneurCopyContextValue = {
 const EntrepreneurCopyContext = createContext<EntrepreneurCopyContextValue | null>(null);
 
 export default function EntrepreneurCopyProvider({ children }: { children: ReactNode }) {
-  const [tier, setTier] = useState<CopyTier>(() =>
-    resolveCopyTier(loadQuizProfile()?.entrepreneurialLevel)
-  );
+  const [tier, setTier] = useState<CopyTier>('intermediate');
 
   const refresh = useCallback(() => {
     setTier(resolveCopyTier(loadQuizProfile()?.entrepreneurialLevel));

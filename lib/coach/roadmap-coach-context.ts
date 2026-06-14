@@ -104,7 +104,7 @@ export function buildRoadmapCoachWelcome(
 **${ctx.title}**
 ${ctx.objective}${phaseLine}${tasksBlock}${tipBlock}
 
-Quelle que soit ton question sur cette étape. Comment faire, quoi prioriser, exemple concret, texte à rédiger. Décrivez-la et on avance ensemble, adapté à ${businessName}.`;
+Quelle que soit ta question sur cette étape. Comment faire, quoi prioriser, exemple concret, texte à rédiger. Décris-la et on avance ensemble, adapté à ${businessName}.`;
 }
 
 /** Bloc injecté dans le prompt système quand l'utilisateur vient du parcours premium. */

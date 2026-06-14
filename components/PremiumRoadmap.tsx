@@ -3,6 +3,7 @@
 import {
   getRoadmapCompletionPercent,
   loadRoadmapProgress,
+  ROADMAP_PROGRESS_EVENT,
   ROADMAP_PROGRESS_KEY,
   toggleRoadmapDay,
   type RoadmapProgress,
@@ -17,6 +18,7 @@ import { roadmapDayToCoachContext } from '@/lib/coach/resolve-roadmap-day';
 import { COACHING_PHASES } from '@/lib/coach/journey';
 import type { BusinessId } from '@/lib/quiz/data';
 import { buildPremiumRoadmap, type RoadmapDay } from '@/lib/quiz/premium-roadmap';
+import { resolveActiveBusinessId } from '@/lib/quiz/resolve-active-business';
 import { TOTAL_ROADMAP_DAYS, getSemesterChapterMeta } from '@/lib/quiz/roadmap-program';
 import { useEntrepreneurCopy } from '@/components/EntrepreneurCopyProvider';
 import Link from 'next/link';
@@ -39,42 +41,61 @@ export default function PremiumRoadmap({
   const [progress, setProgress] = useState<RoadmapProgress | null>(null);
   const [openMonth, setOpenMonth] = useState(1);
   const [openWeek, setOpenWeek] = useState(1);
-  const [unlockedMonths, setUnlockedMonths] = useState(1);
+  const [unlockedMonths, setUnlockedMonths] = useState(() =>
+    isSubscribed ? getUnlockedRoadmapMonths(loadSubscriptionMeta()) : 0
+  );
+  const [resolvedBusinessId, setResolvedBusinessId] = useState<BusinessId | null>(
+    businessId ?? null
+  );
   const router = useRouter();
   const { copy } = useEntrepreneurCopy();
+
+  useEffect(() => {
+    setResolvedBusinessId(businessId ?? resolveActiveBusinessId());
+  }, [businessId]);
+
+  useEffect(() => {
+    function syncBusinessId() {
+      setResolvedBusinessId(businessId ?? resolveActiveBusinessId());
+    }
+    window.addEventListener('buildrai:quiz-profile', syncBusinessId);
+    return () => window.removeEventListener('buildrai:quiz-profile', syncBusinessId);
+  }, [businessId]);
 
   useEffect(() => {
     if (!isSubscribed) {
       setUnlockedMonths(0);
       return;
     }
+    setUnlockedMonths(getUnlockedRoadmapMonths(loadSubscriptionMeta()));
     void syncRoadmapMonthsFromStripe().then(setUnlockedMonths);
   }, [isSubscribed]);
 
   const plan = useMemo(
     () =>
-      businessId && unlockedMonths > 0
-        ? buildPremiumRoadmap(businessId, unlockedMonths)
+      resolvedBusinessId && unlockedMonths > 0
+        ? buildPremiumRoadmap(resolvedBusinessId, unlockedMonths)
         : null,
-    [businessId, unlockedMonths]
+    [resolvedBusinessId, unlockedMonths]
   );
 
   const refreshProgress = useCallback(() => {
-    if (!businessId || !plan) {
+    const activeId = resolvedBusinessId ?? resolveActiveBusinessId();
+    if (!activeId || !plan) {
       setProgress(null);
       onProgressChange?.(0);
       return;
     }
     const stored = loadRoadmapProgress();
     const next =
-      stored?.businessId === businessId
+      stored?.businessId === activeId
         ? stored
-        : { businessId, completedDays: [], updatedAt: new Date().toISOString() };
+        : { businessId: activeId, completedDays: [], updatedAt: new Date().toISOString() };
     setProgress(next);
     onProgressChange?.(
       getRoadmapCompletionPercent(next.completedDays, plan.totalUnlockedDays)
     );
-  }, [businessId, onProgressChange, plan]);
+  }, [onProgressChange, plan, resolvedBusinessId]);
 
   useEffect(() => {
     refreshProgress();
@@ -101,7 +122,9 @@ export default function PremiumRoadmap({
         refreshProgress();
       }
     };
+    const onRoadmapProgress = () => refreshProgress();
     window.addEventListener('storage', onStorage);
+    window.addEventListener(ROADMAP_PROGRESS_EVENT, onRoadmapProgress);
     const interval = setInterval(() => {
       if (!isSubscribed) return;
       void syncRoadmapMonthsFromStripe().then((next) => {
@@ -110,21 +133,23 @@ export default function PremiumRoadmap({
     }, 5 * 60_000);
     return () => {
       window.removeEventListener('storage', onStorage);
+      window.removeEventListener(ROADMAP_PROGRESS_EVENT, onRoadmapProgress);
       clearInterval(interval);
     };
   }, [isSubscribed, refreshProgress]);
 
   function handleTalkToCoach(day: RoadmapDay) {
-    if (!plan || !businessId) return;
-    saveRoadmapCoachContext(roadmapDayToCoachContext(day, businessId, plan.businessName));
+    if (!plan || !resolvedBusinessId) return;
+    saveRoadmapCoachContext(roadmapDayToCoachContext(day, resolvedBusinessId, plan.businessName));
     router.push('/espace?section=coach&fromRoadmap=1');
   }
 
   function handleToggle(day: number, checked: boolean, locked?: boolean) {
-    if (!businessId || !isSubscribed || locked) return;
+    const activeId = resolvedBusinessId ?? resolveActiveBusinessId();
+    if (!activeId || !isSubscribed || locked) return;
     const dayMeta = plan?.activeDays.find((d) => d.day === day);
     if (dayMeta?.locked) return;
-    const next = toggleRoadmapDay(businessId, day, checked);
+    const next = toggleRoadmapDay(activeId, day, checked);
     setProgress(next);
     onProgressChange?.(
       getRoadmapCompletionPercent(next.completedDays, plan?.totalUnlockedDays ?? 30)
@@ -149,15 +174,14 @@ export default function PremiumRoadmap({
     );
   }
 
-  if (!businessId || !plan) {
+  if (!resolvedBusinessId || !plan) {
     return (
       <section className="premium-roadmap premium-roadmap--empty">
         <div className="premium-roadmap-header">
           <span className="section-tag">Parcours évolutif</span>
           <h3>Choisis ton modèle business</h3>
           <p>
-            Complète le questionnaire et sélectionnez ton modèle dans la section Profil pour
-            générer ton parcours personnalisé.
+            Complète le questionnaire pour générer ton parcours personnalisé jour par jour.
           </p>
         </div>
         <Link href="/espace?section=profil&quiz=1" className="btn btn-primary">

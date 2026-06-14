@@ -158,5 +158,5 @@ export function buildResumeWelcome(memory: CoachMemory): string {
 
 Dernière fois : ${point}.${actionBlock}${summaryBlock}
 
-Clique « Continuer » ou décrivez ton avancement.`;
+Clique « Continuer » ou décris ton avancement.`;
 }

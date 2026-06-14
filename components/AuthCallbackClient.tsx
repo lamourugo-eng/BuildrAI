@@ -5,6 +5,7 @@ import {
   mapEmailOtpType,
   resolvePostAuthPath,
 } from '@/lib/auth/callback-url';
+import { pushLocalUserDataToServer } from '@/lib/account/user-data-sync';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -82,6 +83,7 @@ export default function AuthCallbackClient() {
         }
 
         if (cancelled) return;
+        await pushLocalUserDataToServer();
         router.replace(`${target.pathname}${target.search}`);
         router.refresh();
       } catch {
@@ -110,7 +112,7 @@ export default function AuthCallbackClient() {
         <h1>Presque terminé</h1>
         <p className="auth-subtitle">{message}</p>
         <p className="auth-callback-hint">
-          Si rien ne se passe, ouvrez le lien dans Safari ou Chrome plutôt que dans
+          Si rien ne se passe, ouvre le lien dans Safari ou Chrome plutôt que dans
           l&apos;aperçu intégré de ton app mail.
         </p>
       </div>

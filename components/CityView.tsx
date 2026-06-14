@@ -2,7 +2,6 @@
 
 import CityJourneyPanel from '@/components/city/CityJourneyPanel';
 import CityWorld from '@/components/city/CityWorld';
-import CityXpGuide from '@/components/city/CityXpGuide';
 import FounderCustomizer from '@/components/city/FounderCustomizer';
 import { profileFromBusinessId } from '@/lib/city/avatar-data';
 import { useCitySnapshot } from '@/lib/city/use-city-snapshot';
@@ -40,30 +39,28 @@ function CustomizeIcon() {
 
 interface CityShellHeaderProps {
   city: ReturnType<typeof useCitySnapshot>['snapshot'];
-  isSubscribed: boolean;
   onCustomize: () => void;
   locked?: boolean;
 }
 
-function CityShellHeader({ city, isSubscribed, onCustomize, locked }: CityShellHeaderProps) {
-  const empirePct = Math.round((city.unlockedBuildingCount / city.buildings.length) * 100);
-
+function CityShellHeader({ city, onCustomize, locked }: CityShellHeaderProps) {
   return (
     <header
-      className="city-shell-hero"
+      className="city-shell-hero city-shell-hero--simple"
       style={{ '--city-shell-accent': city.level.accent } as CSSProperties}
     >
-      <div className="city-shell-hero-glow" aria-hidden="true" />
       <div className="city-shell-hero-main">
         <div className="city-shell-hero-copy">
           <span className="city-shell-eyebrow">Ma ville</span>
           <h2>
-            {locked ? 'Ton empire en construction' : `${city.level.name}. Niv. ${city.level.id}`}
+            {locked
+              ? 'Ton personnage est prêt'
+              : `${city.level.name} · Niv. ${city.level.id}`}
           </h2>
           <p>
             {locked
-              ? 'Ton personnage est prêt. Abonne-toi pour débloquer la progression complète (districts, coach, parcours).'
-              : city.accomplishmentSummary}
+              ? 'Passe Premium pour voir ta ville évoluer avec ton parcours.'
+              : 'Chaque action coach ou parcours fait grandir ton empire.'}
           </p>
         </div>
 
@@ -74,29 +71,6 @@ function CityShellHeader({ city, isSubscribed, onCustomize, locked }: CityShellH
           </button>
         </div>
       </div>
-
-      {isSubscribed && !locked && (
-        <div className="city-shell-stats">
-          <div className="city-shell-stat">
-            <strong>{city.accomplishments.length}</strong>
-            <span>étapes validées</span>
-          </div>
-          <div className="city-shell-stat">
-            <strong>
-              {city.unlockedBuildingCount}/{city.buildings.length}
-            </strong>
-            <span>districts</span>
-          </div>
-          <div className="city-shell-stat">
-            <strong>{city.streakDays}j</strong>
-            <span>série</span>
-          </div>
-          <div className="city-shell-stat">
-            <strong>{empirePct}%</strong>
-            <span>construit</span>
-          </div>
-        </div>
-      )}
     </header>
   );
 }
@@ -158,12 +132,7 @@ export default function CityView({ isSubscribed }: CityViewProps) {
         className="account-panel city-view city-view--locked"
         style={{ '--city-shell-accent': city.level.accent } as CSSProperties}
       >
-        <CityShellHeader
-          city={city}
-          isSubscribed={isSubscribed}
-          onCustomize={openCustomizer}
-          locked
-        />
+        <CityShellHeader city={city} onCustomize={openCustomizer} locked />
 
         {editCustomizer}
 
@@ -171,21 +140,10 @@ export default function CityView({ isSubscribed }: CityViewProps) {
           <CityWorld snapshot={city} />
         </div>
 
-        <div className="city-locked-cta">
-          <div className="city-locked-cta-copy">
-            <strong>Débloque la progression empire</strong>
-            <p>
-              Districts, streaks et tenues évolutives. Tout s&apos;active avec l&apos;abonnement
-              Premium.
-            </p>
-            <ul>
-              <li>Districts qui apparaissent au fil de tes actions</li>
-              <li>Étapes business concrètes et déblocages personnage</li>
-              <li>Suivi parcours &amp; coach intégré à la ville</li>
-            </ul>
-          </div>
+        <div className="city-locked-cta city-locked-cta--simple">
+          <p>Abonne-toi pour débloquer la progression de ta ville avec le coach et le parcours.</p>
           <Link href="/subscribe?plan=starter&period=monthly" className="btn btn-primary">
-            S&apos;abonner pour construire ma ville
+            Voir les formules
           </Link>
         </div>
       </div>
@@ -197,7 +155,7 @@ export default function CityView({ isSubscribed }: CityViewProps) {
       className="account-panel city-view"
       style={{ '--city-shell-accent': city.level.accent } as CSSProperties}
     >
-      <CityShellHeader city={city} isSubscribed={isSubscribed} onCustomize={openCustomizer} />
+      <CityShellHeader city={city} onCustomize={openCustomizer} />
 
       {editCustomizer}
 
@@ -206,8 +164,6 @@ export default function CityView({ isSubscribed }: CityViewProps) {
       </div>
 
       <CityJourneyPanel snapshot={city} />
-
-      <CityXpGuide />
     </div>
   );
 }

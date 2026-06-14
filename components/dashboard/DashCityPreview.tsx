@@ -16,7 +16,6 @@ export default function DashCityPreview({
   onOpen,
 }: DashCityPreviewProps) {
   const accent = city.level.accent;
-  const empirePct = Math.round((city.unlockedBuildingCount / city.buildings.length) * 100);
 
   return (
     <section
@@ -41,13 +40,9 @@ export default function DashCityPreview({
         </div>
 
         {city.hasAvatar ? (
-          <div className="dash-city-preview-chips">
-            <span>{city.accomplishments.length} étapes</span>
-            <span>
-              {city.unlockedBuildingCount}/{city.buildings.length}
-            </span>
-            <span>{empirePct}%</span>
-          </div>
+          <span className="dash-city-preview-meta">
+            {city.unlockedBuildingCount}/{city.buildings.length} districts
+          </span>
         ) : (
           <p className="dash-city-preview-meta">Personnalisation gratuite</p>
         )}

@@ -1,8 +1,16 @@
 import type { BusinessId } from '@/lib/quiz/data';
 import type { QuizProfileSnapshot } from '@/lib/quiz/profile-storage';
+import type { RoadmapProgress } from '@/lib/account/roadmap-storage';
+import type { FounderAvatar } from '@/lib/city/avatar-data';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export const NEWSLETTER_TRIAL_MS = 24 * 60 * 60 * 1000;
+
+export interface UserCityStorage {
+  avatar: FounderAvatar | null;
+  welcomeBonusClaimed: boolean;
+  lastSeenBuildingIds: string[];
+}
 
 export interface UserProfile {
   user_id: string;
@@ -14,6 +22,8 @@ export interface UserProfile {
   trial_used: boolean;
   quiz_profile?: QuizProfileSnapshot | null;
   chosen_business?: BusinessId | null;
+  city_storage?: UserCityStorage | null;
+  roadmap_progress?: RoadmapProgress | null;
 }
 
 export function isMissingUserProfileTable(message: string): boolean {
@@ -25,7 +35,9 @@ export function isMissingUserProfileTable(message: string): boolean {
       lower.includes('could not find') ||
       lower.includes('pgrst205') ||
       lower.includes('quiz_profile') ||
-      lower.includes('chosen_business'))
+      lower.includes('chosen_business') ||
+      lower.includes('city_storage') ||
+      lower.includes('roadmap_progress'))
   );
 }
 
@@ -40,7 +52,7 @@ export function isTrialExpired(profile: UserProfile | null | undefined): boolean
 }
 
 const USER_PROFILE_COLUMNS =
-  'user_id, email, newsletter_opt_in, newsletter_opt_in_at, trial_started_at, trial_ends_at, trial_used, quiz_profile, chosen_business';
+  'user_id, email, newsletter_opt_in, newsletter_opt_in_at, trial_started_at, trial_ends_at, trial_used, quiz_profile, chosen_business, city_storage, roadmap_progress';
 
 export async function getUserProfile(
   supabase: SupabaseClient,
@@ -69,6 +81,54 @@ export async function saveUserQuizProfile(
     email,
     quiz_profile: quizProfile,
     chosen_business: chosenBusiness ?? null,
+    updated_at: now,
+  };
+
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .upsert(row, { onConflict: 'user_id' })
+    .select(USER_PROFILE_COLUMNS)
+    .single();
+
+  if (error) throw error;
+  return data as UserProfile;
+}
+
+export async function saveUserCityStorage(
+  supabase: SupabaseClient,
+  userId: string,
+  email: string | null,
+  cityStorage: UserCityStorage
+): Promise<UserProfile> {
+  const now = new Date().toISOString();
+  const row = {
+    user_id: userId,
+    email,
+    city_storage: cityStorage,
+    updated_at: now,
+  };
+
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .upsert(row, { onConflict: 'user_id' })
+    .select(USER_PROFILE_COLUMNS)
+    .single();
+
+  if (error) throw error;
+  return data as UserProfile;
+}
+
+export async function saveUserRoadmapProgress(
+  supabase: SupabaseClient,
+  userId: string,
+  email: string | null,
+  roadmapProgress: RoadmapProgress
+): Promise<UserProfile> {
+  const now = new Date().toISOString();
+  const row = {
+    user_id: userId,
+    email,
+    roadmap_progress: roadmapProgress,
     updated_at: now,
   };
 

@@ -38,31 +38,42 @@ export async function syncQuizProfileToServer(
 }
 
 export async function hydrateQuizProfileFromServer(): Promise<QuizProfileSnapshot | null> {
+  const local = loadQuizProfile();
+  const localChosen = loadChosenBusiness();
+
   try {
-    const res = await fetch('/api/user/quiz-profile', { method: 'GET' });
-    if (!res.ok) return loadQuizProfile();
+    const res = await fetch('/api/user/quiz-profile', { method: 'GET', cache: 'no-store' });
+
+    if (res.status === 401) {
+      return local;
+    }
+
+    if (!res.ok) {
+      if (local) void syncQuizProfileToServer(local, localChosen);
+      return local;
+    }
 
     const data = (await res.json()) as {
       profile?: QuizProfileSnapshot | null;
       chosenBusiness?: BusinessId | null;
     };
 
-    const local = loadQuizProfile();
+    const serverProfile = isValidSnapshot(data.profile) ? data.profile : null;
+    const serverChosen = data.chosenBusiness ?? null;
 
-    if (data.profile && isValidSnapshot(data.profile)) {
-      if (!local) {
-        saveQuizProfile(data.profile);
-      }
+    if (serverProfile) {
+      saveQuizProfile(serverProfile);
     } else if (local) {
-      void syncQuizProfileToServer(local, loadChosenBusiness());
+      void syncQuizProfileToServer(local, localChosen);
     }
 
-    if (data.chosenBusiness && !loadChosenBusiness()) {
-      saveChosenBusiness(data.chosenBusiness);
+    if (serverChosen) {
+      saveChosenBusiness(serverChosen);
     }
 
     return loadQuizProfile();
   } catch {
-    return loadQuizProfile();
+    if (local) void syncQuizProfileToServer(local, localChosen);
+    return local;
   }
 }

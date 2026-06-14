@@ -53,7 +53,7 @@ const GAMIFICATION_HIGHLIGHTS = [
   {
     icon: '📈',
     title: 'Progression visible',
-    desc: 'Jours cochés, chapitres, XP : tu voyez concrètement avancer.',
+    desc: 'Jours cochés, chapitres, XP : tu vois concrètement avancer.',
   },
 ] as const;
 
@@ -167,10 +167,10 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
                 </svg>
               </span>
               <div className="hero-free-hint-body">
-                <strong>Passe de l&apos;idée à l&apos;action, sans tu perdre</strong>
+                <strong>Passe de l&apos;idée à l&apos;action, sans te perdre</strong>
                 <p>
                   Quiz gratuit en 4 minutes, profil entrepreneurial, modèle business adapté et
-                  aperçu du parcours. Puis testez Premium 24 h pour le coach IA et Ma ville.
+                  aperçu du parcours. Puis teste Premium 24 h pour le coach IA et Ma ville.
                 </p>
                 {onOpenLogin ? (
                   <button type="button" className="hero-free-hint-link" onClick={onOpenLogin}>
@@ -231,7 +231,7 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
               </div>
             </div>
             <div className="chat-input">
-              <input type="text" placeholder="Pose ton question..." disabled />
+              <input type="text" placeholder="Pose ta question..." disabled />
               <button type="button" aria-label="Envoyer">
                 →
               </button>
@@ -254,7 +254,7 @@ export function LandingJourney({ onOpenQuiz }: LandingSectionsProps = {}) {
           <h2>Plus qu&apos;un chatbot IA : un parcours complet</h2>
           <p className="landing-section-intro landing-only-desktop">
             De ton profil à ton empire entrepreneurial — chaque étape est connectée,
-            personnalisée et visible. Tu ne discutez pas avec une IA : tu construisez
+            personnalisée et visible. Tu ne discutes pas avec une IA : tu construis
             ton business.
           </p>
         </div>
@@ -424,7 +424,7 @@ export function Features({ onOpenQuiz }: LandingSectionsProps = {}) {
           <span className="section-tag">Ton espace</span>
           <h2>Tout ce dont tu as besoin pour avancer</h2>
           <p className="landing-section-intro landing-only-desktop">
-            Commence gratuitement, testez Premium 24 h, puis abonne-toi quand tu es prêt.
+            Commence gratuitement, teste Premium 24 h, puis abonne-toi quand tu es prêt.
           </p>
         </div>
 
@@ -476,11 +476,11 @@ export function How({ onOpenQuiz }: LandingSectionsProps = {}) {
     {
       num: '01',
       title: 'Découvre ton profil entrepreneurial',
-      desc: '9 questions en 4 minutes : personnalité, budget, niveau tech. Tu savez enfin quel type de business te correspond.',
+      desc: '9 questions en 4 minutes : personnalité, budget, niveau tech. Tu sais enfin quel type de business te correspond.',
     },
     {
       num: '02',
-      title: 'Recevez ton stratégie personnalisée',
+      title: 'Reçois ton stratégie personnalisée',
       desc: 'Analyse de profil, modèles business adaptés (SaaS, freelance, e-commerce…) et plan 180 jours calibré sur ton choix.',
     },
     {
@@ -491,7 +491,7 @@ export function How({ onOpenQuiz }: LandingSectionsProps = {}) {
     {
       num: '04',
       title: 'Construis ton empire entrepreneurial',
-      desc: 'Cochez tes jours, débloquez Ma ville, suivez ta progression. De l\'idée aux premiers clients, sans tu perdre.',
+      desc: 'Coche tes jours, débloque Ma ville, suis ta progression. De l\'idée aux premiers clients, sans te perdre.',
     },
   ];
 
@@ -503,7 +503,7 @@ export function How({ onOpenQuiz }: LandingSectionsProps = {}) {
           <h2>De l&apos;idée à l&apos;action, étape par étape</h2>
           <p>
             Une expérience de lancement structurée — pas une simple conversation avec une IA.
-            Commence gratuitement, testez Premium 24 h, avancez à ton rythme.
+            Commence gratuitement, teste Premium 24 h, avance à ton rythme.
           </p>
         </div>
         <div className="landing-steps">
@@ -654,7 +654,7 @@ export function FAQ() {
   const items = [
     {
       q: 'Comment tester Premium avant de payer ?',
-      a: 'Inscris-toi à la newsletter : tu recevez 24 h d\'accès Premium (coach IA, parcours complet, Ma ville) sans carte bancaire. À la fin, retour automatique au plan Gratuit. 1 essai par compte.',
+      a: 'Inscris-toi à la newsletter : tu reçois 24 h d\'accès Premium (coach IA, parcours complet, Ma ville) sans carte bancaire. À la fin, retour automatique au plan Gratuit. 1 essai par compte.',
       open: true,
     },
     {
@@ -671,7 +671,7 @@ export function FAQ() {
     },
     {
       q: 'Qu\'est-ce que Ma ville ?',
-      a: 'Un espace gamifié en vue isométrique : créez ton avatar fondateur, gagnez de l\'XP, débloquez des bâtiments au fil de tes actions coach et parcours. C\'est ton empire visuel qui grandit avec ton projet.',
+      a: 'Un espace gamifié en vue isométrique : crée ton avatar fondateur, gagne de l\'XP, débloque des bâtiments au fil de tes actions coach et parcours. C\'est ton empire visuel qui grandit avec ton projet.',
     },
     {
       q: 'L\'IA remplace-t-elle un vrai mentor ?',
@@ -679,7 +679,7 @@ export function FAQ() {
     },
     {
       q: 'Puis-je annuler à tout moment ?',
-      a: 'Absolument. Pas d\'engagement, pas de frais cachés. Annule en un clic depuis ton espace client. Tu conservez l\'accès jusqu\'à la fin de la période payée.',
+      a: 'Absolument. Pas d\'engagement, pas de frais cachés. Annule en un clic depuis ton espace client. Tu conserves l\'accès jusqu\'à la fin de la période payée.',
     },
     {
       q: 'Mes données sont-elles en sécurité ?',
@@ -739,8 +739,8 @@ export function CTA({ onOpenQuiz, userEmail = null }: CTAProps = {}) {
           <span className="section-tag">Prêt à lancer ?</span>
           <h2>Passe de l&apos;idée à l&apos;action dès aujourd&apos;hui</h2>
           <p className="landing-section-intro landing-only-desktop">
-            Crée ton plan personnalisé en 4 minutes, testez le coach IA Premium 24 h sans
-            carte bancaire, puis avancez jour après jour — sans engagement.
+            Crée ton plan personnalisé en 4 minutes, teste le coach IA Premium 24 h sans
+            carte bancaire, puis avance jour après jour — sans engagement.
           </p>
           <div className="landing-cta-actions">
             {onOpenQuiz ? (

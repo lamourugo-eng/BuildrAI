@@ -65,7 +65,7 @@ Contenu structuré en listes numérotées ou blocs clairs : textes rédigés, d�
 ## Règles
 - PRÉCISION > brièveté. Mieux vaut une réponse structurée qu'un conseil vague.
 - Étape 5 : TOUJOURS recommander un outil spécifique adapté au niveau tech du client.
-- INTERDIT : « mettez en ligne », « utilisez un outil de ton choix », « améliorez ton site ».
+- INTERDIT : « mets en ligne », « utilise un outil de ton choix », « améliore ton site ».
 - 200-350 mots si nécessaire pour être clair (surtout étape 5).
 - Max 1 question si blocage total.
 

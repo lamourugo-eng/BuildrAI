@@ -194,7 +194,7 @@ export default function AccountProfile({ isSubscribed = false }: AccountProfileP
           </p>
         ) : (
           <p className="account-card-desc">
-            Crée ton entrepreneur. Il sera le centre de ton ville de progression.
+            Crée ton entrepreneur. Il sera le centre de ta ville de progression.
           </p>
         )}
         <div className="account-profile-city-actions">

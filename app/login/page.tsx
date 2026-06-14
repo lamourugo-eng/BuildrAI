@@ -14,7 +14,7 @@ export default function LoginPage() {
         <span className="section-tag">Connexion</span>
         <h1>Connexion</h1>
         <p className="auth-subtitle">
-          Connecte-toi ou créez un compte avec ton email et mot de passe. Le questionnaire
+          Connecte-toi ou crée un compte avec ton email et mot de passe. Le questionnaire
           reste accessible gratuitement. Le coach IA nécessite un abonnement.
         </p>
         <Suspense fallback={<p>Chargement…</p>}>

@@ -100,5 +100,5 @@ export function buildCoachUsageSnapshot(
 export const COACH_BUDGET_ERROR_CODE = 'COACH_BUDGET_EXCEEDED';
 
 export function coachBudgetExceededMessage(_snapshot: CoachUsageSnapshot): string {
-  return 'Tu as atteint la limite d\'utilisation du coach pour ce mois. Reprenez le mois prochain ou passez à une formule supérieure.';
+  return 'Tu as atteint la limite d\'utilisation du coach pour ce mois. Reprends le mois prochain ou passe à une formule supérieure.';
 }

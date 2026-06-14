@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import AccountDashboard from '@/components/AccountDashboard';
 import { useEntrepreneurCopy } from '@/components/EntrepreneurCopyProvider';
+import { hydrateUserDataFromServer } from '@/lib/account/user-data-sync';
 import {
   consumeNewsletterTrialPending,
   processNewsletterTrialOptIn,
@@ -92,6 +93,10 @@ export default function AccountSpace({
   );
 
   useEffect(() => {
+    void hydrateUserDataFromServer();
+  }, []);
+
+  useEffect(() => {
     if (trialExpired) {
       setTrialNotice(
         'Ton essai Premium 24 h est terminé. Tu es repassé sur le plan Gratuit.'
@@ -128,7 +133,7 @@ export default function AccountSpace({
     void processNewsletterTrialOptIn().then((data) => {
       if (data?.trialGranted && data.trialEndsAt) {
         setTrialNotice(
-          'Essai Premium 24 h activé. Profitez du coach, du parcours complet et de Ma ville.'
+          'Essai Premium 24 h activé. Profite du coach, du parcours complet et de Ma ville.'
         );
         router.refresh();
         return;
@@ -218,7 +223,7 @@ export default function AccountSpace({
           </Link>
           {!isSubscribed && (
             <span className="account-admin-hint">
-              Abonnement non simulé. Activez-le depuis le panneau admin.
+              Abonnement non simulé. Active-le depuis le panneau admin.
             </span>
           )}
         </div>

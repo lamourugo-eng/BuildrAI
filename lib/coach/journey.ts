@@ -218,7 +218,7 @@ ${hints ? `### Précisions modèle ${businessId} :\n${hints}\n` : ''}${toolBlock
 
 ### Interdit
 - « Crée un site » sans nommer l'outil (Carrd, Shopify, Notion, Webflow…).
-- Plans vagues (« améliorez ton présence en ligne »).
+- Plans vagues (« améliore ta présence en ligne »).
 - Sauter la sous-étape 5.1 (choix outil) même si le client veut le texte directement.`;
 }
 

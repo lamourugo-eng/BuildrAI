@@ -58,12 +58,12 @@ export async function requestNewsletterTrial(): Promise<NewsletterTrialResponse>
         error:
           data.error ??
           data.message ??
-          `Impossible d'activer l'essai (${res.status}). Réessayez.`,
+          `Impossible d'activer l'essai (${res.status}). Réessaie.`,
       };
     }
     return data;
   } catch {
-    return { error: 'Connexion au serveur impossible. Vérifie ton réseau et réessayez.' };
+    return { error: 'Connexion au serveur impossible. Vérifie ton réseau et réessaie.' };
   }
 }
 

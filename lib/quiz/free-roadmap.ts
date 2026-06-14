@@ -29,12 +29,12 @@ const BUSINESS_TEASERS: Record<
     accelerate: 'ROAS, CAC, email post-achat, réachat et préparation collection #2.',
   },
   agency: {
-    validate: '5 audits ou RDV niche : validez problème récurrent et willingness to pay setup fee.',
+    validate: '5 audits ou RDV niche : valide problème récurrent et willingness to pay setup fee.',
     launch: 'Site niche + process 4 étapes + template proposition. Objectif 3 premiers clients.',
     accelerate: 'Delivery standardisé, récurrence mensuelle et partenariats apporteurs.',
   },
   marketplace: {
-    validate: 'Recrutement manuel early adopters : choisissez un côté, visez 5 users actifs.',
+    validate: 'Recrutement manuel early adopters : choisis un côté, vise 5 users actifs.',
     launch: 'Landing 2 faces + onboarding + première transaction manuelle facilitée.',
     accelerate: 'Liquidité offre/demande, take rate, parrainage et friction transaction #1.',
   },
@@ -44,7 +44,7 @@ const BUSINESS_TEASERS: Record<
     accelerate: 'KPI impact + viabilité économique, financements et storytelling ESS.',
   },
   consulting: {
-    validate: '5 RDV dirigeants : validez enjeu, déclencheur d\'achat et pricing diagnostic.',
+    validate: '5 RDV dirigeants : valide enjeu, déclencheur d\'achat et pricing diagnostic.',
     launch: 'Page enjeu CEO + méthode 3 phases + CTA diagnostic 45 min payant.',
     accelerate: 'Pipeline diagnostics → missions, preuves sociales B2B et récurrence trimestrielle.',
   },
@@ -55,7 +55,7 @@ const BUSINESS_TEASERS: Record<
   },
   ofm: {
     validate:
-      '5 conversations avec modèles OnlyFans (Twitter/X, Instagram) : validez commission, services OFM et limites de contenu.',
+      '5 conversations avec modèles OnlyFans (Twitter/X, Instagram) : valide commission, services OFM et limites de contenu.',
     launch:
       'Page agence OFM + charte éthique + process onboarding. Objectif : 1er contrat OnlyFans Management signé.',
     accelerate:

@@ -31,7 +31,7 @@ export default function CoachPaywall({ loggedIn = false }: CoachPaywallProps) {
         </p>
         <p>
           Le coach IA est réservé aux abonnés Premium. Crée un compte gratuit pour découvrir
-          ton profil, puis passez à Premium quand tu es prêt à construire.
+          ton profil, puis passe à Premium quand tu es prêt à construire.
         </p>
         <ul className="coach-paywall-features">
           <li>Coach IA illimité. Mémoire de ton parcours</li>

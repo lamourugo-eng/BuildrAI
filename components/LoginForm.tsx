@@ -2,6 +2,7 @@
 
 import PasswordInput from '@/components/PasswordInput';
 import { buildAuthCallbackUrl } from '@/lib/auth/callback-url';
+import { pushLocalUserDataToServer } from '@/lib/account/user-data-sync';
 import { createClient } from '@/lib/supabase/client';
 import {
   markNewsletterTrialPending,
@@ -56,12 +57,12 @@ function mapAuthError(message: string, view: AuthView): string {
     return 'Adresse email invalide.';
   }
   if (lower.includes('email not confirmed')) {
-    return 'Confirme ton email avant de toi connecter (vérifiez ton boîte mail).';
+    return 'Confirme ton email avant de te connecter (vérifie ta boîte mail).';
   }
   return view === 'signup'
-    ? 'Impossible de créer le compte. Réessayez.'
+    ? 'Impossible de créer le compte. Réessaie.'
     : view === 'forgot'
-      ? 'Impossible d\'envoyer l\'email. Réessayez.'
+      ? 'Impossible d\'envoyer l\'email. Réessaie.'
       : 'Connexion impossible. Vérifie tes identifiants.';
 }
 
@@ -124,6 +125,7 @@ export default function LoginForm(props: LoginFormProps = {}) {
 
       if (error) throw error;
 
+      await pushLocalUserDataToServer();
       router.push(buildRedirectPath(redirect, plan, period));
       router.refresh();
     } catch (err) {
@@ -167,6 +169,7 @@ export default function LoginForm(props: LoginFormProps = {}) {
         if (newsletterOptIn) {
           await processNewsletterTrialOptIn();
         }
+        await pushLocalUserDataToServer();
         router.push(buildRedirectPath(redirect, plan, period));
         router.refresh();
         return;
@@ -266,7 +269,7 @@ export default function LoginForm(props: LoginFormProps = {}) {
         <form onSubmit={handleForgotPassword} className="auth-form">
           <h2 className="auth-form-title">Mot de passe oublié</h2>
           <p className="auth-form-lead">
-            Entrez ton email. Nous tu enverrons un lien de réinitialisation.
+            Entre ton email. Nous t&apos;enverrons un lien de réinitialisation.
           </p>
 
           <label htmlFor="email-forgot">Adresse email</label>
@@ -391,7 +394,7 @@ export default function LoginForm(props: LoginFormProps = {}) {
             <p className="auth-note">
               {view === 'login'
                 ? mode === 'account'
-                  ? 'Accédez à ton espace client avec ton email et mot de passe.'
+                  ? 'Accède à ton espace client avec ton email et mot de passe.'
                   : 'Connexion requise pour souscrire et accéder au coach IA.'
                 : 'Crée un compte pour accéder à ton espace et gérer ton abonnement.'}
             </p>

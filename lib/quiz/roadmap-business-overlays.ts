@@ -234,7 +234,7 @@ function buildTitleTaskOverlays(): Record<BusinessId, Record<string, string[]>> 
       ],
       'Relances personnalisées': [
         'Relance 5 modèles OnlyFans avec charte OFM éthique jointe',
-        'Montrez process pro (chatting, acquisition, reporting). Pas de promesse de $ fixe',
+        'Montre process pro (chatting, acquisition, reporting). Pas de promesse de $ fixe',
         'Propose call 20 min. Le modèle reste décisionnaire sur le contenu',
       ],
       'Documenter ton process de vente': [
@@ -264,14 +264,14 @@ const WEEK_FOCUS_TASKS: Record<
 > = {
   product: {
     2: {
-      1: ['Consolidez métriques produit mois 1', 'Priorise 3 comptes ou essais chauds', 'Documente friction onboarding #1'],
-      2: ['Améliorez rétention J7 des nouveaux comptes', 'Email ou in-app pour utilisateurs inactifs', 'Collectez 3 retours utilisateurs'],
-      3: ['Ajustez packaging ou pricing selon retours', 'Test A/B landing ou pricing page', 'Mesure impact sur conversion'],
+      1: ['Consolide métriques produit mois 1', 'Priorise 3 comptes ou essais chauds', 'Documente friction onboarding #1'],
+      2: ['Améliore rétention J7 des nouveaux comptes', 'Email ou in-app pour utilisateurs inactifs', 'Collecte 3 retours utilisateurs'],
+      3: ['Ajuste packaging ou pricing selon retours', 'Test A/B landing ou pricing page', 'Mesure impact sur conversion'],
       4: ['Automatise 1 étape onboarding ou support', 'Fixe objectif MRR mois suivant', 'Planifie rituels hebdo produit'],
     },
     3: {
-      1: ['Doublez effort sur canal acquisition #1', '10 outbound ou contenus ciblés', 'Mesure taux conversion canal'],
-      2: ['Publie contenu thought leadership niche', 'Recyclez témoignage client produit', 'CTA vers essai ou démo'],
+      1: ['Double effort sur canal acquisition #1', '10 outbound ou contenus ciblés', 'Mesure taux conversion canal'],
+      2: ['Publie contenu thought leadership niche', 'Recycle témoignage client produit', 'CTA vers essai ou démo'],
       3: ['Contacte 2 partenaires intégration ou revendeurs', 'Proposition co-marketing win-win', 'Suivi partenaires actifs'],
       4: ['Quota prospection ou contenu quotidien', 'Pipeline visuel MRR potentiel', '1 démo ou essai minimum / jour'],
     },
@@ -285,7 +285,7 @@ const WEEK_FOCUS_TASKS: Record<
       1: ['5 interviews clients power users', 'Demande feature ou upsell non couverte', 'Priorise 1 opportunité expansion'],
       2: ['Esquissez offre upsell ou plan supérieur', 'Teste auprès 3 clients existants', 'Pricing expansion revenue'],
       3: ['Calcule NRR ou expansion MRR', 'Programme rétention ou success', 'Win-back comptes churnés'],
-      4: ['Soft launch feature ou plan premium', 'Mesure adoption et feedback', 'Ajustez avant GA'],
+      4: ['Soft launch feature ou plan premium', 'Mesure adoption et feedback', 'Ajuste avant GA'],
     },
     6: {
       1: ['Dashboard MRR, churn, CAC, LTV consolidé', 'Tendance 6 mois. Insights clés', '3 décisions data-driven'],
@@ -298,11 +298,11 @@ const WEEK_FOCUS_TASKS: Record<
     2: {
       1: ['Bilan missions et devis mois 1', 'Pipeline CA 30 jours', 'Top 3 prospects à closer'],
       2: ['Relance prospects tièdes personnalisée', 'Email post-mission satisfaction', 'Demande témoignage ou recommandation'],
-      3: ['Ajustez forfait ou TJM selon retours', 'Teste package découverte', 'Documente objections prix'],
+      3: ['Ajuste forfait ou TJM selon retours', 'Teste package découverte', 'Documente objections prix'],
       4: ['Automatise devis ou prise RDV', 'Objectif CA mois suivant', 'Rituel prospection hebdo'],
     },
     3: {
-      1: ['Doublez canal qui génère le plus de RDV', '10 messages ou appels qualifiés', 'Mesure taux conversion'],
+      1: ['Double canal qui génère le plus de RDV', '10 messages ou appels qualifiés', 'Mesure taux conversion'],
       2: ['Contenu expertise (LinkedIn, article)', 'Cas client anonymisé', 'CTA audit ou RDV'],
       3: ['3 partenaires complémentaires identifiés', 'Proposition co-référencement', 'Suivi introductions'],
       4: ['Quota prospection quotidien', 'Pipeline missions visualisé', '1 proposition minimum / semaine'],
@@ -317,7 +317,7 @@ const WEEK_FOCUS_TASKS: Record<
       1: ['5 retours clients missions récentes', 'Demande récurrente non couverte', 'Esquisse offre complémentaire'],
       2: ['Package premium ou rétainer', 'Test 3 clients fidèles', 'Argumentaire différenciation'],
       3: ['LTV client services (missions/an)', 'Programme fidélisation ou rétainer', 'Win-back clients inactifs'],
-      4: ['Soft launch nouvelle offre', 'Mesure adoption', 'Ajustez pricing ou scope'],
+      4: ['Soft launch nouvelle offre', 'Mesure adoption', 'Ajuste pricing ou scope'],
     },
     6: {
       1: ['CA, marge, taux conversion consolidés', 'Canal le plus performant', '3 décisions stratégiques'],
@@ -330,12 +330,12 @@ const WEEK_FOCUS_TASKS: Record<
     2: {
       1: ['Bilan ventes et pub mois 1', 'SKU ou collection stars', 'Stock ou fournisseur à optimiser'],
       2: ['Relance paniers abandonnés', 'Email post-achat satisfaction', 'Demande avis produit'],
-      3: ['Ajustez prix ou bundle', 'Test promo limitée', 'Marge par SKU'],
+      3: ['Ajuste prix ou bundle', 'Test promo limitée', 'Marge par SKU'],
       4: ['Automatise email e-commerce', 'Objectif CA mois 2', 'Rituel analyse ROAS hebdo'],
     },
     3: {
-      1: ['Doublez canal pub ou organique gagnant', '10 contenus produit ou UGC', 'Mesure ROAS'],
-      2: ['Contenu marque ou lifestyle', 'Recyclez avis client', 'CTA achat direct'],
+      1: ['Double canal pub ou organique gagnant', '10 contenus produit ou UGC', 'Mesure ROAS'],
+      2: ['Contenu marque ou lifestyle', 'Recycle avis client', 'CTA achat direct'],
       3: ['Partenariat influence micro', 'Code promo partenaire', 'Mesure ventes attribuées'],
       4: ['Quota contenu ou pub quotidien', 'Pipeline commandes', 'Optimise fiche produit #1'],
     },
@@ -349,7 +349,7 @@ const WEEK_FOCUS_TASKS: Record<
       1: ['5 retours clients acheteurs', 'Demande produit ou variante', 'Esquisse collection #2'],
       2: ['Soft launch nouvelle gamme', 'Pricing bundle ou abonnement', 'Test audience fidèle'],
       3: ['LTV acheteur & réachat', 'Programme fidélité ou email repeat', 'Win-back inactifs 90j'],
-      4: ['Campagne lancement produit #2', 'Mesure adoption', 'Ajustez stock & pub'],
+      4: ['Campagne lancement produit #2', 'Mesure adoption', 'Ajuste stock & pub'],
     },
     6: {
       1: ['CA, marge, CAC, ROAS 6 mois', 'Meilleur SKU et canal', '3 décisions data'],
@@ -361,12 +361,12 @@ const WEEK_FOCUS_TASKS: Record<
   platform: {
     2: {
       1: ['Bilan liquidité mois 1', 'Ratio offre/demande', 'Friction transaction #1'],
-      2: ['Relance early adopters inactifs', 'Améliorez onboarding côté faible', 'Feedback 3 utilisateurs'],
-      3: ['Ajustez commission ou incitation', 'Test promo early adopter', 'Mesure transactions'],
+      2: ['Relance early adopters inactifs', 'Améliore onboarding côté faible', 'Feedback 3 utilisateurs'],
+      3: ['Ajuste commission ou incitation', 'Test promo early adopter', 'Mesure transactions'],
       4: ['Automatise onboarding 1 côté', 'Objectif GMV mois 2', 'Rituel recrutement manuel'],
     },
     3: {
-      1: ['Doublez recrutement côté prioritaire', '10 outreach manuels qualifiés', 'Mesure activation'],
+      1: ['Double recrutement côté prioritaire', '10 outreach manuels qualifiés', 'Mesure activation'],
       2: ['Contenu valeur pour early adopters', 'Success story 1 transaction', 'CTA rejoindre plateforme'],
       3: ['Partenariat apporteur d\'un côté', 'Programme parrainage', 'Suivi partenaires'],
       4: ['Quota recrutement quotidien', 'Pipeline utilisateurs actifs', '1 transaction minimum / semaine'],
@@ -381,7 +381,7 @@ const WEEK_FOCUS_TASKS: Record<
       1: ['5 retours utilisateurs actifs', 'Feature demandée non couverte', 'Esquisse v2 ou niche'],
       2: ['Offre premium ou commission tier', 'Test early adopters', 'Argumentaire confiance'],
       3: ['LTV & rétention 2 côtés', 'Programme fidélisation', 'Réactivez inactifs 30j'],
-      4: ['Soft launch feature ou zone geo', 'Mesure GMV impact', 'Ajustez take rate'],
+      4: ['Soft launch feature ou zone geo', 'Mesure GMV impact', 'Ajuste take rate'],
     },
     6: {
       1: ['GMV, take rate, CAC consolidés', 'Liquidité par cohorte', '3 décisions stratégiques'],
@@ -394,11 +394,11 @@ const WEEK_FOCUS_TASKS: Record<
     2: {
       1: ['Bilan impact + revenus mois 1', 'Clients payeurs vs bénéficiaires', 'KPI impact #1'],
       2: ['Relance partenaires ou clients', 'Story impact récente', 'Transparence utilisation fonds'],
-      3: ['Ajustez modèle économique mixte', 'Test tarif ou don récurrent', 'Mesure viabilité'],
+      3: ['Ajuste modèle économique mixte', 'Test tarif ou don récurrent', 'Mesure viabilité'],
       4: ['Automatise reporting impact', 'Objectif mois 2', 'Rituel mesure impact hebdo'],
     },
     3: {
-      1: ['Doublez canal mission ou B2B', '10 contacts institutions ou clients', 'Mesure conversion'],
+      1: ['Double canal mission ou B2B', '10 contacts institutions ou clients', 'Mesure conversion'],
       2: ['Contenu impact + transparence', 'Témoignage bénéficiaire', 'CTA soutien ou achat'],
       3: ['Partenariat ONG ou entreprise', 'Proposition co-impact', 'Suivi partenaires'],
       4: ['Quota outreach mission', 'Pipeline financements', '1 RDV partenaire / semaine'],
@@ -413,7 +413,7 @@ const WEEK_FOCUS_TASKS: Record<
       1: ['5 retours bénéficiaires & payeurs', 'Besoin non couvert', 'Esquisse offre #2'],
       2: ['Offre complémentaire impact', 'Test communauté ou B2B', 'Pricing éthique'],
       3: ['LTV mixte & récurrence don', 'Programme ambassadeurs', 'Win-back soutiens'],
-      4: ['Soft launch offre #2', 'Mesure impact + revenus', 'Ajustez communication'],
+      4: ['Soft launch offre #2', 'Mesure impact + revenus', 'Ajuste communication'],
     },
     6: {
       1: ['Tableau impact + CA 6 mois', 'Tendance viabilité', '3 décisions stratégiques'],
@@ -426,12 +426,12 @@ const WEEK_FOCUS_TASKS: Record<
     2: {
       1: ['Bilan audience & monétisation mois 1', 'Plateforme #1 performance', 'Produit ou offre star'],
       2: ['Relance leads ou sponsors tièdes', 'Contenu valeur + CTA', 'Demande feedback audience'],
-      3: ['Ajustez pricing produit ou pack', 'Test bundle contenu + offre', 'Mesure conversion'],
+      3: ['Ajuste pricing produit ou pack', 'Test bundle contenu + offre', 'Mesure conversion'],
       4: ['Automatise email ou DM funnel', 'Objectif revenus mois 2', 'Rituel création hebdo'],
     },
     3: {
-      1: ['Doublez publication plateforme #1', '10 posts ou emails qualité', 'Mesure engagement → leads'],
-      2: ['Contenu signature creator', 'Recyclez top performer', 'CTA produit ou newsletter'],
+      1: ['Double publication plateforme #1', '10 posts ou emails qualité', 'Mesure engagement → leads'],
+      2: ['Contenu signature creator', 'Recycle top performer', 'CTA produit ou newsletter'],
       3: ['Collab ou parrainage creator', 'Proposition win-win audience', 'Suivi collabs'],
       4: ['Quota création quotidien', 'Pipeline sponsors ou ventes', '1 vente ou deal minimum'],
     },
@@ -445,7 +445,7 @@ const WEEK_FOCUS_TASKS: Record<
       1: ['5 retours audience ou clients', 'Demande produit ou format', 'Esquisse offre #2'],
       2: ['Lancement produit ou tier premium', 'Test communauté close', 'Pricing creator-friendly'],
       3: ['LTV abonné ou acheteur', 'Programme membres ou email VIP', 'Win-back inactifs'],
-      4: ['Soft launch offre #2', 'Mesure revenus & engagement', 'Ajustez positioning'],
+      4: ['Soft launch offre #2', 'Mesure revenus & engagement', 'Ajuste positioning'],
     },
     6: {
       1: ['Revenus, audience, conversion 6 mois', 'Meilleur canal monétisation', '3 décisions data'],
@@ -459,12 +459,12 @@ const WEEK_FOCUS_TASKS: Record<
 const OFM_WEEK_FOCUS: Record<number, Record<number, string[]>> = {
   2: {
     1: ['Bilan mois 1 OFM : modèles contactés, contrats, revenus commission', 'Pipeline modèles OnlyFans 30 j', 'Top 3 modèles à closer'],
-    2: ['Relance modèles OnlyFans tièdes avec charte OFM', 'Améliorez onboarding ou reporting', 'Feedback 1 modèle actif'],
-    3: ['Ajustez packages OFM ou commission %', 'Teste offre chatting seul vs full management', 'Documente objections modèles'],
+    2: ['Relance modèles OnlyFans tièdes avec charte OFM', 'Améliore onboarding ou reporting', 'Feedback 1 modèle actif'],
+    3: ['Ajuste packages OFM ou commission %', 'Teste offre chatting seul vs full management', 'Documente objections modèles'],
     4: ['Automatise reporting revenus OnlyFans', 'Objectif modèles signés mois suivant', 'Rituel prospection Twitter/X hebdo'],
   },
   3: {
-    1: ['Doublez outreach modèles OnlyFans sur canal #1', '10 DM qualifiés avec charte jointe', 'Mesure taux réponse → call'],
+    1: ['Double outreach modèles OnlyFans sur canal #1', '10 DM qualifiés avec charte jointe', 'Mesure taux réponse → call'],
     2: ['Contenu pro agence OFM (éthique, process)', 'Témoignage modèle anonymisé', 'CTA candidature modèle'],
     3: ['Réseau managers OFM / recrutement chatters', 'Proposition partenariat win-win', 'Suivi introductions'],
     4: ['Quota prospection modèles quotidien', 'Pipeline visuel contrats OFM', '1 call découverte minimum / jour'],
@@ -479,7 +479,7 @@ const OFM_WEEK_FOCUS: Record<number, Record<number, string[]>> = {
     1: ['5 retours modèles OnlyFans actifs', 'Demande service non couverte', 'Esquisse offre OFM #2 (ex. Chatting premium)'],
     2: ['Package premium ou plus de modèles', 'Test 3 modèles fidèles', 'Argumentaire différenciation agence'],
     3: ['LTV modèle (revenus OnlyFans × durée contrat)', 'Rétention modèles & renouvellement contrat', 'Win-back modèles partis'],
-    4: ['Soft launch nouveau service OFM', 'Mesure adoption', 'Ajustez commission ou scope'],
+    4: ['Soft launch nouveau service OFM', 'Mesure adoption', 'Ajuste commission ou scope'],
   },
   6: {
     1: ['Commission totale, modèles actifs, revenus gérés 6 mois', 'Canal recrutement le plus efficace', '3 décisions stratégiques OFM'],
@@ -538,7 +538,7 @@ export function getBusinessSemesterTip(
 
   const titleTips: Partial<Record<string, string>> = {
     'Audit du premier mois': `Compare pipeline vs objectif. Une seule métrique ${BUSINESS_KPI[businessId].revenue} à améliorer en priorité.`,
-    'Mesurer coût d\'acquisition': `${profile.name} : suivez ${BUSINESS_KPI[businessId].acquisition} avant d'augmenter le budget.`,
+    'Mesurer coût d\'acquisition': `${profile.name} : suis ${BUSINESS_KPI[businessId].acquisition} avant d'augmenter le budget.`,
     'Calculer LTV simple': `LTV > 3× CAC = signal vert pour accélérer l'acquisition ${profile.name}.`,
   };
 

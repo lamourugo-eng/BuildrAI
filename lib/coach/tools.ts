@@ -54,7 +54,7 @@ const SITE_TOOLS: Record<TechBand, Record<BusinessId, SiteToolRecommendation>> =
         'Ajouter 1 produit test avec photos',
         'Configurer paiement Stripe/PayPal dans Shopify',
       ],
-      alternatives: 'Etsy si tu testez sans créer de marque',
+      alternatives: 'Etsy si tu testes sans créer de marque',
     },
     agency: {
       primary: 'Carrd',
@@ -322,7 +322,7 @@ Recommandation principale : **${tool.primary}** (${tool.url})
 - Alternative : ${tool.alternatives}
 
 Tu DOIS nommer cet outil (ou l'alternative si justifié) dès le début de l'étape 5.
-Ne dis jamais « créez un site » sans dire QUEL outil et COMMENT démarrer.
+Ne dis jamais « crée un site » sans dire QUEL outil et COMMENT démarrer.
 
 ### Sous-étapes étape 5 (dans l'ordre, une par échange) :
 ${substeps}`;

@@ -49,7 +49,7 @@ export async function POST() {
       return NextResponse.json(
         {
           error:
-            'Stripe est temporairement indisponible. Réessayez dans quelques instants.',
+            'Stripe est temporairement indisponible. Réessaie dans quelques instants.',
           transient: true,
         },
         { status: 503 }
@@ -61,7 +61,7 @@ export async function POST() {
 
   if (!snapshot.active && !adminSimulated) {
     return NextResponse.json(
-      { error: 'Aucun abonnement actif. Finalisez le paiement Stripe ou contactez le support.' },
+      { error: 'Aucun abonnement actif. Finalise le paiement Stripe ou contacte le support.' },
       { status: 403 }
     );
   }

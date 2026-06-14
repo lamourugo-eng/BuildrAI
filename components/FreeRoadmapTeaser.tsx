@@ -63,7 +63,7 @@ export default function FreeRoadmapTeaser({
         <div className="free-roadmap-cta">
           <p>
             <strong>Envie d&apos;aller plus loin ?</strong> Le coach IA détaille chaque étape,
-            adapte les actions à ton profil et tu suit semaine après semaine.
+            adapte les actions à ton profil et tu suis semaine après semaine.
           </p>
           <Link href="/subscribe?plan=starter&period=monthly" className="btn btn-primary">
             Débloquer le parcours complet. Premium 29 €/mois

@@ -85,6 +85,9 @@ console.log(`
      supabase/migrations/003_user_notepad.sql
      supabase/migrations/004_user_profiles.sql
      supabase/migrations/005_coach_token_usage.sql
+     supabase/migrations/006_quiz_profile.sql
+     supabase/migrations/007_city_storage.sql
+     supabase/migrations/008_roadmap_progress.sql
    Ou : SUPABASE_DB_PASSWORD=xxx npm run db:apply-migrations
 
 4) STRIPE — Webhooks (mode test pour l'instant)

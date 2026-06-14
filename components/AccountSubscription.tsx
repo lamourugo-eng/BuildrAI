@@ -296,7 +296,7 @@ export default function AccountSubscription({
                 onClick={() => void handleManageBilling()}
                 disabled={loadingPortal || loadingPlan !== null}
               >
-                {loadingPortal ? 'Ouverture…' : 'Résiliez'}
+                {loadingPortal ? 'Ouverture…' : 'Résilie'}
               </button>
               <p className="account-subscription-resilier-hint">
                 Annulation en un clic via Stripe. Accès conservé jusqu&apos;à la fin de la période
@@ -417,7 +417,7 @@ export default function AccountSubscription({
             <div>
               <h3>Besoin d&apos;aide pour résilier ?</h3>
               <p>
-                Le bouton « Résiliez » ci-dessus ouvre le portail Stripe : factures, carte
+                Le bouton « Résilie » ci-dessus ouvre le portail Stripe : factures, carte
                 bancaire et annulation d&apos;abonnement.
               </p>
             </div>
@@ -429,7 +429,7 @@ export default function AccountSubscription({
             onClick={() => void handleManageBilling()}
             disabled={loadingPortal || loadingPlan !== null}
           >
-            {loadingPortal ? 'Ouverture…' : 'Résiliez mon abonnement'}
+            {loadingPortal ? 'Ouverture…' : 'Résilie mon abonnement'}
           </button>
 
           <p className="account-subscription-cancel-hint">
@@ -442,7 +442,7 @@ export default function AccountSubscription({
         <h3>Gestion & facturation</h3>
         <ul className="account-subscription-help-list">
           <li>Plan gratuit disponible sans carte bancaire pour découvrir ton profil.</li>
-          <li>Résiliation en libre-service via le bouton « Résiliez » (abonnements Stripe).</li>
+          <li>Résiliation en libre-service via le bouton « Résilie » (abonnements Stripe).</li>
           <li>
             Assistance par email (contact direct avec le créateur du site) :{' '}
             <a href="mailto:Buildraimail@gmail.com">Buildraimail@gmail.com</a>

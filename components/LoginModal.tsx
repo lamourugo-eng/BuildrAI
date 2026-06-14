@@ -37,7 +37,7 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
           ×
         </button>
         <span className="section-tag">Connexion</span>
-        <h2 id="login-modal-title">Accédez à ton espace</h2>
+        <h2 id="login-modal-title">Accède à ton espace</h2>
         <p className="login-modal-subtitle">
           Connecte-toi avec ton email et mot de passe. Le questionnaire reste gratuit sans
           compte.

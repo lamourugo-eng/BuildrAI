@@ -15,7 +15,6 @@ export type DashboardSection =
 
 export const LOCKED_SECTIONS = new Set<DashboardSection>([
   'coach',
-  'parcours',
   'activite',
   'analyse',
   'ressources',

@@ -20,7 +20,7 @@ function stripeUnavailableResponse(message: string) {
       transient: true,
       error: message,
       message:
-        'Stripe est temporairement indisponible. Ton accès actuel est conservé. Réessayez dans quelques instants.',
+        'Stripe est temporairement indisponible. Ton accès actuel est conservé. Réessaie dans quelques instants.',
     },
     { status: 503 }
   );

@@ -267,7 +267,7 @@ function ResourceCard({ resource }: { resource: LibraryResource }) {
               <pre>{resource.template}</pre>
               {resource.copyable && (
                 <p className="lib-template-hint">
-                  Collez dans un document ou le coach IA. Complète les [crochets], puis cochez
+                  Colle dans un document ou le coach IA. Complète les [crochets], puis coche
                   le jour parcours correspondant.
                 </p>
               )}

@@ -97,8 +97,8 @@ export default function AccountAnalytics({
         <span className="section-tag">Activité</span>
         <h2>Suivi d&apos;activité réservé aux abonnés</h2>
         <p className="account-panel-intro">
-          Visualisez ton régularité avec le coach, la progression de ton parcours sur 180 jours,
-          l&apos;évolution de ton ville et tes notes. En un seul endroit.
+          Visualise ton régularité avec le coach, la progression de ton parcours sur 180 jours,
+          l&apos;évolution de ta ville et tes notes. En un seul endroit.
         </p>
 
         <div className="account-rewards-preview">
@@ -120,7 +120,7 @@ export default function AccountAnalytics({
           <ul className="account-rewards-earn-list">
             <li>Parcours premium. 180 jours (6 chapitres de 30 jours)</li>
             <li>Messages coach, sessions et série de régularité</li>
-            <li>Niveau de ton ville et phase coach (8 étapes)</li>
+            <li>Niveau de ta ville et phase coach (8 étapes)</li>
             <li>Graphique d&apos;activité sur 7 jours + bloc-notes</li>
           </ul>
         </div>

@@ -4,7 +4,7 @@ export const PREMIUM_VALUE_BLOCKS = [
   {
     icon: '📋',
     title: 'Templates prêts à copier',
-    desc: 'Scripts, emails, pages de vente et prompts. Remplissez les [crochets] et agissez.',
+    desc: 'Scripts, emails, pages de vente et prompts. Remplis les [crochets] et agis.',
   },
   {
     icon: '🎯',
@@ -19,7 +19,7 @@ export const PREMIUM_VALUE_BLOCKS = [
   {
     icon: '🤝',
     title: 'Complément du coach IA',
-    desc: 'Copie un template, puis demandez au coach de l’adapter à ton situation.',
+    desc: 'Copie un template, puis demande au coach de l’adapter à ton situation.',
   },
 ];
 
@@ -27,17 +27,17 @@ export const HOW_IT_WORKS_STEPS = [
   {
     step: 1,
     title: 'Choisis ton étape',
-    desc: 'Idée → Lancement → IA → Croissance. Si tu débutez, suivez l’ordre 1 à 4.',
+    desc: 'Idée → Lancement → IA → Croissance. Si tu débutes, suis l’ordre 1 à 4.',
   },
   {
     step: 2,
-    title: 'Ouvrez une ressource',
-    desc: 'Lisez « Comment l’utiliser », suivez le conseil débutant, copiez le contenu si besoin.',
+    title: 'Ouvre une ressource',
+    desc: 'Lis « Comment l’utiliser », suis le conseil débutant, copie le contenu si besoin.',
   },
   {
     step: 3,
     title: 'Passe à l’action',
-    desc: 'Cochez le jour correspondant dans Parcours ou discutez-en avec le coach IA.',
+    desc: 'Coche le jour correspondant dans Parcours ou discute-en avec le coach IA.',
   },
 ];
 
@@ -57,7 +57,7 @@ export const CATEGORY_GUIDES: Record<
     shortTitle: 'Trouver une idée',
     beginnerLine: 'Tu débutes ? Commence ici pour clarifier ton projet avant d’investir du temps.',
     whenToUse:
-      'Utilise ces outils si tu hésitez sur quoi lancer, si tu veux valider une idée, ou si tu repartez de zéro sur un nouveau modèle business.',
+      'Utilise ces outils si tu hésites sur quoi lancer, si tu veux valider une idée, ou si tu repartez de zéro sur un nouveau modèle business.',
     roadmapChapters: 'Chapitre 1 (Lancement). Jours 1 à 15 environ : problème, persona, offre.',
     coachPhases: 'Phases coach 1 à 3 : Vision, Client idéal, Offre & promesse.',
   },
@@ -98,7 +98,7 @@ export const RESOURCE_UI: Record<
     badge: 'Inspiration',
     icon: '📋',
     format: 'Liste à parcourir',
-    beginnerTip: 'Cochez mentalement 3 modèles qui tu attirent, puis creusez une seule piste.',
+    beginnerTip: 'Coche mentalement 3 modèles qui t\'attirent, puis creuse une seule piste.',
   },
   niches: {
     badge: 'Exemples',
@@ -122,13 +122,13 @@ export const RESOURCE_UI: Record<
     badge: 'Plan',
     icon: '📅',
     format: '7 jours',
-    beginnerTip: 'Un jour = une action. Ne sautez pas les conversations clients (J4–J5).',
+    beginnerTip: 'Un jour = une action. Ne saute pas les conversations clients (J4–J5).',
   },
   landing: {
     badge: 'Template',
     icon: '📄',
     format: 'Texte à remplir',
-    beginnerTip: 'Remplacez les [crochets], publiez sur Carrd ou Notion, améliorez avec le coach.',
+    beginnerTip: 'Remplace les [crochets], publie sur Carrd ou Notion, améliore avec le coach.',
   },
   outreach: {
     badge: 'Script',
@@ -164,7 +164,7 @@ export const RESOURCE_UI: Record<
     badge: 'MVP',
     icon: '🎯',
     format: 'Checklist',
-    beginnerTip: 'Si le MVP dépasse 2 semaines, réduisez le périmètre.',
+    beginnerTip: 'Si le MVP dépasse 2 semaines, réduis le périmètre.',
   },
   'prompt-content': {
     badge: 'Prompt IA',
@@ -182,19 +182,19 @@ export const RESOURCE_UI: Record<
     badge: 'Prompt IA',
     icon: '🤖',
     format: 'À copier-coller',
-    beginnerTip: 'Gardez un seul package au début.',
+    beginnerTip: 'Garde un seul package au début.',
   },
   'prompt-sales-page': {
     badge: 'Prompt IA',
     icon: '🤖',
     format: 'À copier-coller',
-    beginnerTip: 'Relis à voix haute : si c’est confus, raccourcissez.',
+    beginnerTip: 'Relis à voix haute : si c’est confus, raccourcis.',
   },
   'prompt-coach': {
     badge: 'BuildrAI',
     icon: '🧠',
     format: 'Prompt coach',
-    beginnerTip: 'Collez dans le coach IA. Il connaît déjà ton profil quiz.',
+    beginnerTip: 'Colle dans le coach IA. Il connaît déjà ton profil quiz.',
   },
   'prompt-roadmap': {
     badge: 'Parcours',
@@ -224,13 +224,13 @@ export const RESOURCE_UI: Record<
     badge: 'Juridique',
     icon: '⚖️',
     format: 'Anticipation mois 1',
-    beginnerTip: 'Anticiper seulement. Formalisez quand tu as clients et CA.',
+    beginnerTip: 'Anticiper seulement. Formalise quand tu as clients et CA.',
   },
   retention: {
     badge: 'Fidélisation',
     icon: '🔄',
     format: 'Playbook',
-    beginnerTip: 'Un client existant coûte 5× moins qu’un nouveau. Traitez-les en priorité.',
+    beginnerTip: 'Un client existant coûte 5× moins qu’un nouveau. Traite-les en priorité.',
   },
   'exit-assets': {
     badge: 'Revente',
@@ -247,15 +247,15 @@ export const RESOURCE_FAQ = [
   },
   {
     q: 'Dois-je tout lire avant de commencer ?',
-    a: 'Non. Suis l’étape 1 si tu débutez, ou allez directement à la ressource qui correspond à ton blocage actuel (script, pricing, prompt…).',
+    a: 'Non. Suis l’étape 1 si tu débutes, ou va directement à la ressource qui correspond à ton blocage actuel (script, pricing, prompt…).',
   },
   {
     q: 'Comment lier une ressource au parcours 180 jours ?',
-    a: 'Chaque catégorie indique les chapitres concernés. Cochez le jour parcours équivalent après avoir appliqué la ressource.',
+    a: 'Chaque catégorie indique les chapitres concernés. Coche le jour parcours équivalent après avoir appliqué la ressource.',
   },
   {
     q: 'Le coach IA remplace-t-il ces templates ?',
-    a: 'Non. Ils se complètent. Copie un template, adaptez-le avec le coach, puis validez sur le terrain.',
+    a: 'Non. Ils se complètent. Copie un template, adapte-le avec le coach, puis valide sur le terrain.',
   },
 ];
 
@@ -265,7 +265,7 @@ export function getResourceUi(id: string) {
       badge: 'Ressource',
       icon: '📌',
       format: 'Guide',
-      beginnerTip: 'Lisez la ressource, puis appliquez une action concrète cette semaine.',
+      beginnerTip: 'Lis la ressource, puis applique une action concrète cette semaine.',
     }
   );
 }

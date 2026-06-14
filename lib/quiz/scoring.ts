@@ -51,7 +51,7 @@ const BUDGET_ADVICE: Record<BusinessId, Record<InvestmentBand, string>> = {
   },
   content: {
     minimal: 'Moins de 100 € : smartphone, outils gratuits et régularité suffisent pour démarrer.',
-    moderate: 'Avec 100 à 1 000 €, améliorez la qualité (micro, montage, site) pour monétiser plus vite.',
+    moderate: 'Avec 100 à 1 000 €, améliore la qualité (micro, montage, site) pour monétiser plus vite.',
     substantial: 'Au-delà de 1 000 €, accélérez avec sponsoring, formations ou une petite équipe éditoriale.',
   },
   agency: {
@@ -60,22 +60,22 @@ const BUDGET_ADVICE: Record<BusinessId, Record<InvestmentBand, string>> = {
     substantial: 'Au-delà de 1 000 €, recrutez en freelance et investissez dans l\'acquisition commerciale.',
   },
   ecommerce: {
-    minimal: 'Moins de 100 € : testez une micro-collection ou du dropshipping sans stock au départ.',
-    moderate: 'Avec 100 à 1 000 €, lancez site, premiers stocks et pub ciblée sur une niche.',
+    minimal: 'Moins de 100 € : teste une micro-collection ou du dropshipping sans stock au départ.',
+    moderate: 'Avec 100 à 1 000 €, lance site, premiers stocks et pub ciblée sur une niche.',
     substantial: 'Au-delà de 1 000 €, construisez une vraie marque avec stock, pub et identité visuelle.',
   },
   impact: {
-    minimal: 'Moins de 100 € : validez l\'impact avec un pilote local avant d\'investir davantage.',
+    minimal: 'Moins de 100 € : valide l\'impact avec un pilote local avant d\'investir davantage.',
     moderate: 'Avec 100 à 1 000 €, structurez l\'offre et touchez tes premiers bénéficiaires.',
     substantial: 'Au-delà de 1 000 €, scalez l\'impact tout en renforçant le modèle économique.',
   },
   saas: {
     minimal: 'Moins de 100 € : prototype no-code ou offre de conseil pour financer le produit.',
-    moderate: 'Avec 100 à 1 000 €, lancez un MVP léger (no-code ou dev ciblé) avant une grosse V1.',
-    substantial: 'Au-delà de 1 000 €, développez, testez et acquérez tes premiers utilisateurs.',
+    moderate: 'Avec 100 à 1 000 €, lance un MVP léger (no-code ou dev ciblé) avant une grosse V1.',
+    substantial: 'Au-delà de 1 000 €, développe, teste et acquiers tes premiers utilisateurs.',
   },
   marketplace: {
-    minimal: 'Moins de 100 € : lancez manuellement sur une micro-niche avant de coder la plateforme.',
+    minimal: 'Moins de 100 € : lance manuellement sur une micro-niche avant de coder la plateforme.',
     moderate: 'Avec 100 à 1 000 €, financez une V1 simple sur un marché très ciblé.',
     substantial: 'Au-delà de 1 000 €, construisez la plateforme et amorcez offre et demande.',
   },

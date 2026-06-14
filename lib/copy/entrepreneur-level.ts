@@ -123,7 +123,7 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
       coach: pickCopy(tier, {
         beginner: {
           label: 'Coach IA',
-          description: 'Pose tes questions, avancez pas à pas',
+          description: 'Pose tes questions, avance pas à pas',
         },
         intermediate: {
           label: 'Coach IA',
@@ -225,7 +225,7 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
         },
         intermediate: {
           label: 'Ma ville',
-          description: 'Crée ton personnage et suivez ton empire',
+          description: 'Crée ton personnage et suis ton empire',
         },
         experienced: {
           label: 'Ma ville',
@@ -367,13 +367,13 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
       welcomeNoProfile: pickCopy(tier, {
         beginner: `Bonjour ! Je t'aide à lancer ton projet, une petite étape à la fois.
 
-Fais le questionnaire pour un accompagnement adapté, ou décrivez ton idée ci-dessous.`,
+Fais le questionnaire pour un accompagnement adapté, ou décris ton idée ci-dessous.`,
         intermediate: `Bonjour ! Je t'accompagne de l'idée jusqu'aux premiers clients, une étape à la fois.
 
-Complète le quiz pour un parcours personnalisé, ou décrivez ton projet ci-dessous.`,
+Complète le quiz pour un parcours personnalisé, ou décris ton projet ci-dessous.`,
         experienced: `Bonjour. Co-pilotage structuré de l'idée à l'exécution. Livrables concrets à chaque échange.
 
-Complète le profil quiz ou décrivez directement ton contexte et tes contraintes.`,
+Complète le profil quiz ou décris directement ton contexte et tes contraintes.`,
       }),
       welcomeWithProfile: (businessName) =>
         pickCopy(tier, {

@@ -17,69 +17,18 @@ function StreakIcon() {
   );
 }
 
-function DistrictIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M4 20V9l8-5 8 5v11"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
-      />
-      <path d="M9 20v-6h6v6" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 export default function CityHud({ snapshot, compact }: CityHudProps) {
-  const empirePct = Math.round(
-    (snapshot.unlockedBuildingCount / snapshot.buildings.length) * 100
-  );
-  const xpProgress = snapshot.nextLevel ? snapshot.progressToNext : 100;
-  const accent = snapshot.nextLevel?.accent ?? snapshot.level.accent;
-
   return (
-    <div className={`city-hud city-hud--v2${compact ? ' city-hud--compact' : ''}`}>
+    <div className={`city-hud city-hud--v2 city-hud--minimal${compact ? ' city-hud--compact' : ''}`}>
       <div className="city-hud-chip city-hud-chip--level">
-        <span className="city-hud-chip-kicker">Empire</span>
         <strong>
           Niv. {snapshot.level.id}
           <span className="city-hud-chip-sep" aria-hidden="true">
-           .           </span>
+            ·
+          </span>
           {snapshot.level.name}
         </strong>
       </div>
-
-      {!compact && (
-        <>
-          <div className="city-hud-chip city-hud-chip--xp">
-            <div className="city-hud-xp-top">
-              <span>Progression</span>
-              <span>
-                {snapshot.nextLevel
-                  ? `${snapshot.progressToNext}% vers ${snapshot.nextLevel.name}`
-                  : 'Niveau max'}
-              </span>
-            </div>
-            <div className="city-hud-xp-track">
-              <div
-                className="city-hud-xp-fill"
-                style={{ width: `${xpProgress}%`, background: accent }}
-              />
-            </div>
-          </div>
-
-          <div className="city-hud-chip city-hud-chip--districts" title="Districts construits">
-            <DistrictIcon />
-            <span className="city-hud-districts-text">
-              <strong>
-                {snapshot.unlockedBuildingCount}/{snapshot.buildings.length}
-              </strong>
-              <span>{empirePct}%</span>
-            </span>
-          </div>
-        </>
-      )}
 
       <div className="city-hud-chip city-hud-chip--streak" title="Jours consécutifs d'activité">
         <StreakIcon />

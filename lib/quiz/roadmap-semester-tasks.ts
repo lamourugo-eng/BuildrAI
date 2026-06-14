@@ -42,7 +42,7 @@ const TITLE_TASKS: Record<string, string[]> = {
     'Planifie relance J+7 pour ceux sans réponse',
   ],
   'Audit canal #1': [
-    'Exporte ou notez les stats de ton meilleur canal (30 derniers jours)',
+    'Exporte ou note les stats de ton meilleur canal (30 derniers jours)',
     'Calcule taux de réponse ou conversion approximatif',
     'Fixe un objectif chifré +20 % sur ce canal ce mois',
   ],
@@ -78,7 +78,7 @@ const TITLE_TASKS: Record<string, string[]> = {
   ],
   'Tableau de bord semestre (CA, marge)': [
     'Consolidez CA et marge mois 1 à 6 dans un seul document',
-    'Visualisez la courbe. Tendance hausse, plat ou baisse ?',
+    'Visualise la courbe. Tendance hausse, plat ou baisse ?',
     'Note le mois le plus fort et le plus faible. Pourquoi',
   ],
   'Interview 2 clients satisfaits': [
@@ -92,7 +92,7 @@ const TITLE_TASKS: Record<string, string[]> = {
     'Affiche cette phrase là où tu travailles chaque jour',
   ],
   '3 priorités stratégiques S2': [
-    'Liste 10 idées. Gardez seulement 3 priorités pour le semestre 2',
+    'Liste 10 idées. Garde seulement 3 priorités pour le semestre 2',
     'Pour chaque priorité : 1 KPI et deadline trimestre',
     'Coupez explicitement ce qui n\'entre pas dans le top 3',
   ],
@@ -124,7 +124,7 @@ function tasksFromTitlePattern(title: string): string[] | null {
   }
   if (t.includes('relance') || t.includes('script')) {
     return [
-      'Rédige ou améliorez ton script en 3 parties : accroche, valeur, CTA',
+      'Rédige ou améliore ton script en 3 parties : accroche, valeur, CTA',
       'Teste sur 3 prospects aujourd\'hui',
       'Ajustez selon les réponses reçues',
     ];
@@ -132,7 +132,7 @@ function tasksFromTitlePattern(title: string): string[] | null {
   if (t.includes('pipeline') || t.includes('prospects')) {
     return [
       'Mets à jour statut de chaque prospect (chaud / tiède / froid)',
-      'Supprimez les contacts morts. Focus sur le top 20 %',
+      'Supprime les contacts morts. Focus sur le top 20 %',
       'Planifie la prochaine action par prospect chaud',
     ];
   }

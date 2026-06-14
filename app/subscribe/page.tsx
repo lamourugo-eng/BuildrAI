@@ -40,7 +40,7 @@ export default async function SubscribePage({
     <main className="auth-page">
       <div className="container auth-container">
         <span className="section-tag">Paiement</span>
-        <h1>Finalisez ton abonnement</h1>
+        <h1>Finalise ton abonnement</h1>
         <p className="auth-subtitle">
           Dernière étape avant d&apos;accéder à toutes les fonctionnalités premium.
         </p>

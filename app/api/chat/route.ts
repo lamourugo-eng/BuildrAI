@@ -74,7 +74,7 @@ function buildCoachReminder(
     businessId && phase >= 4
       ? ` Outil imposé pour ce client : ${getRecommendedToolSummary(businessId, techLevel).primary}.`
       : '';
-  return `[Consigne interne] Structure : SITUATION / PARCOURS (Étape X/8 + sous-étape 5.1-5.8 si étape 5) / PLAN (liste numérotée. Ne pas être vague) / OUTIL & MÉTHODE (nom exact + URL + coût + 3 clics. OBLIGATOIRE étape 5) / LIVRABLE DÉTAILLÉ / PROCHAINE MICRO-ÉTAPE 15-30 min.${toolHint} INTERDIT : « choisissez un outil », « mettez en ligne » sans guide. Ne répète pas la dernière réponse mot pour mot.`;
+  return `[Consigne interne] Structure : SITUATION / PARCOURS (Étape X/8 + sous-étape 5.1-5.8 si étape 5) / PLAN (liste numérotée. Ne pas être vague) / OUTIL & MÉTHODE (nom exact + URL + coût + 3 clics. OBLIGATOIRE étape 5) / LIVRABLE DÉTAILLÉ / PROCHAINE MICRO-ÉTAPE 15-30 min.${toolHint} INTERDIT : « choisis un outil », « mets en ligne » sans guide. Ne répète pas la dernière réponse mot pour mot.`;
 }
 
 /**

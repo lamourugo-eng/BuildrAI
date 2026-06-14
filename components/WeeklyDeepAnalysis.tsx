@@ -450,7 +450,7 @@ export default function WeeklyDeepAnalysis({
           <FeatureCard
             icon="📈"
             title="Indicateurs clés"
-            desc="Visualisez ton momentum et ton régularité semaine après semaine."
+            desc="Visualise ton momentum et ton régularité semaine après semaine."
           />
           <FeatureCard
             icon="⚠️"

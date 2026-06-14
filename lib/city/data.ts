@@ -133,7 +133,7 @@ export const CITY_BUILDINGS: CityBuildingDef[] = [
   {
     id: 'coach_hq',
     name: 'Siège coaching',
-    description: '10 messages échangés. Tu avancez avec constance.',
+    description: '10 messages échangés. Tu avances avec constance.',
     icon: '🏢',
     slot: { x: 64, y: 48 },
     scale: 1.1,

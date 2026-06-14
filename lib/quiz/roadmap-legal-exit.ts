@@ -79,7 +79,7 @@ const LEGAL_GUIDES: Record<BusinessId, BusinessLegalGuide> = {
         pros: 'TVA, marge claire, revente boutique + marque possible',
       },
     ],
-    caution: 'Stock et TVA intracommunautaire complexifient la micro. Anticipez le basculement.',
+    caution: 'Stock et TVA intracommunautaire complexifient la micro. Anticipe le basculement.',
     accountantNote: 'Comptabilité stocks + TVA : expert-comptable recommandé dès 30k€ CA/an.',
   },
   agency: {
@@ -299,7 +299,7 @@ export function formatLegalGuideTip(businessId: BusinessId): string {
   const top = g.recommended[0];
   const scale = g.recommended[1];
   const target = scale?.form ?? top.form;
-  return `${g.headline}. Anticipez en mois 1 ; formalisez (${target}) une fois le business monté (clients, CA, récurrence). Phase test : ${top.form}.`;
+  return `${g.headline}. Anticipe en mois 1 ; formalise (${target}) une fois le business monté (clients, CA, récurrence). Phase test : ${top.form}.`;
 }
 
 export function formatExitGuideTip(businessId: BusinessId): string | undefined {
@@ -346,7 +346,7 @@ export function buildLegalExitTasks(
   switch (dayKey) {
     case 'legal-diagnostic':
       return [
-        `Lisez les options pour ${legal.headline.split('.')[0].trim()} : ${legal.recommended.map((r) => r.form).join(', ')}`,
+        `Lis les options pour ${legal.headline.split('.')[0].trim()} : ${legal.recommended.map((r) => r.form).join(', ')}`,
         'Priorité mois 1 : valider offre, site et premiers contacts. Pas d\'immatriculation ni de démarches admin aujourd\'hui',
         legal.recommended[1]
           ? `Statut cible à appliquer une fois le business monté : ${legal.recommended[1].form} (${legal.recommended[1].when})`
@@ -369,7 +369,7 @@ export function buildLegalExitTasks(
       ];
     case 'legal-contracts':
       return [
-        'Rédige ou adaptez CGV/CGU + mentions légales sur ton site',
+        'Rédige ou adapte CGV/CGU + mentions légales sur ton site',
         'Contrat type client / conditions abonnement (durée, résiliation, SLA si B2B)',
         'Clause propriété intellectuelle et confidentialité',
         businessId === 'saas'
@@ -389,7 +389,7 @@ export function buildLegalExitTasks(
       if (!exit.resaleRelevant) {
         return [
           'Documente tes actifs clés (clients, process, IP) pour une reprise ou diversification',
-          'Liste ce qui a de la valeur sans tu (templates, SOP, listes)',
+          'Liste ce qui a de la valeur sans toi (templates, SOP, listes)',
           'Identifie un scénario : scale vs transmission vs pivot',
           legal.accountantNote,
           'Bilan : que pourrait reprendre un acquéreur demain ?',
@@ -413,7 +413,7 @@ export function buildLegalExitTasks(
       return businessId === 'saas'
         ? [
             'Export Stripe : MRR, churn, nouveaux clients. 12 mois',
-            'Calcul ARR = MRR × 12 ; notez churn mensuel %',
+            'Calcul ARR = MRR × 12 ; note le churn mensuel %',
             'CAC approximatif (dépenses acquisition / nouveaux clients)',
             'Tableau : date, MRR, clients actifs, commentaire',
             exit.valuationHint,
@@ -439,7 +439,7 @@ export function buildLegalExitTasks(
         'Crée dossier « Data room light » (Drive ou Notion)',
         ...exit.assetChecklist.map((item) => `Inclure : ${item}`),
         'Ajoute FAQ interne : stack, fournisseurs, procédures',
-        'Simulez : un acheteur a 2h. Que lit-il en premier ?',
+        'Simule : un acheteur a 2h. Que lit-il en premier ?',
         exit.valuationHint,
       ];
     case 'exit-plan':
