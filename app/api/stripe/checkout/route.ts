@@ -1,4 +1,8 @@
 import { resolveServerAppOrigin } from '@/lib/auth/callback-url';
+import {
+  formatStripeConfigError,
+  getMissingStripeEnvKeys,
+} from '@/lib/stripe/required-env';
 import { NextResponse } from 'next/server';
 import { getPriceId, getStripe, type BillingPeriod, type PlanId } from '@/lib/stripe';
 
@@ -15,6 +19,14 @@ export async function POST(request: Request) {
 
     if (!['starter', 'growth'].includes(plan)) {
       return NextResponse.json({ error: 'Plan invalide' }, { status: 400 });
+    }
+
+    const missing = getMissingStripeEnvKeys(plan, period);
+    if (missing.length > 0) {
+      return NextResponse.json(
+        { error: formatStripeConfigError(missing, plan, period), missing },
+        { status: 503 }
+      );
     }
 
     const stripe = getStripe();
@@ -37,21 +49,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ url: session.url });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Erreur inconnue';
-    const isConfig = message.includes('manquant') || message.includes('non configuré');
     const isMissingPrice =
       message.includes('No such price') || message.includes('resource_missing');
 
     let error = message;
-    if (isConfig) {
-      error = 'Stripe non configuré. Renseignez les variables dans .env.local';
-    } else if (isMissingPrice) {
+    if (isMissingPrice) {
       error =
-        'Prix Stripe introuvable : la clé API (test/live) et les STRIPE_PRICE_* sur Vercel ne correspondent pas. Utilisez sk_live_... avec les price_... live, ou relancez npm.cmd run stripe:sync.';
+        'Prix Stripe introuvable : la clé API (test/live) et les STRIPE_PRICE_* sur Vercel ne correspondent pas. Relancez npm.cmd run stripe:sync avec sk_live_..., mettez à jour Vercel, puis redeploy.';
     }
 
     return NextResponse.json(
       { error },
-      { status: isConfig ? 503 : isMissingPrice ? 503 : 500 }
+      { status: isMissingPrice ? 503 : 500 }
     );
   }
 }
