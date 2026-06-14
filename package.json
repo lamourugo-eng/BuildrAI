@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "stripe:sync": "node scripts/sync-stripe-plans.mjs",
+    "stripe:portal": "node scripts/configure-stripe-billing-portal.mjs",
     "test:newsletter": "node scripts/test-newsletter-trial.mjs",
     "test:coach-budget": "node scripts/test-coach-token-budget.mjs",
     "db:apply-coach-budget": "node scripts/apply-coach-token-migration.mjs",

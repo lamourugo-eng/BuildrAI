@@ -34,6 +34,7 @@ export default function AccountSubscription({
   const [error, setError] = useState('');
   const [cancelNotice, setCancelNotice] = useState<string | null>(null);
   const [cancelEndDate, setCancelEndDate] = useState<string | null>(null);
+  const [hasStripeCustomer, setHasStripeCustomer] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -51,6 +52,8 @@ export default function AccountSubscription({
       const res = await fetch('/api/subscription/sync-stripe', { method: 'POST' });
       const data = await res.json();
       if (!res.ok) return;
+
+      setHasStripeCustomer(data.hasStripeCustomer === true);
 
       if (data.cancelAtPeriodEnd && data.currentPeriodEnd) {
         setCancelEndDate(
@@ -116,7 +119,10 @@ export default function AccountSubscription({
   }, []);
 
   useEffect(() => {
-    if (!isSubscribed) return;
+    if (!isSubscribed) {
+      setHasStripeCustomer(false);
+      return;
+    }
     void syncStripeStatus();
     if (searchParams.get('billing') === 'return') {
       setCancelNotice(
@@ -394,7 +400,7 @@ export default function AccountSubscription({
         </div>
       )}
 
-      {isSubscribed && (
+      {isSubscribed && hasStripeCustomer && !isNewsletterTrial && (
         <article className="account-card account-card--wide account-subscription-cancel">
           <div className="account-subscription-cancel-head">
             <span className="account-subscription-cancel-icon" aria-hidden="true">

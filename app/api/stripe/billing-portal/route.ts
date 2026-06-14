@@ -31,10 +31,12 @@ export async function POST() {
 
     const stripe = getStripe();
     const appUrl = resolveServerAppOrigin();
+    const configuration = process.env.STRIPE_BILLING_PORTAL_CONFIG_ID?.trim();
 
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
       return_url: `${appUrl}/espace?section=abonnement&billing=return`,
+      ...(configuration ? { configuration } : {}),
     });
 
     return NextResponse.json({ url: session.url });
