@@ -190,7 +190,7 @@ export default function AccountProfile({ isSubscribed = false }: AccountProfileP
             {ENTREPRENEUR_PROFILES.find((p) => p.id === founderAvatar.profile)?.label ??
               founderAvatar.profile}
             {'. '}
-            votre personnage évolue avec vos niveaux XP dans la ville.
+            votre personnage évolue au fil de vos étapes business dans la ville.
           </p>
         ) : (
           <p className="account-card-desc">

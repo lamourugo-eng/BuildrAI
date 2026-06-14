@@ -206,7 +206,7 @@ export default function AccountDashboard({
         {newBuildingDetails.length > 0 && section !== 'ville' && (
           <div className="dash-toast" role="status">
             <span>
-              Nouveau bâtiment : {newBuildingDetails.map((b) => `${b.icon} ${b.name}`).join(', ')}
+              {newBuildingDetails.map((b) => b.description).join(' · ')}
             </span>
             <button type="button" className="btn btn-ghost btn-sm" onClick={dismissNewBuildings}>
               OK

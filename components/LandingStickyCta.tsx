@@ -27,17 +27,17 @@ export default function LandingStickyCta({ onOpenQuiz, enabled }: LandingStickyC
   if (!enabled || !visible) return null;
 
   return (
-    <div className="landing-sticky-cta" role="region" aria-label="Commencer maintenant">
+    <div className="landing-sticky-cta landing-sticky-cta--mobile" role="region" aria-label="Commencer maintenant">
       <div className="container landing-sticky-cta-inner">
-        <p className="landing-sticky-cta-copy">
+        <p className="landing-sticky-cta-copy landing-only-desktop">
           <strong>Passez de l&apos;idée à l&apos;action</strong>
           <span>Sans carte · accès immédiat</span>
         </p>
         <div className="landing-sticky-cta-actions">
           <button type="button" className="btn btn-primary landing-cta-primary" onClick={onOpenQuiz}>
-            Créer mon plan
+            Créer mon plan gratuitement
           </button>
-          <Link href="/#newsletter" className="btn btn-outline">
+          <Link href="/#newsletter" className="btn btn-outline landing-only-desktop">
             Coach 24h
           </Link>
         </div>

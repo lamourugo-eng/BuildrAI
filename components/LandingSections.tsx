@@ -67,7 +67,7 @@ export function LandingOfferStrip({
   if (userEmail) return null;
 
   return (
-    <section className="landing-offer-strip" aria-label="Offre de lancement">
+    <section className="landing-offer-strip landing-only-desktop" aria-label="Offre de lancement">
       <div className="container landing-offer-strip-inner">
         <div className="landing-offer-strip-copy">
           <span className="landing-offer-strip-tag">Offre newsletter</span>
@@ -109,19 +109,19 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
             <span className="badge-dot" />
             Parcours entrepreneurial · 180 jours
           </div>
-          <p className="hero-lead">
+          <p className="hero-lead landing-only-desktop">
             Vous avez une idée de business mais ne savez pas quoi faire ensuite ?
           </p>
           <h1>
-            Trouvez votre business idéal et construisez-le
-            <em> avec un coach IA personnalisé pendant 180 jours</em>
+            Passe de zéro idée à ton premier business en 180 jours{' '}
+            <em>avec un coach IA qui te donne chaque jour la prochaine action.</em>
           </h1>
-          <p className="hero-subtitle">
+          <p className="hero-subtitle landing-only-desktop">
             BuildrAI vous accompagne de l&apos;idée à l&apos;action : découvrez le modèle qui
             correspond à votre profil, recevez un plan sur mesure et avancez chaque jour avec
             votre coach.
           </p>
-          <ul className="hero-benefits">
+          <ul className="hero-benefits landing-only-desktop">
             <li>Découvrez quel business correspond à votre profil</li>
             <li>L&apos;IA crée un plan personnalisé sur 180 jours</li>
             <li>Le coach vous accompagne au quotidien, étape par étape</li>
@@ -139,7 +139,10 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
               Créer mon plan gratuitement
             </a>
             {!userEmail ? (
-              <Link href="/#newsletter" className="btn btn-outline btn-lg landing-cta-secondary">
+              <Link
+                href="/#newsletter"
+                className="btn btn-outline btn-lg landing-cta-secondary landing-only-desktop"
+              >
                 Tester le coach IA Premium 24h
               </Link>
             ) : (
@@ -148,10 +151,10 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
               </Link>
             )}
           </div>
-          <p className="hero-cta-note">
-            Sans carte bancaire · Accès immédiat · Essai coach 24 h offert
+          <p className="hero-cta-note landing-mobile-trust">
+            Sans carte · Accès immédiat · Essai 24 h
           </p>
-          <ul className="landing-trust-row" aria-label="Garanties">
+          <ul className="landing-trust-row landing-only-desktop" aria-label="Garanties">
             {LANDING_TRUST_ITEMS.map((item) => (
               <li key={item}>{item}</li>
             ))}
@@ -165,7 +168,7 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
             ))}
           </ul>
           {!userEmail && (
-            <div className="hero-free-hint">
+            <div className="hero-free-hint landing-only-desktop">
               <span className="hero-free-hint-icon" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2L12 17l-6.3 4 2.3-7.2-6-4.6h7.6L12 2z" strokeLinejoin="round" />
@@ -191,7 +194,7 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
               </div>
             </div>
           )}
-          <div className="hero-stats">
+          <div className="hero-stats landing-only-desktop">
             <div className="stat">
               <strong>180</strong>
               <span>jours de parcours</span>
@@ -206,7 +209,7 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
             </div>
           </div>
         </div>
-        <div className="hero-visual hero-reveal hero-reveal--late">
+        <div className="hero-visual hero-reveal hero-reveal--late landing-only-desktop">
           <div className="chat-window hero-chat-float">
             <div className="chat-header">
               <div className="chat-avatar">BA</div>
@@ -257,7 +260,7 @@ export function LandingJourney({ onOpenQuiz }: LandingSectionsProps = {}) {
         <div className="section-header landing-section-header landing-section-header--center">
           <span className="section-tag">La méthode BuildrAI</span>
           <h2>Plus qu&apos;un chatbot IA : un parcours complet</h2>
-          <p>
+          <p className="landing-section-intro landing-only-desktop">
             De votre profil à votre empire entrepreneurial — chaque étape est connectée,
             personnalisée et visible. Vous ne discutez pas avec une IA : vous construisez
             votre business.
@@ -268,7 +271,12 @@ export function LandingJourney({ onOpenQuiz }: LandingSectionsProps = {}) {
           {JOURNEY_PIPELINE.map((step, index) => (
             <article
               key={step.label}
-              className="landing-journey-node animate-on-scroll"
+              className={[
+                'landing-journey-node animate-on-scroll',
+                index === 1 || index === 5 ? 'landing-only-desktop' : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
               style={{ '--journey-i': index } as CSSProperties}
             >
               <div className="landing-journey-node-icon">{step.icon}</div>
@@ -281,7 +289,7 @@ export function LandingJourney({ onOpenQuiz }: LandingSectionsProps = {}) {
           ))}
         </div>
 
-        <div className="landing-gamification">
+        <div className="landing-gamification landing-only-desktop">
           <header className="landing-gamification-head animate-on-scroll">
             <span className="section-tag">Motivation intégrée</span>
             <h3>Votre progression devient visible</h3>
@@ -313,7 +321,7 @@ export function LandingJourney({ onOpenQuiz }: LandingSectionsProps = {}) {
               Créer mon plan gratuitement
             </Link>
           )}
-          <Link href="/#newsletter" className="btn btn-outline btn-lg">
+          <Link href="/#newsletter" className="btn btn-outline btn-lg landing-only-desktop">
             Tester le coach IA Premium 24h
           </Link>
         </div>
@@ -324,7 +332,7 @@ export function LandingJourney({ onOpenQuiz }: LandingSectionsProps = {}) {
 
 export function LandingTrust() {
   return (
-    <section className="landing-trust-band" aria-label="Réassurance">
+    <section className="landing-trust-band landing-only-desktop" aria-label="Réassurance">
       <div className="container">
         <ul className="landing-trust-band-grid">
           {LANDING_TRUST_ITEMS.map((item) => (
@@ -428,14 +436,14 @@ export function Features({ onOpenQuiz }: LandingSectionsProps = {}) {
         <div className="section-header landing-section-header">
           <span className="section-tag">Votre espace</span>
           <h2>Tout ce dont vous avez besoin pour avancer</h2>
-          <p>
+          <p className="landing-section-intro landing-only-desktop">
             Commencez gratuitement, testez Premium 24 h, puis abonnez-vous quand vous êtes prêt.
           </p>
         </div>
 
         <div className="landing-feature-groups">
           {FEATURE_GROUPS.map((group) => (
-            <div key={group.tier} className={`landing-feature-group landing-feature-group--${group.tier}`}>
+            <div key={group.tier} className={`landing-feature-group landing-feature-group--${group.tier}${group.tier === 'accelerator' ? ' landing-only-desktop' : ''}`}>
               <header className="landing-feature-group-head">
                 <span className={`feature-tier feature-tier--${group.tier}`}>
                   {FEATURE_TIER_LABELS[group.tier]}
@@ -501,7 +509,7 @@ export function How({ onOpenQuiz }: LandingSectionsProps = {}) {
   ];
 
   return (
-    <section className="how landing-section landing-section--how" id="how">
+    <section className="how landing-section landing-section--how landing-only-desktop" id="how">
       <div className="container">
         <div className="section-header landing-section-header">
           <span className="section-tag">Comment ça marche</span>
@@ -534,7 +542,7 @@ export function How({ onOpenQuiz }: LandingSectionsProps = {}) {
               Créer mon plan gratuitement
             </Link>
           )}
-          <Link href="/#newsletter" className="btn btn-outline btn-lg">
+          <Link href="/#newsletter" className="btn btn-outline btn-lg landing-only-desktop">
             Tester le coach IA Premium 24h
           </Link>
         </div>
@@ -559,7 +567,7 @@ export function Pricing({ onOpenLogin, userEmail = null }: PricingProps = {}) {
         <div className="section-header landing-section-header">
           <span className="section-tag">Tarifs</span>
           <h2>Des formules simples et transparentes</h2>
-          <p>
+          <p className="landing-section-intro landing-only-desktop">
             Gratuit pour découvrir votre profil. Premium pour construire. Accelerator pour
             accélérer avec analyse et ressources.
           </p>
@@ -644,7 +652,7 @@ export function Pricing({ onOpenLogin, userEmail = null }: PricingProps = {}) {
             </article>
           ))}
         </div>
-        <ul className="landing-pricing-trust" aria-label="Engagements">
+        <ul className="landing-pricing-trust landing-pricing-trust--compact" aria-label="Engagements">
           <li>✓ Sans engagement</li>
           <li>✓ Paiement sécurisé Stripe</li>
           <li>✓ Résiliation en un clic</li>
@@ -698,11 +706,15 @@ export function FAQ() {
         <div className="section-header landing-section-header">
           <span className="section-tag">FAQ</span>
           <h2>Questions fréquentes</h2>
-          <p>Tout ce qu&apos;il faut savoir avant de commencer.</p>
+          <p className="landing-section-intro landing-only-desktop">Tout ce qu&apos;il faut savoir avant de commencer.</p>
         </div>
         <div className="faq-list">
-          {items.map((item) => (
-            <details key={item.q} className="faq-item" open={item.open}>
+          {items.map((item, index) => (
+            <details
+              key={item.q}
+              className={`faq-item${index >= 4 ? ' landing-only-desktop' : ''}`}
+              open={item.open}
+            >
               <summary>{item.q}</summary>
               <p>{item.a}</p>
             </details>
@@ -719,7 +731,7 @@ interface LandingAssistanceProps {
 
 export function Assistance({ userEmail = null }: LandingAssistanceProps) {
   return (
-    <section className="assistance assistance--landing">
+    <section className="assistance assistance--landing landing-only-desktop">
       <div className="container">
         <AssistanceSection userEmail={userEmail} variant="embedded" />
       </div>
@@ -739,7 +751,7 @@ export function CTA({ onOpenQuiz, userEmail = null }: CTAProps = {}) {
         <div className="cta-box landing-cta-box">
           <span className="section-tag">Prêt à lancer ?</span>
           <h2>Passez de l&apos;idée à l&apos;action dès aujourd&apos;hui</h2>
-          <p>
+          <p className="landing-section-intro landing-only-desktop">
             Créez votre plan personnalisé en 4 minutes, testez le coach IA Premium 24 h sans
             carte bancaire, puis avancez jour après jour — sans engagement.
           </p>
@@ -754,16 +766,16 @@ export function CTA({ onOpenQuiz, userEmail = null }: CTAProps = {}) {
               </Link>
             )}
             {!userEmail ? (
-              <Link href="/#newsletter" className="btn btn-outline btn-lg">
+              <Link href="/#newsletter" className="btn btn-outline btn-lg landing-only-desktop">
                 Tester le coach IA Premium 24h
               </Link>
             ) : (
-              <Link href="/espace" className="btn btn-outline btn-lg">
+              <Link href="/espace" className="btn btn-outline btn-lg landing-only-desktop">
                 Mon espace
               </Link>
             )}
           </div>
-          <span className="cta-note">
+          <span className="cta-note landing-only-desktop">
             Plan adapté à votre profil · Coach 24/7 · Parcours 180 jours · Sans engagement
           </span>
           {!userEmail && (

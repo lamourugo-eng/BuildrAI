@@ -1,13 +1,13 @@
 /**
  * Affiche la checklist de mise en production et les variables Vercel à copier.
  * Usage : node scripts/print-production-checklist.mjs
- * Option : PROD_URL=https://buildrai-xi.vercel.app node scripts/print-production-checklist.mjs
+ * Option : PROD_URL=https://usebuildrai.com node scripts/print-production-checklist.mjs
  */
 
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
-const PROD_URL = (process.env.PROD_URL || 'https://buildrai-xi.vercel.app').replace(/\/$/, '');
+const PROD_URL = (process.env.PROD_URL || 'https://usebuildrai.com').replace(/\/$/, '');
 
 function loadEnvLocal() {
   const vars = {};

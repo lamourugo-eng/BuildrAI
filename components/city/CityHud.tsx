@@ -54,10 +54,11 @@ export default function CityHud({ snapshot, compact }: CityHudProps) {
         <>
           <div className="city-hud-chip city-hud-chip--xp">
             <div className="city-hud-xp-top">
-              <span>XP empire</span>
+              <span>Progression</span>
               <span>
-                {snapshot.xp}
-                {snapshot.nextLevel ? ` / ${snapshot.nextLevel.minXp}` : ''}
+                {snapshot.nextLevel
+                  ? `${snapshot.progressToNext}% vers ${snapshot.nextLevel.name}`
+                  : 'Niveau max'}
               </span>
             </div>
             <div className="city-hud-xp-track">

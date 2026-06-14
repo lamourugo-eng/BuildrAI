@@ -1,17 +1,9 @@
-import { CITY_XP } from '@/lib/city/data';
-
-const XP_ACTIONS = [
-  { xp: CITY_XP.quiz, label: 'Quiz entrepreneurial' },
-  { xp: CITY_XP.welcomeBonus, label: 'Activation Premium' },
-  { xp: CITY_XP.perCoachMessage, label: 'Message au coach' },
-  { xp: CITY_XP.perRoadmapDay, label: 'Jour coché dans le parcours' },
-  { xp: CITY_XP.perWeeklyAnalysis, label: 'Analyse hebdomadaire' },
-] as const;
+import { CITY_PROGRESS_ACTIONS } from '@/lib/city/accomplishments';
 
 const APPEARANCE_UNLOCKS = [
-  'Niv. 2. Café, lunettes, style startup',
-  'Niv. 4. Tablette, look audacieux',
-  'Niv. 5. Costume & accessoires premium',
+  'Niv. 2 · Café, lunettes, style startup',
+  'Niv. 4 · Tablette, look audacieux',
+  'Niv. 5 · Costume & accessoires premium',
 ] as const;
 
 export default function CityXpGuide() {
@@ -19,16 +11,19 @@ export default function CityXpGuide() {
     <section className="city-xp-guide" aria-labelledby="city-xp-guide-title">
       <div className="city-xp-guide-head">
         <div>
-          <h3 id="city-xp-guide-title">Comment gagner de l&apos;XP empire</h3>
-          <p>Chaque action dans BuildrAI alimente votre progression et débloque districts &amp; tenues.</p>
+          <h3 id="city-xp-guide-title">Ce qui fait grandir votre empire</h3>
+          <p>
+            Chaque action dans BuildrAI se traduit en étape business concrète — pas en points
+            abstraits.
+          </p>
         </div>
       </div>
 
       <ul className="city-xp-guide-grid">
-        {XP_ACTIONS.map((action) => (
-          <li key={action.label} className="city-xp-guide-item">
-            <span className="city-xp-guide-value">+{action.xp} XP</span>
-            <span className="city-xp-guide-label">{action.label}</span>
+        {CITY_PROGRESS_ACTIONS.map((action) => (
+          <li key={action.id} className="city-xp-guide-item">
+            <span className="city-xp-guide-value">{action.outcome}</span>
+            <span className="city-xp-guide-label">{action.action}</span>
           </li>
         ))}
       </ul>

@@ -177,12 +177,12 @@ export default function CityWorld({
       {pulseUnlock && newBuildingIds.length > 0 && !compact && (
         <div className="city-unlock-banner city-unlock-banner--empire" role="status">
           <span className="city-unlock-banner-spark" aria-hidden="true" />
-          <strong>Nouveau district construit !</strong>
+          <strong>Nouvelle étape franchie !</strong>
           <span>
             {snapshot.buildings
               .filter((b) => newBuildingIds.includes(b.id))
-              .map((b) => b.name)
-              .join('. ')}
+              .map((b) => b.description)
+              .join(' · ')}
           </span>
         </div>
       )}

@@ -42,7 +42,7 @@ export default function DashCityPreview({
 
         {city.hasAvatar ? (
           <div className="dash-city-preview-chips">
-            <span>{city.xp} XP</span>
+            <span>{city.accomplishments.length} étapes</span>
             <span>
               {city.unlockedBuildingCount}/{city.buildings.length}
             </span>

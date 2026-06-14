@@ -62,8 +62,8 @@ function CityShellHeader({ city, isSubscribed, onCustomize, locked }: CityShellH
           </h2>
           <p>
             {locked
-              ? 'Votre personnage est prêt. Abonnez-vous pour débloquer la progression complète (XP, districts, coach).'
-              : 'Votre empire grandit avec chaque action : coach, parcours et régularité alimentent de nouveaux districts.'}
+              ? 'Votre personnage est prêt. Abonnez-vous pour débloquer la progression complète (districts, coach, parcours).'
+              : city.accomplishmentSummary}
           </p>
         </div>
 
@@ -78,8 +78,8 @@ function CityShellHeader({ city, isSubscribed, onCustomize, locked }: CityShellH
       {isSubscribed && !locked && (
         <div className="city-shell-stats">
           <div className="city-shell-stat">
-            <strong>{city.xp}</strong>
-            <span>XP empire</span>
+            <strong>{city.accomplishments.length}</strong>
+            <span>étapes validées</span>
           </div>
           <div className="city-shell-stat">
             <strong>
@@ -175,12 +175,12 @@ export default function CityView({ isSubscribed }: CityViewProps) {
           <div className="city-locked-cta-copy">
             <strong>Débloquez la progression empire</strong>
             <p>
-              XP, bâtiments, streaks et tenues évolutives. Tout s&apos;active avec l&apos;abonnement
+              Districts, streaks et tenues évolutives. Tout s&apos;active avec l&apos;abonnement
               Premium.
             </p>
             <ul>
               <li>Districts qui apparaissent au fil de vos actions</li>
-              <li>XP et niveaux avec déblocages personnage</li>
+              <li>Étapes business concrètes et déblocages personnage</li>
               <li>Suivi parcours &amp; coach intégré à la ville</li>
             </ul>
           </div>

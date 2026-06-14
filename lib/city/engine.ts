@@ -5,15 +5,18 @@ import {
   CITY_BUILDINGS,
   CITY_LEVELS,
   CITY_XP,
-  COACH_CITY_HINTS,
   FOUNDER_STYLES,
   type CityBuildingDef,
   type CityLevel,
   type FounderStyle,
 } from '@/lib/city/data';
-import { loadCityStorage } from '@/lib/city/storage';
+import {
+  buildCityAccomplishments,
+  formatAccomplishmentSummary,
+} from '@/lib/city/accomplishments';
 import { sanitizeAvatarForLevel } from '@/lib/city/avatar-unlocks';
 import { ENTREPRENEUR_PROFILES, type FounderAvatar } from '@/lib/city/avatar-data';
+import { loadCityStorage } from '@/lib/city/storage';
 
 export interface BuildingStatus extends CityBuildingDef {
   unlocked: boolean;
@@ -34,6 +37,9 @@ export interface CitySnapshot {
   avatar: FounderAvatar | null;
   hasAvatar: boolean;
   motivationHint: string;
+  /** Accomplissements business affichés à l'utilisateur (sans XP) */
+  accomplishments: string[];
+  accomplishmentSummary: string;
 }
 
 export function getStreakDays(dailyMessages: Record<string, number>): number {
@@ -201,8 +207,20 @@ export function computeCitySnapshot(
     ? sanitizeAvatarForLevel(storage.avatar, level.id)
     : null;
   const hasAvatar = Boolean(avatar);
-  const motivationHint =
-    COACH_CITY_HINTS[buildings.filter((b) => b.unlocked).length % COACH_CITY_HINTS.length];
+
+  const accomplishments = buildCityAccomplishments({
+    quizCompleted,
+    subscribed,
+    welcomeBonusClaimed: storage.welcomeBonusClaimed,
+    coachMessages: analytics.coachMessages,
+    roadmapDays,
+    roadmapProgress,
+    coachingPhase,
+    streakDays,
+    weeklyReports,
+  });
+  const accomplishmentSummary = formatAccomplishmentSummary(accomplishments);
+  const motivationHint = accomplishmentSummary;
 
   const profileToStyle: Record<string, FounderStyle> = {
     tech: 'builder',
@@ -227,6 +245,8 @@ export function computeCitySnapshot(
     avatar,
     hasAvatar,
     motivationHint,
+    accomplishments,
+    accomplishmentSummary,
   };
 }
 
@@ -243,10 +263,11 @@ export function buildCityPromptBlock(snapshot: CitySnapshot): string {
 
   return `
 ## Ville entrepreneuriale (gamification)
-- Niveau : ${snapshot.level.name} (${snapshot.xp} XP symboliques. Compétences & discipline, pas revenus réels)
+- Niveau empire : ${snapshot.level.name} (niveau ${snapshot.level.id})
 ${entrepreneurLine}
 - Bâtiments débloqués : ${snapshot.unlockedBuildingCount}/${snapshot.buildings.length}${unlocked ? ` (récents : ${unlocked})` : ''}
 - Parcours : ${snapshot.roadmapProgress}%. Phase coach estimée : ${snapshot.coachingPhase}/8
-- Utilise parfois une phrase motivante liée à l'évolution du personnage et de la ville.
+- Étapes franchies (exemples) : ${snapshot.accomplishmentSummary}
+- Ne mentionne JAMAIS "XP", "points" ou "Tu as gagné X". Célèbre des étapes business concrètes (marché, offre, landing, prospection…).
 - Ne parle jamais d'argent gagné réellement. Parle de compétences, étapes franchies, discipline.`;
 }

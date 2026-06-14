@@ -229,7 +229,7 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
         },
         experienced: {
           label: 'Ma ville',
-          description: 'Gamification. XP, bâtiments et streaks',
+          description: 'Districts, étapes business et streaks',
         },
       }),
       blocnotes: pickCopy(tier, {

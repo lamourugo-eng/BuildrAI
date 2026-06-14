@@ -1,4 +1,4 @@
-/** Déclenché après une action qui modifie XP / analytics (même onglet) */
+/** Déclenché après une action qui modifie la progression ville / analytics (même onglet) */
 export const CITY_REFRESH_EVENT = 'buildrai:city-refresh';
 
 export function emitCityRefresh() {

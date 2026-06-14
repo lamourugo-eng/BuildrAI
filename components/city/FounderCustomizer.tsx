@@ -173,7 +173,7 @@ export default function FounderCustomizer({
           </h3>
           <p>
             {variant === 'edit'
-              ? 'Les options grisées se débloquent en gagnant de l\'XP dans votre empire.'
+              ? 'Les options grisées se débloquent en validant des étapes dans votre parcours.'
               : 'Choisissez une tenue de départ. Le reste se débloque en progressant.'}
           </p>
         </div>

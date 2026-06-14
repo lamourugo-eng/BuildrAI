@@ -59,7 +59,7 @@ export default function CityJourneyPanel({ snapshot }: CityJourneyPanelProps) {
         <div>
           <span className="city-journey-eyebrow">Progression empire</span>
           <h3 id="city-journey-title">Votre empire en chiffres</h3>
-          <p>{snapshot.motivationHint}</p>
+          <p>{snapshot.accomplishmentSummary}</p>
         </div>
         <div className="city-journey-head-badge">
           <span>{empirePct}%</span>

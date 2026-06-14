@@ -205,8 +205,8 @@ export const CITY_XP = {
 } as const;
 
 export const COACH_CITY_HINTS = [
-  'Tu as avancé sur ta mission. Ton quartier entrepreneurial évolue.',
-  'Ton activité progresse : une nouvelle amélioration de ta ville est débloquée.',
-  'Chaque étape franchie renforce ton écosystème. Continue sur ta lancée.',
-  'Ta régularité transforme ta capitale naissante en hub business.',
+  'Chaque action concrète fait grandir ton quartier : marché, offre, landing, prospection.',
+  'Ton empire visuel reflète tes étapes business, pas des points abstraits.',
+  'Un district de plus = une compétence ou un livrable de plus dans ton projet.',
+  'La régularité se voit ici comme en business : petits pas, gros résultats.',
 ] as const;

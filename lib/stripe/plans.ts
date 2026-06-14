@@ -66,7 +66,7 @@ export const BILLING_PLANS: BillingPlan[] = [
     features: [
       'Coach IA illimité avec mémoire (8 étapes)',
       'Parcours 180 jours. 6 chapitres, accessibles dès l\'abonnement',
-      'Ma ville. Avatar, XP et empire isométrique',
+      'Ma ville · Avatar, districts et empire isométrique',
       'Suivi d\'activité, streaks & bloc-notes',
       'Synchronisation coach ↔ parcours jour J',
       'Check-in quotidien & plan d\'action personnalisé',
