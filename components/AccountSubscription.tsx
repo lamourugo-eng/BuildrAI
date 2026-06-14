@@ -225,7 +225,8 @@ export default function AccountSubscription({
           <span className="account-subscription-status-label">Statut</span>
           <p className="account-subscription-status-value">{statusLabel}</p>
           <p className="account-subscription-status-meta">
-            Compte : <strong>{email}</strong>
+            Compte :{' '}
+            <strong className="account-subscription-email">{email}</strong>
             {isSubscribed && activatedLabel && (
               <>
                 {' '}
