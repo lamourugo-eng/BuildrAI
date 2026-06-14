@@ -109,18 +109,10 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
             <span className="badge-dot" />
             Parcours entrepreneurial · 180 jours
           </div>
-          <p className="hero-lead landing-only-desktop">
-            Vous avez une idée de business mais ne savez pas quoi faire ensuite ?
-          </p>
           <h1>
             Passe de zéro idée à ton premier business en 180 jours{' '}
             <em>avec un coach IA qui te donne chaque jour la prochaine action.</em>
           </h1>
-          <p className="hero-subtitle landing-only-desktop">
-            BuildrAI vous accompagne de l&apos;idée à l&apos;action : découvrez le modèle qui
-            correspond à votre profil, recevez un plan sur mesure et avancez chaque jour avec
-            votre coach.
-          </p>
           <ul className="hero-benefits landing-only-desktop">
             <li>Découvrez quel business correspond à votre profil</li>
             <li>L&apos;IA crée un plan personnalisé sur 180 jours</li>
@@ -271,12 +263,7 @@ export function LandingJourney({ onOpenQuiz }: LandingSectionsProps = {}) {
           {JOURNEY_PIPELINE.map((step, index) => (
             <article
               key={step.label}
-              className={[
-                'landing-journey-node animate-on-scroll',
-                index === 1 || index === 5 ? 'landing-only-desktop' : '',
-              ]
-                .filter(Boolean)
-                .join(' ')}
+              className="landing-journey-node animate-on-scroll"
               style={{ '--journey-i': index } as CSSProperties}
             >
               <div className="landing-journey-node-icon">{step.icon}</div>
@@ -289,7 +276,7 @@ export function LandingJourney({ onOpenQuiz }: LandingSectionsProps = {}) {
           ))}
         </div>
 
-        <div className="landing-gamification landing-only-desktop">
+        <div className="landing-gamification">
           <header className="landing-gamification-head animate-on-scroll">
             <span className="section-tag">Motivation intégrée</span>
             <h3>Votre progression devient visible</h3>
@@ -509,7 +496,7 @@ export function How({ onOpenQuiz }: LandingSectionsProps = {}) {
   ];
 
   return (
-    <section className="how landing-section landing-section--how landing-only-desktop" id="how">
+    <section className="how landing-section landing-section--how" id="how">
       <div className="container">
         <div className="section-header landing-section-header">
           <span className="section-tag">Comment ça marche</span>

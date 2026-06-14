@@ -2297,6 +2297,81 @@ ul { list-style: none; }
     width: 100%;
   }
 
+  .landing-gamification {
+    margin-bottom: 28px;
+  }
+
+  .landing-gamification-head {
+    margin-bottom: 16px;
+  }
+
+  .landing-gamification-head h3 {
+    font-size: 1.15rem;
+  }
+
+  .landing-gamification-head p {
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+
+  .landing-gamification-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .landing-gamification-card {
+    padding: 16px;
+  }
+
+  .landing-gamification-card h4 {
+    font-size: 0.9375rem;
+    margin-bottom: 6px;
+  }
+
+  .landing-gamification-card p {
+    font-size: 0.8125rem;
+  }
+
+  .landing-gamification-icon {
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+  }
+
+  .landing-section--how {
+    padding-block: 44px;
+  }
+
+  .landing-section--how .section-header p {
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+
+  .landing-steps {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .landing-step {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .landing-step-body h3 {
+    font-size: 0.9375rem;
+  }
+
+  .landing-step-body p {
+    font-size: 0.8125rem;
+  }
+
+  .landing-how-cta {
+    margin-top: 8px;
+  }
+
+  .landing-how-cta .btn-lg {
+    width: 100%;
+  }
+
   .landing-section--features,
   .landing-section--pricing,
   .landing-section--faq,
