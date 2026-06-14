@@ -1,0 +1,723 @@
+'use client';
+
+import AssistanceSection from '@/components/AssistanceSection';
+import LandingNewsletter from '@/components/LandingNewsletter';
+import { getPublicPricingPlans, SEMESTER_DISCOUNT_PERCENT, formatSemesterBillingHint } from '@/lib/stripe/plans';
+import type { BillingPeriod } from '@/lib/stripe';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
+interface LandingSectionsProps {
+  onOpenQuiz?: () => void;
+}
+
+interface HeroProps extends LandingSectionsProps {
+  userEmail?: string | null;
+  onOpenLogin?: () => void;
+}
+
+const LANDING_TRUST_ITEMS = [
+  'Compte gratuit',
+  'Sans carte bancaire',
+  'Annulation à tout moment',
+] as const;
+
+const LANDING_SOCIAL_PROOF = [
+  { value: '4 min', label: 'pour votre profil' },
+  { value: '180 j', label: 'de parcours guidé' },
+  { value: '24 h', label: 'Premium offertes' },
+  { value: '0 €', label: 'pour commencer' },
+] as const;
+
+export function LandingOfferStrip({
+  userEmail = null,
+  onOpenQuiz,
+}: {
+  userEmail?: string | null;
+  onOpenQuiz?: () => void;
+}) {
+  if (userEmail) return null;
+
+  return (
+    <section className="landing-offer-strip" aria-label="Offre de lancement">
+      <div className="container landing-offer-strip-inner">
+        <div className="landing-offer-strip-copy">
+          <span className="landing-offer-strip-tag">Offre newsletter</span>
+          <p>
+            <strong>24 h de Premium offertes</strong> (coach IA + parcours complet + Ma ville).
+            Sans carte bancaire. 1 essai par compte.
+          </p>
+        </div>
+        <div className="landing-offer-strip-actions">
+          <Link href="/#newsletter" className="btn btn-primary">
+            Activer l&apos;essai 24 h
+          </Link>
+          {onOpenQuiz ? (
+            <button type="button" className="btn btn-outline" onClick={onOpenQuiz}>
+              Quiz d&apos;abord
+            </button>
+          ) : (
+            <Link href="/?quiz=1" className="btn btn-outline">
+              Quiz d&apos;abord
+            </Link>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
+  return (
+    <section className="hero landing-hero">
+      <div className="hero-glow" aria-hidden="true">
+        <span className="hero-orb hero-orb--1" />
+        <span className="hero-orb hero-orb--2" />
+      </div>
+      <div className="container hero-grid">
+        <div className="hero-content hero-reveal">
+          <div className="badge">
+            <span className="badge-dot" />
+            24 h Premium offertes · sans carte bancaire
+          </div>
+          <h1>
+            Lancez votre business
+            <em>avec un plan clair jour par jour</em>
+          </h1>
+          <p className="hero-subtitle">
+            Quiz gratuit en 4 minutes, coach IA qui connaît votre projet et parcours 180 jours
+            calibré sur votre modèle (SaaS, freelance, OFM…). Tout au même endroit.
+          </p>
+          <div className="hero-cta">
+            <a
+              href="#quiz"
+              className="btn btn-primary btn-lg"
+              id="hero-quiz-cta"
+              onClick={(e) => {
+                e.preventDefault();
+                onOpenQuiz?.();
+              }}
+            >
+              Faire le quiz gratuit · 4 min
+            </a>
+            {!userEmail ? (
+              <Link href="/#newsletter" className="btn btn-outline btn-lg">
+                Essai Premium 24 h
+              </Link>
+            ) : (
+              <Link href="/#features" className="btn btn-outline btn-lg">
+                Voir les outils
+              </Link>
+            )}
+          </div>
+          <ul className="landing-trust-row" aria-label="Garanties">
+            {LANDING_TRUST_ITEMS.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+          <ul className="landing-social-proof" aria-label="Points clés">
+            {LANDING_SOCIAL_PROOF.map((item) => (
+              <li key={item.label}>
+                <strong>{item.value}</strong>
+                <span>{item.label}</span>
+              </li>
+            ))}
+          </ul>
+          {!userEmail && (
+            <div className="hero-free-hint">
+              <span className="hero-free-hint-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2L12 17l-6.3 4 2.3-7.2-6-4.6h7.6L12 2z" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <div className="hero-free-hint-body">
+                <strong>Compte gratuit. Sans carte bancaire</strong>
+                <p>
+                  Questionnaire, profil entrepreneurial, modèles business adaptés et aperçu du
+                  parcours. Passez à Premium (29 €/mois) pour le coach IA, le parcours complet
+                  et Ma ville. Ou Accelerator (99 €/mois) pour l&apos;analyse hebdo et les
+                  ressources.
+                </p>
+                {onOpenLogin ? (
+                  <button type="button" className="hero-free-hint-link" onClick={onOpenLogin}>
+                    Créer un compte gratuit
+                    <span aria-hidden="true">→</span>
+                  </button>
+                ) : (
+                  <Link href="/login" className="hero-free-hint-link">
+                    Créer un compte gratuit
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                )}
+              </div>
+            </div>
+          )}
+          <div className="hero-stats">
+            <div className="stat">
+              <strong>180</strong>
+              <span>jours de parcours</span>
+            </div>
+            <div className="stat">
+              <strong>8</strong>
+              <span>étapes coach</span>
+            </div>
+            <div className="stat">
+              <strong>24/7</strong>
+              <span>coach IA</span>
+            </div>
+          </div>
+        </div>
+        <div className="hero-visual hero-reveal hero-reveal--late">
+          <div className="chat-window hero-chat-float">
+            <div className="chat-header">
+              <div className="chat-avatar">BA</div>
+              <div>
+                <strong>BuildrAI Coach</strong>
+                <span className="online online--pulse">Jour 12. Chapitre 1</span>
+              </div>
+            </div>
+            <div className="chat-messages">
+              <div className="message bot hero-chat-msg hero-chat-msg--1">
+                <p>
+                  Je reprends ton parcours : tu es sur le positionnement. Tu hésites entre deux
+                  accroches pour ta landing ?
+                </p>
+              </div>
+              <div className="message user hero-chat-msg hero-chat-msg--2">
+                <p>
+                  Oui. J&apos;ai mon persona et mon offre SaaS, mais je ne sais pas laquelle
+                  choisir.
+                </p>
+              </div>
+              <div className="message bot hero-chat-msg hero-chat-msg--3">
+                <p>
+                  Parfait. Voici 3 accroches pour vos clients idéaux, plus la structure de
+                  votre page d&apos;accueil. On coche la tâche du jour ensuite ?
+                </p>
+              </div>
+            </div>
+            <div className="chat-input">
+              <input type="text" placeholder="Posez votre question..." disabled />
+              <button type="button" aria-label="Envoyer">
+                →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+type FeatureTier = 'free' | 'premium' | 'accelerator';
+
+const FEATURE_TIER_LABELS: Record<FeatureTier, string> = {
+  free: 'Gratuit',
+  premium: 'Premium. 29 €',
+  accelerator: 'Accelerator. 99 €',
+};
+
+const FEATURE_GROUPS: {
+  tier: FeatureTier;
+  title: string;
+  subtitle: string;
+  items: { icon: string; title: string; desc: string }[];
+}[] = [
+  {
+    tier: 'free',
+    title: 'Gratuit. Pour démarrer',
+    subtitle: 'Questionnaire, profil et aperçu du parcours. Sans carte bancaire.',
+    items: [
+      {
+        icon: '🎯',
+        title: 'Quiz entrepreneurial',
+        desc: '9 questions : profil, budget, niveau et modèles business adaptés (SaaS, freelance, e-commerce…).',
+      },
+      {
+        icon: '◎',
+        title: 'Profil & modèles',
+        desc: 'Scores de compatibilité et choix libre du modèle. Pas seulement le top 3 du quiz.',
+      },
+      {
+        icon: '◈',
+        title: 'Espace personnel',
+        desc: 'Vue d\'ensemble, profil détaillé et bloc-notes dès la création de compte.',
+      },
+    ],
+  },
+  {
+    tier: 'premium',
+    title: 'Premium. 29 €/mois',
+    subtitle: 'Coach IA, parcours 180 jours, Ma ville et suivi d\'activité.',
+    items: [
+      {
+        icon: '🧠',
+        title: 'Coach IA avec mémoire',
+        desc: '8 étapes guidées (idée, offre, pitch, prix, lancement…) et mode synchronisé au jour J.',
+      },
+      {
+        icon: '🗺️',
+        title: 'Parcours 180 jours',
+        desc: '6 chapitres de 30 jours, tâches quotidiennes. Parcours complet accessible dès l\'abonnement.',
+      },
+      {
+        icon: '🏙️',
+        title: 'Ma ville',
+        desc: 'Avatar, vue isométrique, XP et bâtiments débloqués avec votre progression.',
+      },
+      {
+        icon: '📊',
+        title: 'Activité & notes',
+        desc: 'Messages coach, régularité, séries et bloc-notes persistant.',
+      },
+    ],
+  },
+  {
+    tier: 'accelerator',
+    title: 'Accelerator. 99 €/mois',
+    subtitle: 'Tout Premium, plus analyse hebdo et bibliothèque complète.',
+    items: [
+      {
+        icon: '◐',
+        title: 'Analyse hebdomadaire',
+        desc: 'Bilan IA chaque semaine, aligné sur votre parcours et vos échanges coach.',
+      },
+      {
+        icon: '▧',
+        title: 'Bibliothèque ressources',
+        desc: '22+ templates, scripts et prompts prêts à copier. Par phase et par chapitre.',
+      },
+    ],
+  },
+];
+
+export function Features({ onOpenQuiz }: LandingSectionsProps = {}) {
+  return (
+    <section className="features landing-section landing-section--features" id="features">
+      <div className="container">
+        <div className="section-header landing-section-header">
+          <span className="section-tag">Votre espace</span>
+          <h2>Tout ce dont vous avez besoin pour avancer</h2>
+          <p>
+            Commencez gratuitement, testez Premium 24 h, puis abonnez-vous quand vous êtes prêt.
+          </p>
+        </div>
+
+        <div className="landing-feature-groups">
+          {FEATURE_GROUPS.map((group) => (
+            <div key={group.tier} className={`landing-feature-group landing-feature-group--${group.tier}`}>
+              <header className="landing-feature-group-head">
+                <span className={`feature-tier feature-tier--${group.tier}`}>
+                  {FEATURE_TIER_LABELS[group.tier]}
+                </span>
+                <h3>{group.title}</h3>
+                <p>{group.subtitle}</p>
+              </header>
+              <div className="features-grid landing-features-grid">
+                {group.items.map((f) => (
+                  <article key={f.title} className="feature-card animate-on-scroll">
+                    <div className="feature-icon">{f.icon}</div>
+                    <h4>{f.title}</h4>
+                    <p>{f.desc}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p className="landing-features-foot">
+          {onOpenQuiz ? (
+            <button type="button" className="landing-inline-link landing-inline-link--button" onClick={onOpenQuiz}>
+              Faire le quiz gratuit →
+            </button>
+          ) : (
+            <Link href="/?quiz=1" className="landing-inline-link">
+              Faire le quiz gratuit →
+            </Link>
+          )}
+          {' · '}
+          <Link href="/#pricing" className="landing-inline-link">
+            Voir les tarifs →
+          </Link>
+        </p>
+      </div>
+    </section>
+  );
+}
+
+export function How({ onOpenQuiz }: LandingSectionsProps = {}) {
+  const steps = [
+    {
+      num: '01',
+      title: 'Quiz gratuit · 4 min',
+      desc: '9 questions pour découvrir votre profil, budget et modèles business adaptés (SaaS, freelance, OFM…).',
+    },
+    {
+      num: '02',
+      title: 'Compte gratuit',
+      desc: 'Espace personnel, profil détaillé, bloc-notes et aperçu du parcours. Sans carte bancaire.',
+    },
+    {
+      num: '03',
+      title: 'Essai Premium 24 h',
+      desc: 'Newsletter = coach IA, parcours 180 jours et Ma ville offerts 24 h. Retour auto au plan Gratuit.',
+    },
+    {
+      num: '04',
+      title: 'Premium ou Accelerator',
+      desc: '29 €/mois pour construire au quotidien. 99 €/mois pour analyse hebdo et ressources avancées.',
+    },
+  ];
+
+  return (
+    <section className="how landing-section landing-section--how" id="how">
+      <div className="container">
+        <div className="section-header landing-section-header">
+          <span className="section-tag">Comment ça marche</span>
+          <h2>De l&apos;idée à l&apos;action en 4 étapes</h2>
+          <p>
+            Commencez sans risque. Chaque étape vous rapproche de vos premiers clients.
+          </p>
+        </div>
+        <div className="landing-steps">
+          {steps.map((s) => (
+            <article key={s.num} className="landing-step animate-on-scroll">
+              <div className="landing-step-marker">
+                <span className="step-number">{s.num}</span>
+              </div>
+              <div className="landing-step-body">
+                <h3>{s.title}</h3>
+                <p>{s.desc}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+        <div className="landing-how-cta">
+          {onOpenQuiz ? (
+            <button type="button" className="btn btn-primary btn-lg" onClick={onOpenQuiz}>
+              Commencer par le quiz
+            </button>
+          ) : (
+            <Link href="/?quiz=1" className="btn btn-primary btn-lg">
+              Commencer par le quiz
+            </Link>
+          )}
+          <Link href="/#newsletter" className="btn btn-outline btn-lg">
+            Essai Premium 24 h
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+interface PricingProps {
+  onOpenLogin?: () => void;
+  userEmail?: string | null;
+}
+
+export function Pricing({ onOpenLogin, userEmail = null }: PricingProps = {}) {
+  const [isSemester, setIsSemester] = useState(false);
+  const period: BillingPeriod = isSemester ? 'semester' : 'monthly';
+  const plans = getPublicPricingPlans(period);
+
+  return (
+    <section className="pricing landing-section landing-section--pricing" id="pricing">
+      <div className="container">
+        <div className="section-header landing-section-header">
+          <span className="section-tag">Tarifs</span>
+          <h2>Des formules simples et transparentes</h2>
+          <p>
+            Gratuit pour découvrir votre profil. Premium pour construire. Accelerator pour
+            accélérer avec analyse et ressources.
+          </p>
+        </div>
+        <div className="pricing-toggle">
+          <span className={`toggle-label${!isSemester ? ' active' : ''}`}>Mensuel</span>
+          <button
+            type="button"
+            className={`toggle-switch${isSemester ? ' semester' : ''}`}
+            aria-label="Basculer mensuel/semestriel"
+            onClick={() => setIsSemester(!isSemester)}
+          >
+            <span className="toggle-knob" />
+          </button>
+          <span className={`toggle-label${isSemester ? ' active' : ''}`}>
+            Semestriel <em>-{SEMESTER_DISCOUNT_PERCENT}%</em>
+          </span>
+        </div>
+        <div className="pricing-grid pricing-grid--3">
+          {plans.map((plan) => (
+            <article
+              key={plan.id}
+              className={`price-card animate-on-scroll${plan.popular ? ' popular' : ''}${plan.isFree ? ' is-free' : ''}`}
+            >
+              {plan.popular && <div className="popular-badge">Le plus populaire</div>}
+              {plan.isFree && <div className="popular-badge is-free-badge">Gratuit à vie</div>}
+              <div className="price-header">
+                <h3>{plan.name}</h3>
+                <p>{plan.desc}</p>
+              </div>
+              <div className="price-amount">
+                {plan.isFree ? (
+                  <span className="amount amount--free">0 €</span>
+                ) : (
+                  <>
+                    <span className="currency">€</span>
+                    <span className="amount">{isSemester ? plan.semester : plan.monthly}</span>
+                    <span className="period">/mois</span>
+                    {isSemester && (
+                      <span className="period period--hint">{formatSemesterBillingHint()}</span>
+                    )}
+                  </>
+                )}
+              </div>
+              <ul className="price-features">
+                {plan.features.map((f) => (
+                  <li key={f}>{f}</li>
+                ))}
+              </ul>
+              {plan.isFree ? (
+                userEmail ? (
+                  <Link href="/espace" className={`btn ${plan.ctaClass} btn-block`}>
+                    Accéder à mon espace
+                  </Link>
+                ) : onOpenLogin ? (
+                  <button
+                    type="button"
+                    className={`btn ${plan.ctaClass} btn-block`}
+                    onClick={onOpenLogin}
+                  >
+                    {plan.cta}
+                  </button>
+                ) : (
+                  <Link href={plan.href} className={`btn ${plan.ctaClass} btn-block`}>
+                    {plan.cta}
+                  </Link>
+                )
+              ) : plan.id === 'starter' && !userEmail ? (
+                <>
+                  <Link href={plan.href} className={`btn ${plan.ctaClass} btn-block`}>
+                    {plan.cta}
+                  </Link>
+                  <Link href="/#newsletter" className="price-trial-link">
+                    Ou essai Premium 24 h gratuit →
+                  </Link>
+                </>
+              ) : (
+                <Link href={plan.href} className={`btn ${plan.ctaClass} btn-block`}>
+                  {plan.cta}
+                </Link>
+              )}
+            </article>
+          ))}
+        </div>
+        <ul className="landing-pricing-trust" aria-label="Engagements">
+          <li>✓ Sans engagement</li>
+          <li>✓ Paiement sécurisé Stripe</li>
+          <li>✓ Résiliation en un clic</li>
+          <li>✓ Semestriel −30 %</li>
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+export function FAQ() {
+  const items = [
+    {
+      q: 'Comment tester Premium avant de payer ?',
+      a: 'Inscrivez-vous à la newsletter : vous recevez 24 h d\'accès Premium (coach IA, parcours complet, Ma ville) sans carte bancaire. À la fin, retour automatique au plan Gratuit. 1 essai par compte.',
+      open: true,
+    },
+    {
+      q: 'Que comprend le plan gratuit ?',
+      a: 'Le questionnaire entrepreneurial, l\'analyse de profil, les modèles business adaptés, un aperçu du parcours et votre espace personnel (vue d\'ensemble, profil, bloc-notes). Le coach IA, le parcours détaillé et Ma ville complète nécessitent Premium.',
+    },
+    {
+      q: 'Quelle différence entre Premium (29 €) et Accelerator (99 €) ?',
+      a: 'Premium inclut le coach IA illimité avec mémoire, le parcours 180 jours, Ma ville gamifiée et le suivi d\'activité. Accelerator ajoute l\'analyse hebdomadaire approfondie et la bibliothèque complète de ressources (templates, scripts, prompts IA).',
+    },
+    {
+      q: 'Comment fonctionne le parcours 180 jours ?',
+      a: '6 chapitres de 30 jours, calibrés sur votre modèle business (SaaS, freelance, e-commerce…). Chaque jour a une tâche concrète. Le coach IA se synchronise au jour J. Les 6 chapitres sont accessibles dès votre abonnement Premium.',
+    },
+    {
+      q: 'Qu\'est-ce que Ma ville ?',
+      a: 'Un espace gamifié en vue isométrique : créez votre avatar fondateur, gagnez de l\'XP, débloquez des bâtiments au fil de vos actions coach et parcours. C\'est votre empire visuel qui grandit avec votre projet.',
+    },
+    {
+      q: 'L\'IA remplace-t-elle un vrai mentor ?',
+      a: 'Non. BuildrAI complète l\'humain : disponible 24h/24 pour le quotidien (offre, pitch, pricing, lancement), pendant que vos mentors restent utiles pour le réseau et les gros choix stratégiques.',
+    },
+    {
+      q: 'Puis-je annuler à tout moment ?',
+      a: 'Absolument. Pas d\'engagement, pas de frais cachés. Annulez en un clic depuis votre espace client. Vous conservez l\'accès jusqu\'à la fin de la période payée.',
+    },
+    {
+      q: 'Mes données sont-elles en sécurité ?',
+      a: 'Vos données restent associées à votre compte. Vous pouvez gérer vos notes, votre profil et votre abonnement depuis votre espace personnel.',
+    },
+  ];
+
+  return (
+    <section className="faq landing-section landing-section--faq" id="faq">
+      <div className="container">
+        <div className="section-header landing-section-header">
+          <span className="section-tag">FAQ</span>
+          <h2>Questions fréquentes</h2>
+          <p>Tout ce qu&apos;il faut savoir avant de commencer.</p>
+        </div>
+        <div className="faq-list">
+          {items.map((item) => (
+            <details key={item.q} className="faq-item" open={item.open}>
+              <summary>{item.q}</summary>
+              <p>{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+interface LandingAssistanceProps {
+  userEmail?: string | null;
+}
+
+export function Assistance({ userEmail = null }: LandingAssistanceProps) {
+  return (
+    <section className="assistance assistance--landing">
+      <div className="container">
+        <AssistanceSection userEmail={userEmail} variant="embedded" />
+      </div>
+    </section>
+  );
+}
+
+interface CTAProps {
+  onOpenQuiz?: () => void;
+  userEmail?: string | null;
+}
+
+export function CTA({ onOpenQuiz, userEmail = null }: CTAProps = {}) {
+  return (
+    <section className="cta landing-section landing-section--cta">
+      <div className="container">
+        <div className="cta-box landing-cta-box">
+          <span className="section-tag">Prêt à commencer ?</span>
+          <h2>Votre profil entrepreneurial en 4 minutes</h2>
+          <p>
+            Faites le quiz, créez votre compte gratuit et testez Premium 24 h si vous le souhaitez.
+            Vous avancez à votre rythme, sans engagement.
+          </p>
+          <div className="landing-cta-actions">
+            {onOpenQuiz ? (
+              <button type="button" className="btn btn-primary btn-lg" onClick={onOpenQuiz}>
+                Faire le quiz gratuit
+              </button>
+            ) : (
+              <Link href="/?quiz=1" className="btn btn-primary btn-lg">
+                Faire le quiz gratuit
+              </Link>
+            )}
+            {!userEmail ? (
+              <Link href="/#newsletter" className="btn btn-outline btn-lg">
+                Essai Premium 24 h
+              </Link>
+            ) : (
+              <Link href="/#pricing" className="btn btn-outline btn-lg">
+                Voir les tarifs
+              </Link>
+            )}
+          </div>
+          <span className="cta-note">Gratuit pour commencer · Sans carte bancaire · 1 essai 24 h par compte</span>
+          {!userEmail && (
+            <LandingNewsletter userEmail={userEmail} variant="compact" />
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function Footer() {
+  return (
+    <footer className="footer">
+      <div className="container footer-grid">
+        <div className="footer-brand">
+          <a href="/" className="logo">
+            <span className="logo-icon">◈</span>
+            BuildrAI
+          </a>
+          <p>Un coach IA et un parcours structuré pour les créateurs qui veulent passer à l&apos;action.</p>
+        </div>
+        <div className="footer-links">
+          <h4>Produit</h4>
+          <ul>
+            <li><a href="#features">Outils</a></li>
+            <li><a href="#pricing">Tarifs</a></li>
+            <li><a href="#how">Comment ça marche</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div className="footer-links">
+          <h4>Espace client</h4>
+          <ul>
+            <li><Link href="/login">Connexion</Link></li>
+            <li><Link href="/espace">Mon espace</Link></li>
+            <li><Link href="/?quiz=1">Quiz gratuit</Link></li>
+            <li><Link href="/assistance">Assistance</Link></li>
+          </ul>
+        </div>
+        <div className="footer-links">
+          <h4>Contact</h4>
+          <ul>
+            <li><Link href="/assistance">Centre d&apos;aide</Link></li>
+            <li><a href="mailto:Buildraimail@gmail.com">Buildraimail@gmail.com</a></li>
+            <li><a href="#pricing">Premium. 29 €</a></li>
+            <li><a href="#pricing">Accelerator. 99 €</a></li>
+          </ul>
+        </div>
+      </div>
+      <div className="container footer-bottom">
+        <p>© 2026 BuildrAI. Tous droits réservés.</p>
+        <div className="footer-social">
+          <a href="#" aria-label="LinkedIn">in</a>
+          <a href="#" aria-label="Twitter">𝕏</a>
+          <a href="#" aria-label="YouTube">▶</a>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+export function ScrollAnimations() {
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const el = entry.target as HTMLElement;
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    document.querySelectorAll('.animate-on-scroll').forEach((el) => {
+      const node = el as HTMLElement;
+      node.style.opacity = '0';
+      node.style.transform = 'translateY(24px)';
+      node.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(node);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return null;
+}

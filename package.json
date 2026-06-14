@@ -1,0 +1,34 @@
+{
+  "name": "founder-coach",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "stripe:sync": "node scripts/sync-stripe-plans.mjs",
+    "test:newsletter": "node scripts/test-newsletter-trial.mjs",
+    "test:coach-budget": "node scripts/test-coach-token-budget.mjs",
+    "db:apply-coach-budget": "node scripts/apply-coach-token-migration.mjs",
+    "db:apply-migrations": "node scripts/apply-supabase-migrations.mjs"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.49.1",
+    "next": "^15.2.4",
+    "openai": "^6.42.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "stripe": "^17.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "eslint": "^9.22.0",
+    "eslint-config-next": "^15.2.4",
+    "pg": "^8.21.0",
+    "typescript": "^5.8.2"
+  }
+}

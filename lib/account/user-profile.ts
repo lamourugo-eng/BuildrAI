@@ -1,0 +1,157 @@
+import type { SupabaseClient } from '@supabase/supabase-js';
+
+export const NEWSLETTER_TRIAL_MS = 24 * 60 * 60 * 1000;
+
+export interface UserProfile {
+  user_id: string;
+  email: string | null;
+  newsletter_opt_in: boolean;
+  newsletter_opt_in_at: string | null;
+  trial_started_at: string | null;
+  trial_ends_at: string | null;
+  trial_used: boolean;
+}
+
+export function isMissingUserProfileTable(message: string): boolean {
+  const lower = message.toLowerCase();
+  return (
+    lower.includes('user_profiles') &&
+    (lower.includes('does not exist') ||
+      lower.includes('schema cache') ||
+      lower.includes('could not find') ||
+      lower.includes('pgrst205'))
+  );
+}
+
+export function isTrialWindowActive(profile: UserProfile | null | undefined): boolean {
+  if (!profile?.newsletter_opt_in || !profile.trial_ends_at) return false;
+  return new Date(profile.trial_ends_at).getTime() > Date.now();
+}
+
+export function isTrialExpired(profile: UserProfile | null | undefined): boolean {
+  if (!profile?.trial_ends_at) return false;
+  return new Date(profile.trial_ends_at).getTime() <= Date.now();
+}
+
+export async function getUserProfile(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<UserProfile | null> {
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .select(
+      'user_id, email, newsletter_opt_in, newsletter_opt_in_at, trial_started_at, trial_ends_at, trial_used'
+    )
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data as UserProfile | null;
+}
+
+/** Marque l'essai expiré en base. Idempotent. */
+export async function expireTrialInDb(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<void> {
+  const { error } = await supabase
+    .from('user_profiles')
+    .update({
+      trial_started_at: null,
+      trial_ends_at: null,
+      trial_used: true,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('user_id', userId);
+
+  if (error) throw error;
+}
+
+export async function upsertNewsletterPreference(
+  supabase: SupabaseClient,
+  userId: string,
+  email: string | null,
+  newsletterOptIn: boolean
+): Promise<UserProfile> {
+  const now = new Date().toISOString();
+  const existing = await getUserProfile(supabase, userId);
+
+  const row = {
+    user_id: userId,
+    email,
+    newsletter_opt_in: newsletterOptIn,
+    newsletter_opt_in_at: newsletterOptIn ? now : existing?.newsletter_opt_in_at ?? null,
+    updated_at: now,
+  };
+
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .upsert(row, { onConflict: 'user_id' })
+    .select(
+      'user_id, email, newsletter_opt_in, newsletter_opt_in_at, trial_started_at, trial_ends_at, trial_used'
+    )
+    .single();
+
+  if (error) throw error;
+  return data as UserProfile;
+}
+
+export type StartTrialResult =
+  | { ok: true; trialEndsAt: string; trialStartedAt: string }
+  | { ok: false; reason: 'no_opt_in' | 'already_used' | 'stripe_active' | 'trial_active' };
+
+export async function startNewsletterTrialInDb(
+  supabase: SupabaseClient,
+  userId: string,
+  email: string | null,
+  options: { stripeActive: boolean }
+): Promise<{ profile: UserProfile; trial: StartTrialResult }> {
+  let profile = await upsertNewsletterPreference(supabase, userId, email, true);
+
+  if (options.stripeActive) {
+    return { profile, trial: { ok: false, reason: 'stripe_active' } };
+  }
+
+  if (isTrialWindowActive(profile)) {
+    return {
+      profile,
+      trial: { ok: true, trialEndsAt: profile.trial_ends_at!, trialStartedAt: profile.trial_started_at! },
+    };
+  }
+
+  if (profile.trial_used) {
+    return { profile, trial: { ok: false, reason: 'already_used' } };
+  }
+
+  if (isTrialExpired(profile)) {
+    await expireTrialInDb(supabase, userId);
+    profile = (await getUserProfile(supabase, userId)) ?? profile;
+    if (profile.trial_used) {
+      return { profile, trial: { ok: false, reason: 'already_used' } };
+    }
+  }
+
+  const trialStartedAt = new Date().toISOString();
+  const trialEndsAt = new Date(Date.now() + NEWSLETTER_TRIAL_MS).toISOString();
+
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .update({
+      trial_started_at: trialStartedAt,
+      trial_ends_at: trialEndsAt,
+      trial_used: true,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('user_id', userId)
+    .select(
+      'user_id, email, newsletter_opt_in, newsletter_opt_in_at, trial_started_at, trial_ends_at, trial_used'
+    )
+    .single();
+
+  if (error) throw error;
+
+  return {
+    profile: data as UserProfile,
+    trial: { ok: true, trialEndsAt, trialStartedAt },
+  };
+}

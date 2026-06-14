@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BuildrAI — Votre coach IA pour lancer et faire grandir votre entreprise. Disponible 24h/24.">
+  <title>BuildrAI — Coaching IA pour entrepreneurs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="quiz-active">
+  <div class="noise"></div>
+
+  <!-- Questionnaire personnalité -->
+  <section class="quiz" id="quiz">
+    <div class="quiz-glow"></div>
+    <div class="container quiz-container">
+      <div class="quiz-panel" id="quiz-intro">
+        <div class="quiz-intro-layout">
+          <div>
+            <span class="section-tag">Étape 1 — Profil</span>
+            <h1>Trouvez le business<br><em>fait pour vous</em></h1>
+            <p class="quiz-intro-text">
+              Répondez à 6 questions sur vous. On vous propose les types d'entreprise qui vous correspondent le mieux.
+            </p>
+            <div class="quiz-meta">
+              <span>⏱ Environ 2 minutes</span>
+              <span>📋 6 questions faciles</span>
+              <span>🎯 Résultat clair à la fin</span>
+            </div>
+            <button class="btn btn-primary btn-lg" id="quiz-start">Commencer</button>
+            <button class="btn btn-ghost quiz-skip" id="quiz-skip">Passer cette étape →</button>
+          </div>
+          <div class="quiz-preview">
+            <h3>Ce que vous obtiendrez</h3>
+            <div class="quiz-preview-step">
+              <span class="quiz-preview-num">1</span>
+              <div>
+                <strong>Votre profil</strong>
+                <span>Votre façon d'être et vos points forts</span>
+              </div>
+            </div>
+            <div class="quiz-preview-step">
+              <span class="quiz-preview-num">2</span>
+              <div>
+                <strong>3 types d'activité (SaaS, freelance…)</strong>
+                <span>Avec un score et des explications simples</span>
+              </div>
+            </div>
+            <div class="quiz-preview-step">
+              <span class="quiz-preview-num">3</span>
+              <div>
+                <strong>Plan d'action</strong>
+                <span>Premières étapes concrètes pour vous lancer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-panel hidden" id="quiz-questions">
+        <div class="quiz-progress-bar">
+          <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+        </div>
+        <span class="quiz-step" id="quiz-step">Question 1 / 6</span>
+        <h2 class="quiz-question-title" id="quiz-question-title"></h2>
+        <div class="quiz-options" id="quiz-options"></div>
+        <button class="btn btn-outline quiz-back hidden" id="quiz-back">← Question précédente</button>
+      </div>
+
+      <div class="quiz-panel hidden" id="quiz-result">
+        <span class="section-tag">Vos résultats</span>
+        <h2>Votre profil entrepreunarial</h2>
+        <div class="quiz-profile-summary" id="quiz-profile-summary"></div>
+        <div class="quiz-dimensions" id="quiz-dimensions"></div>
+        <h3 class="quiz-results-title">Les modèles qui vous correspondent le mieux</h3>
+        <div class="quiz-results-grid" id="quiz-results-grid"></div>
+        <div class="quiz-result-actions">
+          <a href="#pricing" class="btn btn-primary btn-lg" id="quiz-cta-coach">Être accompagné par BuildrAI</a>
+          <button class="btn btn-outline btn-lg" id="quiz-explore">Explorer le site</button>
+          <button class="btn btn-ghost" id="quiz-restart">Refaire le questionnaire</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="site-content" id="site-content">
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="#" class="logo">
+        <span class="logo-icon">◈</span>
+        BuildrAI
+      </a>
+      <div class="nav-menu" id="nav-menu">
+        <ul class="nav-links">
+          <li><a href="#features">Outils</a></li>
+          <li><a href="#how">Comment ça marche</a></li>
+          <li><a href="#pricing">Tarifs</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#quiz" id="nav-quiz">Mon profil</a></li>
+        </ul>
+        <div class="nav-actions">
+          <a href="#" class="btn btn-ghost">Connexion</a>
+          <a href="#pricing" class="btn btn-primary">Essai gratuit</a>
+        </div>
+      </div>
+      <button class="menu-toggle" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-glow"></div>
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <div class="badge">
+            <span class="badge-dot"></span>
+            Nouveau — Aide pour votre présentation
+          </div>
+          <h1>
+            Votre coach IA
+            <em>pour entreprendre</em>
+          </h1>
+          <p class="hero-subtitle">
+            Votre projet, vos ventes, votre équipe — BuildrAI vous conseille à chaque étape, 24h/24.
+          </p>
+          <div class="hero-cta">
+            <a href="#quiz" class="btn btn-primary btn-lg" id="hero-quiz-cta">
+              Découvrir mon profil
+            </a>
+            <a href="#how" class="btn btn-outline btn-lg">Comment ça marche</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat">
+              <strong>12 000+</strong>
+              <span>entrepreneurs</span>
+            </div>
+            <div class="stat">
+              <strong>4.9/5</strong>
+              <span>satisfaction</span>
+            </div>
+            <div class="stat">
+              <strong>24/7</strong>
+              <span>disponible</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="chat-window">
+            <div class="chat-header">
+              <div class="chat-avatar">BA</div>
+              <div>
+                <strong>BuildrAI Coach</strong>
+                <span class="online">En ligne</span>
+              </div>
+            </div>
+            <div class="chat-messages">
+              <div class="message bot">
+                <p>Bonjour Sarah ! J'ai regardé ton parcours client. Beaucoup de gens s'arrêtent à l'étape 3 — on en parle ?</p>
+              </div>
+              <div class="message user">
+                <p>Oui, on perd 40% des clients après l'inscription. Qu'est-ce que tu proposes ?</p>
+              </div>
+              <div class="message bot">
+                <p>Trois idées : inscription plus simple, une petite victoire rapide, un email de rappel le lendemain. Je te prépare le plan ?</p>
+              </div>
+            </div>
+            <div class="chat-input">
+              <input type="text" placeholder="Posez votre question..." disabled>
+              <button aria-label="Envoyer">→</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Outils</span>
+          <h2>Tout ce dont un créateur d'entreprise a besoin</h2>
+          <p>6 outils utiles, disponibles instantanément.</p>
+        </div>
+        <div class="features-grid">
+          <article class="feature-card">
+            <div class="feature-icon">🧠</div>
+            <h3>Coach IA pour vos choix</h3>
+            <p>On discute de votre projet, de vos clients et des grandes décisions à prendre.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Tableau de bord</h3>
+            <p>Vos chiffres au même endroit, avec des conseils clairs chaque semaine.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">🎤</div>
+            <h3>Aide pour présenter</h3>
+            <p>S'entraîner à pitcher et recevoir des conseils pour convaincre des investisseurs.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">🗺️</div>
+            <h3>Plan pour votre produit</h3>
+            <p>Quoi faire en premier, selon l'importance et le temps que ça prend.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">💰</div>
+            <h3>Levée de fonds</h3>
+            <p>Préparer vos chiffres, votre présentation et vos réponses aux questions.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">👥</div>
+            <h3>Aide pour l'équipe</h3>
+            <p>Mieux s'entendre et avancer dans la même direction, avec l'aide de l'IA.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="how" id="how">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Comment ça marche</span>
+          <h2>Prêt en moins de 5 minutes</h2>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">01</div>
+            <h3>Créez votre profil</h3>
+            <p>Indiquez où vous en êtes, votre secteur, votre équipe et vos objectifs. L'IA adapte ses conseils à vous.</p>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step">
+            <div class="step-number">02</div>
+            <h3>Reliez vos outils</h3>
+            <p>Stripe, Notion, Slack… Vos infos servent à vous donner des conseils sur mesure.</p>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step">
+            <div class="step-number">03</div>
+            <h3>Posez vos questions</h3>
+            <p>Une question libre ou un thème : chiffres, réunion importante, changement de cap, recrutement…</p>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step">
+            <div class="step-number">04</div>
+            <h3>Passez à l'action</h3>
+            <p>Vous recevez un plan simple avec des dates. L'IA suit vos progrès et ajuste les conseils.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing" id="pricing">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Tarifs</span>
+          <h2>Choisissez votre formule</h2>
+          <p>14 jours d'essai gratuit. Sans carte bancaire. Annulation à tout moment.</p>
+        </div>
+        <div class="pricing-toggle">
+          <span class="toggle-label active" data-period="monthly">Mensuel</span>
+          <button class="toggle-switch" aria-label="Basculer mensuel/annuel">
+            <span class="toggle-knob"></span>
+          </button>
+          <span class="toggle-label" data-period="yearly">Annuel <em>-20%</em></span>
+        </div>
+        <div class="pricing-grid">
+          <article class="price-card">
+            <div class="price-header">
+              <h3>Starter</h3>
+              <p>Pour ceux qui ont une idée et veulent la tester.</p>
+            </div>
+            <div class="price-amount">
+              <span class="currency">€</span>
+              <span class="amount" data-monthly="29" data-yearly="23">29</span>
+              <span class="period">/mois</span>
+            </div>
+            <ul class="price-features">
+              <li>Coach IA illimité</li>
+              <li>5 sessions de pitch / mois</li>
+              <li>Modèles de plans prêts à l'emploi</li>
+              <li>Support email</li>
+            </ul>
+            <a href="#" class="btn btn-outline btn-block">Commencer</a>
+          </article>
+          <article class="price-card popular">
+            <div class="popular-badge">Le plus populaire</div>
+            <div class="price-header">
+              <h3>Growth</h3>
+              <p>Pour les entreprises qui ont des clients et veulent grandir.</p>
+            </div>
+            <div class="price-amount">
+              <span class="currency">€</span>
+              <span class="amount" data-monthly="79" data-yearly="63">79</span>
+              <span class="period">/mois</span>
+            </div>
+            <ul class="price-features">
+              <li>Tout Starter, plus :</li>
+              <li>Tableau de bord avec vos chiffres</li>
+              <li>Lien avec Stripe, Notion…</li>
+              <li>Aide pour lever des fonds</li>
+              <li>3 membres d'équipe</li>
+            </ul>
+            <a href="#" class="btn btn-primary btn-block">Essai gratuit 14 jours</a>
+          </article>
+          <article class="price-card">
+            <div class="price-header">
+              <h3>Scale</h3>
+              <p>Pour les grosses équipes qui grandissent très vite.</p>
+            </div>
+            <div class="price-amount">
+              <span class="currency">€</span>
+              <span class="amount" data-monthly="199" data-yearly="159">199</span>
+              <span class="period">/mois</span>
+            </div>
+            <ul class="price-features">
+              <li>Tout Growth, plus :</li>
+              <li>Équipe illimitée</li>
+              <li>Connexion technique avancée</li>
+              <li>Coach humain dédié (2h/mois)</li>
+              <li>Support prioritaire garanti</li>
+            </ul>
+            <a href="#" class="btn btn-outline btn-block">Contacter les ventes</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq" id="faq">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">FAQ</span>
+          <h2>Questions fréquentes</h2>
+        </div>
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary>L'IA remplace-t-elle un vrai mentor ?</summary>
+            <p>Non. BuildrAI complète l'humain : disponible 24h/24 pour le quotidien, pendant que vos mentors restent utiles pour le réseau et les gros choix. Le forfait Scale inclut 2h/mois avec un coach en chair et en os.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Mes données sont-elles en sécurité ?</summary>
+            <p>Oui. Données en Europe, bien protégées, et jamais utilisées pour entraîner d'autres IA. Vous pouvez tout exporter ou tout supprimer quand vous voulez.</p>
+          </details>
+          <details class="faq-item">
+            <summary>À quel stade mon entreprise est couverte ?</summary>
+            <p>De l'idée (tester le marché, premier prototype) à la grosse croissance (équipe, international). L'IA adapte ses conseils à votre niveau.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Puis-je annuler à tout moment ?</summary>
+            <p>Absolument. Pas d'engagement, pas de frais cachés. Annulez en un clic depuis votre espace client. Vous conservez l'accès jusqu'à la fin de la période payée.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Des tarifs pour les incubateurs ou écoles ?</summary>
+            <p>Oui. Offres groupées pour incubateurs, accélérateurs et écoles. Écrivez-nous à hello@buildrai.io pour un prix sur mesure.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <div class="container">
+        <div class="cta-box">
+          <h2>Prêt à faire grandir votre projet ?</h2>
+          <p>Rejoignez plus de 12 000 entrepreneurs qui décident mieux, plus vite.</p>
+          <form class="cta-form" id="cta-form">
+            <input type="email" placeholder="votre@email.com" required aria-label="Adresse email">
+            <button type="submit" class="btn btn-primary">Essai gratuit 14 jours</button>
+          </form>
+          <span class="cta-note">Sans carte bancaire · Configuration en 2 minutes</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <span class="logo-icon">◈</span>
+          BuildrAI
+        </a>
+        <p>Un coach IA pour les créateurs d'entreprise qui veulent aller plus loin.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Produit</h4>
+        <ul>
+          <li><a href="#features">Outils</a></li>
+          <li><a href="#pricing">Tarifs</a></li>
+          <li><a href="#">Connexions</a></li>
+          <li><a href="#">Nouveautés</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Ressources</h4>
+        <ul>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Guides entrepreneurs</a></li>
+          <li><a href="#">Newsletter</a></li>
+          <li><a href="#">Communauté</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Entreprise</h4>
+        <ul>
+          <li><a href="#">À propos</a></li>
+          <li><a href="#">Carrières</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Mentions légales</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>© 2026 BuildrAI. Tous droits réservés.</p>
+      <div class="footer-social">
+        <a href="#" aria-label="LinkedIn">in</a>
+        <a href="#" aria-label="Twitter">𝕏</a>
+        <a href="#" aria-label="YouTube">▶</a>
+      </div>
+    </div>
+  </footer>
+  </div><!-- /.site-content -->
+
+  <script src="script.js"></script>
+</body>
+</html>

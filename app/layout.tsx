@@ -1,0 +1,38 @@
+import type { Metadata } from 'next';
+import { Instrument_Serif, Plus_Jakarta_Sans } from 'next/font/google';
+import './globals.css';
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  weight: ['400', '500', '600', '700', '800'],
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ['latin'],
+  variable: '--font-serif',
+  weight: '400',
+  style: ['normal', 'italic'],
+});
+
+export const metadata: Metadata = {
+  title: 'BuildrAI. Coaching IA pour entrepreneurs',
+  description:
+    'BuildrAI. Votre coach IA pour lancer et faire grandir votre entreprise. Disponible 24h/24.',
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="fr">
+      <body className={`${plusJakarta.variable} ${instrumentSerif.variable}`}>
+        <div className="site-ambient" aria-hidden="true">
+          <span className="site-orb site-orb--1" />
+          <span className="site-orb site-orb--2" />
+          <span className="site-orb site-orb--3" />
+        </div>
+        <div className="noise" aria-hidden="true" />
+        {children}
+      </body>
+    </html>
+  );
+}
