@@ -1,3 +1,5 @@
+import type { BusinessId } from '@/lib/quiz/data';
+import type { QuizProfileSnapshot } from '@/lib/quiz/profile-storage';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export const NEWSLETTER_TRIAL_MS = 24 * 60 * 60 * 1000;
@@ -10,6 +12,8 @@ export interface UserProfile {
   trial_started_at: string | null;
   trial_ends_at: string | null;
   trial_used: boolean;
+  quiz_profile?: QuizProfileSnapshot | null;
+  chosen_business?: BusinessId | null;
 }
 
 export function isMissingUserProfileTable(message: string): boolean {
@@ -19,7 +23,9 @@ export function isMissingUserProfileTable(message: string): boolean {
     (lower.includes('does not exist') ||
       lower.includes('schema cache') ||
       lower.includes('could not find') ||
-      lower.includes('pgrst205'))
+      lower.includes('pgrst205') ||
+      lower.includes('quiz_profile') ||
+      lower.includes('chosen_business'))
   );
 }
 
@@ -33,20 +39,47 @@ export function isTrialExpired(profile: UserProfile | null | undefined): boolean
   return new Date(profile.trial_ends_at).getTime() <= Date.now();
 }
 
+const USER_PROFILE_COLUMNS =
+  'user_id, email, newsletter_opt_in, newsletter_opt_in_at, trial_started_at, trial_ends_at, trial_used, quiz_profile, chosen_business';
+
 export async function getUserProfile(
   supabase: SupabaseClient,
   userId: string
 ): Promise<UserProfile | null> {
   const { data, error } = await supabase
     .from('user_profiles')
-    .select(
-      'user_id, email, newsletter_opt_in, newsletter_opt_in_at, trial_started_at, trial_ends_at, trial_used'
-    )
+    .select(USER_PROFILE_COLUMNS)
     .eq('user_id', userId)
     .maybeSingle();
 
   if (error) throw error;
   return data as UserProfile | null;
+}
+
+export async function saveUserQuizProfile(
+  supabase: SupabaseClient,
+  userId: string,
+  email: string | null,
+  quizProfile: QuizProfileSnapshot,
+  chosenBusiness?: BusinessId | null
+): Promise<UserProfile> {
+  const now = new Date().toISOString();
+  const row = {
+    user_id: userId,
+    email,
+    quiz_profile: quizProfile,
+    chosen_business: chosenBusiness ?? null,
+    updated_at: now,
+  };
+
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .upsert(row, { onConflict: 'user_id' })
+    .select(USER_PROFILE_COLUMNS)
+    .single();
+
+  if (error) throw error;
+  return data as UserProfile;
 }
 
 /** Marque l'essai expiré en base. Idempotent. */
@@ -87,9 +120,7 @@ export async function upsertNewsletterPreference(
   const { data, error } = await supabase
     .from('user_profiles')
     .upsert(row, { onConflict: 'user_id' })
-    .select(
-      'user_id, email, newsletter_opt_in, newsletter_opt_in_at, trial_started_at, trial_ends_at, trial_used'
-    )
+    .select(USER_PROFILE_COLUMNS)
     .single();
 
   if (error) throw error;
@@ -143,9 +174,7 @@ export async function startNewsletterTrialInDb(
       updated_at: new Date().toISOString(),
     })
     .eq('user_id', userId)
-    .select(
-      'user_id, email, newsletter_opt_in, newsletter_opt_in_at, trial_started_at, trial_ends_at, trial_used'
-    )
+    .select(USER_PROFILE_COLUMNS)
     .single();
 
   if (error) throw error;

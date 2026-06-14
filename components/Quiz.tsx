@@ -5,6 +5,7 @@ import {
   buildQuizProfileSnapshot,
   saveQuizProfile,
 } from '@/lib/quiz/profile-storage';
+import { syncQuizProfileToServer } from '@/lib/quiz/profile-sync';
 import Link from 'next/link';
 import { useEffect, useState, type CSSProperties } from 'react';
 import FreeRoadmapTeaser from '@/components/FreeRoadmapTeaser';
@@ -25,9 +26,16 @@ type QuizPanel = 'intro' | 'questions' | 'result';
 interface QuizProps {
   onSkip: () => void;
   onExplore: () => void;
+  variant?: 'landing' | 'account';
+  onProfileSaved?: () => void;
 }
 
-export default function Quiz({ onSkip, onExplore }: QuizProps) {
+export default function Quiz({
+  onSkip,
+  onExplore,
+  variant = 'landing',
+  onProfileSaved,
+}: QuizProps) {
   const [panel, setPanel] = useState<QuizPanel>('intro');
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
@@ -87,8 +95,11 @@ export default function Quiz({ onSkip, onExplore }: QuizProps) {
     if (snapshot) {
       saveQuizProfile(snapshot);
       markQuizCompleted();
+      void syncQuizProfileToServer(snapshot).then(() => {
+        onProfileSaved?.();
+      });
     }
-  }, [panel, topResults, personality, levels, answers]);
+  }, [panel, topResults, personality, levels, answers, onProfileSaved]);
 
   return (
     <section className="quiz" id="quiz">
@@ -326,33 +337,53 @@ export default function Quiz({ onSkip, onExplore }: QuizProps) {
             })()}
 
             <div className="quiz-result-actions">
-              <Link
-                href={`/login?redirect=${encodeURIComponent('/espace?section=ville')}&newsletter=1&tab=signup`}
-                className="btn btn-primary btn-lg"
-                onClick={onExplore}
-              >
-                Créer mon compte · essai 24 h offert
-              </Link>
-              <p className="quiz-result-hint">
-                Compte gratuit + option newsletter pour <strong>24 h Premium</strong> (coach, parcours, Ma ville).
-              </p>
-              <Link
-                href={`/login?redirect=${encodeURIComponent('/espace')}`}
-                className="btn btn-outline btn-lg"
-                onClick={onExplore}
-              >
-                Créer un compte sans essai
-              </Link>
-              <Link
-                href="/#pricing"
-                className="btn btn-ghost btn-lg"
-                onClick={onExplore}
-              >
-                Voir les tarifs
-              </Link>
-              <button type="button" className="btn btn-ghost" onClick={restart}>
-                Refaire le questionnaire
-              </button>
+              {variant === 'account' ? (
+                <>
+                  <button type="button" className="btn btn-primary btn-lg" onClick={onExplore}>
+                    Voir mon parcours
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-outline btn-lg"
+                    onClick={onSkip}
+                  >
+                    Retour au profil
+                  </button>
+                  <button type="button" className="btn btn-ghost" onClick={restart}>
+                    Refaire le questionnaire
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href={`/login?redirect=${encodeURIComponent('/espace?section=ville')}&newsletter=1&tab=signup`}
+                    className="btn btn-primary btn-lg"
+                    onClick={onExplore}
+                  >
+                    Créer mon compte · essai 24 h offert
+                  </Link>
+                  <p className="quiz-result-hint">
+                    Compte gratuit + option newsletter pour <strong>24 h Premium</strong> (coach, parcours, Ma ville).
+                  </p>
+                  <Link
+                    href={`/login?redirect=${encodeURIComponent('/espace')}`}
+                    className="btn btn-outline btn-lg"
+                    onClick={onExplore}
+                  >
+                    Créer un compte sans essai
+                  </Link>
+                  <Link
+                    href="/#pricing"
+                    className="btn btn-ghost btn-lg"
+                    onClick={onExplore}
+                  >
+                    Voir les tarifs
+                  </Link>
+                  <button type="button" className="btn btn-ghost" onClick={restart}>
+                    Refaire le questionnaire
+                  </button>
+                </>
+              )}
             </div>
           </div>
         )}

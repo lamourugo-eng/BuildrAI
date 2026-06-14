@@ -1,6 +1,7 @@
 import { clearCoachMemory } from '@/lib/coach/memory-storage';
 import type { BusinessId } from '@/lib/quiz/data';
 import { saveChosenBusiness } from '@/lib/quiz/profile-storage';
+import { syncQuizProfileToServer } from '@/lib/quiz/profile-sync';
 
 export const BUSINESS_CHANGED_EVENT = 'buildrai-business-changed';
 
@@ -32,4 +33,5 @@ export async function switchActiveBusiness(
   clearCoachMemory(previousBusinessId);
   saveChosenBusiness(nextBusinessId);
   notifyBusinessChanged(nextBusinessId);
+  void syncQuizProfileToServer(undefined, nextBusinessId);
 }

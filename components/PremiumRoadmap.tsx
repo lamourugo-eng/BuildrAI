@@ -160,8 +160,8 @@ export default function PremiumRoadmap({
             générer votre parcours personnalisé.
           </p>
         </div>
-        <Link href="/espace?section=profil" className="btn btn-primary">
-          Aller au profil
+        <Link href="/espace?section=profil&quiz=1" className="btn btn-primary">
+          Compléter le questionnaire
         </Link>
       </section>
     );

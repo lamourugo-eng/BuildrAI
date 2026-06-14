@@ -14,6 +14,7 @@ import { loadLocalNotepad, notepadPreview } from '@/lib/account/notepad-storage'
 import { getPlanById } from '@/lib/stripe/plans';
 import { businessProfiles, type BusinessId } from '@/lib/quiz/data';
 import { loadChosenBusiness, loadQuizProfile } from '@/lib/quiz/profile-storage';
+import { hydrateQuizProfileFromServer } from '@/lib/quiz/profile-sync';
 import { computeCitySnapshot } from '@/lib/city/engine';
 import { CITY_REFRESH_EVENT } from '@/lib/city/events';
 import {
@@ -23,6 +24,7 @@ import {
 } from '@/lib/city/storage';
 import FreeRoadmapTeaser from '@/components/FreeRoadmapTeaser';
 import PremiumRoadmap from '@/components/PremiumRoadmap';
+import Quiz from '@/components/Quiz';
 import ResourceLibrary from '@/components/ResourceLibrary';
 import WeeklyDeepAnalysis from '@/components/WeeklyDeepAnalysis';
 import { getTotalUnlockedRoadmapDays } from '@/lib/quiz/roadmap-program';
@@ -64,6 +66,7 @@ export default function AccountDashboard({
   const router = useRouter();
   const searchParams = useSearchParams();
   const section = resolveDashboardSection(searchParams.get('section'));
+  const wantsQuiz = searchParams.get('quiz') === '1';
 
   const [stats, setStats] = useState(loadAccountAnalytics());
   const [city, setCity] = useState(() =>
@@ -110,6 +113,15 @@ export default function AccountDashboard({
   }
 
   useEffect(() => {
+    void hydrateQuizProfileFromServer().then((saved) => {
+      if (saved) {
+        setProfile(saved);
+        setChosenId(loadChosenBusiness());
+      }
+    });
+  }, []);
+
+  useEffect(() => {
     if (isSubscribed) {
       claimCityWelcomeBonus();
       void syncRoadmapMonthsFromStripe().then(() => refresh());
@@ -125,16 +137,30 @@ export default function AccountDashboard({
         refresh();
       }
     };
+    const onQuizProfile = () => refresh();
     const onCityRefresh = () => refresh();
     window.addEventListener('storage', onStorage);
+    window.addEventListener('buildrai:quiz-profile', onQuizProfile);
     window.addEventListener(CITY_REFRESH_EVENT, onCityRefresh);
     const interval = setInterval(refresh, 4000);
     return () => {
       window.removeEventListener('storage', onStorage);
+      window.removeEventListener('buildrai:quiz-profile', onQuizProfile);
       window.removeEventListener(CITY_REFRESH_EVENT, onCityRefresh);
       clearInterval(interval);
     };
   }, [isSubscribed, serverPlanId, isGrowthFromServer]);
+
+  function finishQuizInEspace(nextSection: DashboardSection = 'profil') {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('quiz');
+    if (nextSection === 'overview') params.delete('section');
+    else params.set('section', nextSection);
+    params.delete('upgrade');
+    const qs = params.toString();
+    router.replace(qs ? `/espace?${qs}` : '/espace', { scroll: false });
+    refresh();
+  }
 
   function goTo(next: DashboardSection) {
     const params = new URLSearchParams(searchParams.toString());
@@ -567,7 +593,17 @@ export default function AccountDashboard({
             />
           )}
 
-          {section === 'profil' && <AccountProfile isSubscribed={isSubscribed} />}
+          {section === 'profil' &&
+            (wantsQuiz ? (
+              <Quiz
+                variant="account"
+                onSkip={() => finishQuizInEspace('profil')}
+                onExplore={() => finishQuizInEspace('parcours')}
+                onProfileSaved={() => refresh()}
+              />
+            ) : (
+              <AccountProfile isSubscribed={isSubscribed} />
+            ))}
 
           {section === 'activite' && (
             <AccountAnalytics isSubscribed={isSubscribed} serverPlanId={serverPlanId} />

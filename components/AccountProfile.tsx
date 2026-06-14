@@ -83,7 +83,7 @@ export default function AccountProfile({ isSubscribed = false }: AccountProfileP
           Passez le questionnaire pour débloquer votre profil entrepreneurial, vos modèles business
           et un coaching personnalisé.
         </p>
-        <Link href="/?quiz=1" className="btn btn-primary">
+        <Link href="/espace?section=profil&quiz=1" className="btn btn-primary">
           Faire le questionnaire
         </Link>
       </div>
@@ -209,7 +209,7 @@ export default function AccountProfile({ isSubscribed = false }: AccountProfileP
         </div>
       </div>
 
-      <Link href="/?quiz=1" className="btn btn-outline">
+      <Link href="/espace?section=profil&quiz=1" className="btn btn-outline">
         Refaire le questionnaire
       </Link>
     </div>
