@@ -28,14 +28,35 @@ Ouvrir [http://localhost:3000](http://localhost:3000).
 
 6 questions → 8 profils business (SaaS, Freelance, E-commerce, etc.) avec résultats détaillés (%, dimensions, recommandations).
 
+## Production (Vercel)
+
+Site en ligne : [https://buildrai-xi.vercel.app](https://buildrai-xi.vercel.app)
+
+```bash
+npm run prod:checklist
+```
+
+Affiche les variables Vercel à copier, la config Supabase auth et le webhook Stripe.
+
+### Vercel — variables d'environnement
+
+Sur **Settings → Environment Variables** (Production), copiez depuis `.env.local` **sauf** :
+
+| Variable | Valeur prod |
+|----------|-------------|
+| `NEXT_PUBLIC_APP_URL` | `https://buildrai-xi.vercel.app` |
+| Autres clés | Identiques à `.env.local` (Supabase, OpenAI, Stripe, ADMIN_EMAILS) |
+
+Ne jamais mettre `http://localhost:3000` en production sur Vercel.
+
 ## Supabase (auth magic link)
 
 1. Copier l'URL et les clés dans `.env.local`
 2. Dashboard Supabase → **Authentication → URL Configuration** :
-   - Site URL : votre URL publique (ex. `https://votre-domaine.com`)
-   - Redirect URLs : `https://votre-domaine.com/auth/callback/**` et `http://localhost:3000/auth/callback/**`
-   - En local, les liens email ne fonctionnent pas sur téléphone (localhost). Utilisez l'URL de prod ou un tunnel (ngrok).
-3. `.env.local` : `NEXT_PUBLIC_APP_URL` = même URL que le Site URL Supabase
+   - Site URL : `https://buildrai-xi.vercel.app`
+   - Redirect URLs : `https://buildrai-xi.vercel.app/auth/callback/**` et `http://localhost:3000/auth/callback/**`
+   - En local, les liens email ne fonctionnent pas sur téléphone (localhost). Utilisez l'URL de prod.
+3. Vercel : `NEXT_PUBLIC_APP_URL` = même URL que le Site URL Supabase
 4. `/login` — inscription / connexion par email
 5. `/espace` — tableau de bord abonné (connexion requise)
 

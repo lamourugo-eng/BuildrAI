@@ -11,7 +11,8 @@
     "test:newsletter": "node scripts/test-newsletter-trial.mjs",
     "test:coach-budget": "node scripts/test-coach-token-budget.mjs",
     "db:apply-coach-budget": "node scripts/apply-coach-token-migration.mjs",
-    "db:apply-migrations": "node scripts/apply-supabase-migrations.mjs"
+    "db:apply-migrations": "node scripts/apply-supabase-migrations.mjs",
+    "prod:checklist": "node scripts/print-production-checklist.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

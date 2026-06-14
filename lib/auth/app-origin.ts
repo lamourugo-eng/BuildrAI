@@ -47,10 +47,19 @@ export function resolveAppOrigin(clientOrigin?: string): string {
   return 'http://localhost:3000';
 }
 
-/** URL serveur (Stripe, etc.) — sans origine navigateur. */
+/** URL serveur (Stripe, metadata, etc.) — sans origine navigateur. */
 export function resolveServerAppOrigin(): string {
+  const vercelOrigin = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL.replace(/^https?:\/\//, '')}`
+    : null;
   const configured = cleanOrigin(process.env.NEXT_PUBLIC_APP_URL);
-  if (configured && !isPlaceholderOrigin(configured)) return configured;
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  const configuredUsable =
+    configured &&
+    !isPlaceholderOrigin(configured) &&
+    !(process.env.NODE_ENV === 'production' && isLocalhostOrigin(configured));
+
+  if (configuredUsable) return configured;
+  if (vercelOrigin) return vercelOrigin;
+  if (configured) return configured;
   return 'http://localhost:3000';
 }
