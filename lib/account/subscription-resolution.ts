@@ -2,7 +2,7 @@ import { getPlanFromCookie } from '@/lib/account/subscription';
 import {
   expireTrialInDb,
   getUserProfile,
-  isMissingUserProfileTable,
+  isMissingUserProfileSchema,
   isTrialExpired,
   isTrialWindowActive,
   type UserProfile,
@@ -32,8 +32,7 @@ async function loadProfileSafe(
   try {
     return await getUserProfile(supabase, userId);
   } catch (err) {
-    const message = err instanceof Error ? err.message : '';
-    if (isMissingUserProfileTable(message)) return null;
+    if (isMissingUserProfileSchema(err)) return null;
     throw err;
   }
 }
@@ -45,8 +44,7 @@ async function expireTrialSafe(
   try {
     await expireTrialInDb(supabase, userId);
   } catch (err) {
-    const message = err instanceof Error ? err.message : '';
-    if (isMissingUserProfileTable(message)) return;
+    if (isMissingUserProfileSchema(err)) return;
     throw err;
   }
 }

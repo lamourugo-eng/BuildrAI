@@ -2,6 +2,7 @@ import type { BusinessId } from '@/lib/quiz/data';
 import type { QuizProfileSnapshot } from '@/lib/quiz/profile-storage';
 import type { RoadmapProgress } from '@/lib/account/roadmap-storage';
 import type { FounderAvatar } from '@/lib/city/avatar-data';
+import { getErrorMessage } from '@/lib/errors';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export const NEWSLETTER_TRIAL_MS = 24 * 60 * 60 * 1000;
@@ -41,6 +42,24 @@ export function isMissingUserProfileTable(message: string): boolean {
   );
 }
 
+/** Colonnes ou table user_profiles absentes (migrations Supabase non appliquées). */
+export function isMissingUserProfileSchema(err: unknown): boolean {
+  const message = getErrorMessage(err, '').toLowerCase();
+  if (isMissingUserProfileTable(message)) return true;
+
+  if (err && typeof err === 'object') {
+    const code = String((err as Record<string, unknown>).code ?? '').toUpperCase();
+    if (code === 'PGRST204' || code === 'PGRST205' || code === '42703') return true;
+  }
+
+  return (
+    message.includes('quiz_profile') ||
+    message.includes('chosen_business') ||
+    message.includes('city_storage') ||
+    message.includes('roadmap_progress')
+  );
+}
+
 export function isTrialWindowActive(profile: UserProfile | null | undefined): boolean {
   if (!profile?.newsletter_opt_in || !profile.trial_ends_at) return false;
   return new Date(profile.trial_ends_at).getTime() > Date.now();
@@ -51,21 +70,46 @@ export function isTrialExpired(profile: UserProfile | null | undefined): boolean
   return new Date(profile.trial_ends_at).getTime() <= Date.now();
 }
 
-const USER_PROFILE_COLUMNS =
-  'user_id, email, newsletter_opt_in, newsletter_opt_in_at, trial_started_at, trial_ends_at, trial_used, quiz_profile, chosen_business, city_storage, roadmap_progress';
+const USER_PROFILE_BASE_COLUMNS =
+  'user_id, email, newsletter_opt_in, newsletter_opt_in_at, trial_started_at, trial_ends_at, trial_used';
+
+const USER_PROFILE_EXTENDED_COLUMNS =
+  `${USER_PROFILE_BASE_COLUMNS}, quiz_profile, chosen_business, city_storage, roadmap_progress`;
+
+export const USER_PROFILE_COLUMNS = USER_PROFILE_EXTENDED_COLUMNS;
+
+async function selectUserProfile(
+  supabase: SupabaseClient,
+  userId: string,
+  columns: string
+): Promise<{ data: UserProfile | null; error: unknown | null }> {
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .select(columns)
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (error) return { data: null, error };
+  return { data: data as UserProfile | null, error: null };
+}
 
 export async function getUserProfile(
   supabase: SupabaseClient,
   userId: string
 ): Promise<UserProfile | null> {
-  const { data, error } = await supabase
-    .from('user_profiles')
-    .select(USER_PROFILE_COLUMNS)
-    .eq('user_id', userId)
-    .maybeSingle();
+  const extended = await selectUserProfile(supabase, userId, USER_PROFILE_EXTENDED_COLUMNS);
+  if (!extended.error) return extended.data;
 
-  if (error) throw error;
-  return data as UserProfile | null;
+  if (isMissingUserProfileSchema(extended.error)) {
+    const base = await selectUserProfile(supabase, userId, USER_PROFILE_BASE_COLUMNS);
+    if (base.error) {
+      if (isMissingUserProfileSchema(base.error)) return null;
+      throw base.error;
+    }
+    return base.data;
+  }
+
+  throw extended.error;
 }
 
 export async function saveUserQuizProfile(

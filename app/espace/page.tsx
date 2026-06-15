@@ -13,7 +13,13 @@ export const metadata = {
 };
 
 export default async function EspacePage() {
-  const supabase = await createClient();
+  let supabase;
+  try {
+    supabase = await createClient();
+  } catch {
+    redirect('/login?redirect=/espace');
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -27,13 +33,25 @@ export default async function EspacePage() {
   const planCookie = cookieStore.get(PLAN_COOKIE)?.value;
   const isAdmin = isAdminEmail(user.email);
 
-  const resolved = await resolveUserSubscription(
-    supabase,
-    user.id,
-    user.email,
-    subscriptionCookie,
-    planCookie
-  );
+  let resolved;
+  try {
+    resolved = await resolveUserSubscription(
+      supabase,
+      user.id,
+      user.email,
+      subscriptionCookie,
+      planCookie
+    );
+  } catch {
+    resolved = {
+      active: false,
+      planId: null,
+      source: 'none' as const,
+      trialEndsAt: null,
+      trialExpired: false,
+      newsletterOptIn: false,
+    };
+  }
 
   const isSubscribed = resolved.active;
   const serverPlanId = resolved.planId;

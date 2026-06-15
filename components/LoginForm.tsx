@@ -9,6 +9,7 @@ import {
   peekNewsletterSignupEmail,
   processNewsletterTrialOptIn,
 } from '@/lib/account/newsletter-trial-client';
+import { getErrorMessage } from '@/lib/errors';
 import { normalizeBillingPeriod } from '@/lib/stripe';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useEffect, useState } from 'react';
@@ -42,8 +43,10 @@ function buildResetRedirectUrl(): string {
   return buildAuthCallbackUrl('/auth/reset-password', window.location.origin);
 }
 
-function mapAuthError(message: string, view: AuthView): string {
+function mapAuthError(err: unknown, view: AuthView): string {
+  const message = getErrorMessage(err, '');
   const lower = message.toLowerCase();
+
   if (lower.includes('invalid login credentials') || lower.includes('invalid credentials')) {
     return 'Email ou mot de passe incorrect.';
   }
@@ -59,6 +62,34 @@ function mapAuthError(message: string, view: AuthView): string {
   if (lower.includes('email not confirmed')) {
     return 'Confirme ton email avant de te connecter (vérifie ta boîte mail).';
   }
+  if (
+    lower.includes('error sending confirmation') ||
+    lower.includes('confirmation mail') ||
+    lower.includes('confirmation email')
+  ) {
+    return 'Impossible d\'envoyer l\'email de confirmation. Vérifie la configuration SMTP dans Supabase (Authentication → SMTP Settings).';
+  }
+  if (lower.includes('rate limit') || lower.includes('too many requests') || lower.includes('email rate')) {
+    return 'Trop de tentatives. Attends 1 à 2 minutes, puis réessaie.';
+  }
+  if (lower.includes('redirect') && (lower.includes('not allowed') || lower.includes('invalid'))) {
+    return 'URL de redirection non autorisée. Ajoute https://usebuildrai.com/auth/callback/** dans Supabase (Authentication → URL Configuration).';
+  }
+  if (lower.includes('signups not allowed') || lower.includes('signup disabled')) {
+    return 'Les inscriptions sont désactivées sur ce projet Supabase.';
+  }
+  if (lower.includes('invalid api key') || lower.includes('jwt')) {
+    return 'Clés Supabase incorrectes sur le site (Vercel → Environment Variables).';
+  }
+
+  if (message.trim()) {
+    return view === 'signup'
+      ? `Impossible de créer le compte : ${message}`
+      : view === 'forgot'
+        ? `Impossible d'envoyer l'email : ${message}`
+        : `Connexion impossible : ${message}`;
+  }
+
   return view === 'signup'
     ? 'Impossible de créer le compte. Réessaie.'
     : view === 'forgot'
@@ -130,9 +161,7 @@ export default function LoginForm(props: LoginFormProps = {}) {
       router.refresh();
     } catch (err) {
       setStatus('error');
-      setErrorMsg(
-        mapAuthError(err instanceof Error ? err.message : '', 'login')
-      );
+      setErrorMsg(mapAuthError(err, 'login'));
     }
   }
 
@@ -182,9 +211,7 @@ export default function LoginForm(props: LoginFormProps = {}) {
       setStatus('signup-sent');
     } catch (err) {
       setStatus('error');
-      setErrorMsg(
-        mapAuthError(err instanceof Error ? err.message : '', 'signup')
-      );
+      setErrorMsg(mapAuthError(err, 'signup'));
     }
   }
 
@@ -206,9 +233,7 @@ export default function LoginForm(props: LoginFormProps = {}) {
       setStatus('reset-sent');
     } catch (err) {
       setStatus('error');
-      setErrorMsg(
-        mapAuthError(err instanceof Error ? err.message : '', 'forgot')
-      );
+      setErrorMsg(mapAuthError(err, 'forgot'));
     }
   }
 

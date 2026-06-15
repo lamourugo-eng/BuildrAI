@@ -2,10 +2,11 @@ import type { RoadmapProgress } from '@/lib/account/roadmap-storage';
 import { isValidBusinessId } from '@/lib/quiz/business-choices';
 import {
   getUserProfile,
-  isMissingUserProfileTable,
+  isMissingUserProfileSchema,
   saveUserRoadmapProgress,
 } from '@/lib/account/user-profile';
 import { createClient } from '@/lib/supabase/server';
+import { getErrorMessage } from '@/lib/errors';
 import { NextResponse } from 'next/server';
 
 function parseRoadmapProgress(raw: unknown): RoadmapProgress | null {
@@ -37,8 +38,7 @@ export async function GET() {
       progress: profile?.roadmap_progress ?? null,
     });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Erreur parcours';
-    if (isMissingUserProfileTable(message)) {
+    if (isMissingUserProfileSchema(err)) {
       return NextResponse.json(
         {
           error: 'Table user_profiles absente. Exécutez les migrations Supabase.',
@@ -47,7 +47,7 @@ export async function GET() {
         { status: 503 }
       );
     }
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: getErrorMessage(err, 'Erreur parcours') }, { status: 500 });
   }
 }
 
@@ -72,8 +72,7 @@ export async function PUT(request: Request) {
 
     return NextResponse.json({ ok: true, progress });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Erreur parcours';
-    if (isMissingUserProfileTable(message)) {
+    if (isMissingUserProfileSchema(err)) {
       return NextResponse.json(
         {
           error: 'Table user_profiles absente. Exécutez les migrations Supabase.',
@@ -82,6 +81,6 @@ export async function PUT(request: Request) {
         { status: 503 }
       );
     }
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: getErrorMessage(err, 'Erreur parcours') }, { status: 500 });
   }
 }

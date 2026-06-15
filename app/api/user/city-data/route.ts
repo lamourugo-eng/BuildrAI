@@ -1,12 +1,13 @@
 import {
   getUserProfile,
-  isMissingUserProfileTable,
+  isMissingUserProfileSchema,
   saveUserCityStorage,
   type UserCityStorage,
 } from '@/lib/account/user-profile';
 import { isCompleteAvatar } from '@/lib/city/avatar-data';
 import type { CityStorageData } from '@/lib/city/storage';
 import { createClient } from '@/lib/supabase/server';
+import { getErrorMessage } from '@/lib/errors';
 import { NextResponse } from 'next/server';
 
 function parseCityStorage(raw: unknown): UserCityStorage | null {
@@ -39,8 +40,7 @@ export async function GET() {
       cityStorage: profile?.city_storage ?? null,
     });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Erreur ville';
-    if (isMissingUserProfileTable(message)) {
+    if (isMissingUserProfileSchema(err)) {
       return NextResponse.json(
         {
           error: 'Table user_profiles absente. Exécutez les migrations Supabase.',
@@ -49,7 +49,7 @@ export async function GET() {
         { status: 503 }
       );
     }
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: getErrorMessage(err, 'Erreur ville') }, { status: 500 });
   }
 }
 
@@ -74,8 +74,7 @@ export async function PUT(request: Request) {
 
     return NextResponse.json({ ok: true, cityStorage });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Erreur ville';
-    if (isMissingUserProfileTable(message)) {
+    if (isMissingUserProfileSchema(err)) {
       return NextResponse.json(
         {
           error: 'Table user_profiles absente. Exécutez les migrations Supabase.',
@@ -84,6 +83,6 @@ export async function PUT(request: Request) {
         { status: 503 }
       );
     }
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: getErrorMessage(err, 'Erreur ville') }, { status: 500 });
   }
 }

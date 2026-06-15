@@ -3,10 +3,11 @@ import type { BusinessId } from '@/lib/quiz/data';
 import type { QuizProfileSnapshot } from '@/lib/quiz/profile-storage';
 import {
   getUserProfile,
-  isMissingUserProfileTable,
+  isMissingUserProfileSchema,
   saveUserQuizProfile,
 } from '@/lib/account/user-profile';
 import { createClient } from '@/lib/supabase/server';
+import { getErrorMessage } from '@/lib/errors';
 import { NextResponse } from 'next/server';
 
 function parseProfile(raw: unknown): QuizProfileSnapshot | null {
@@ -38,8 +39,7 @@ export async function GET() {
       chosenBusiness: profile?.chosen_business ?? null,
     });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Erreur profil quiz';
-    if (isMissingUserProfileTable(message)) {
+    if (isMissingUserProfileSchema(err)) {
       return NextResponse.json(
         {
           error: 'Table user_profiles absente. Exécutez les migrations Supabase.',
@@ -48,7 +48,7 @@ export async function GET() {
         { status: 503 }
       );
     }
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: getErrorMessage(err, 'Erreur profil quiz') }, { status: 500 });
   }
 }
 
@@ -75,8 +75,7 @@ export async function PUT(request: Request) {
 
     return NextResponse.json({ ok: true, profile, chosenBusiness });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Erreur profil quiz';
-    if (isMissingUserProfileTable(message)) {
+    if (isMissingUserProfileSchema(err)) {
       return NextResponse.json(
         {
           error: 'Table user_profiles absente. Exécutez les migrations Supabase.',
@@ -85,6 +84,6 @@ export async function PUT(request: Request) {
         { status: 503 }
       );
     }
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: getErrorMessage(err, 'Erreur profil quiz') }, { status: 500 });
   }
 }
