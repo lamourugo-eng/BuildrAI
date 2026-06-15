@@ -41,6 +41,8 @@ export default function PremiumRoadmap({
   const [progress, setProgress] = useState<RoadmapProgress | null>(null);
   const [openMonth, setOpenMonth] = useState(1);
   const [openWeek, setOpenWeek] = useState(1);
+  const [expandedDay, setExpandedDay] = useState<number | null>(null);
+  const [monthsOpen, setMonthsOpen] = useState(false);
   const [unlockedMonths, setUnlockedMonths] = useState(() =>
     isSubscribed ? getUnlockedRoadmapMonths(loadSubscriptionMeta()) : 0
   );
@@ -113,6 +115,22 @@ export default function PremiumRoadmap({
       currentMonth.weeks.find((w) => w.days.some((d) => !done.has(d.day))) ?? currentMonth.weeks[0];
     setOpenWeek(firstWeek?.week ?? 1);
   }, [plan, progress, variant]);
+
+  useEffect(() => {
+    if (!plan || variant !== 'full' || !openWeek) {
+      setExpandedDay(null);
+      return;
+    }
+    const month = plan.months.find((m) => m.month === openMonth);
+    const week = month?.weeks.find((w) => w.week === openWeek);
+    if (!week) {
+      setExpandedDay(null);
+      return;
+    }
+    const done = new Set(progress?.completedDays ?? []);
+    const next = week.days.find((d) => !done.has(d.day)) ?? week.days[0];
+    setExpandedDay(next?.day ?? null);
+  }, [openWeek, openMonth, plan, progress, variant]);
 
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
@@ -272,8 +290,8 @@ export default function PremiumRoadmap({
   const activeMonthMeta = getSemesterChapterMeta(activeMonth.month);
 
   return (
-    <section className="premium-roadmap premium-roadmap--full">
-      <header className="premium-roadmap-hero">
+    <section className="premium-roadmap premium-roadmap--full premium-roadmap--scannable">
+      <header className="premium-roadmap-hero premium-roadmap-hero--compact">
         <div className="premium-roadmap-hero-glow" aria-hidden="true" />
         <div className="premium-roadmap-hero-main">
           <div className="premium-roadmap-hero-copy">
@@ -282,109 +300,151 @@ export default function PremiumRoadmap({
               <span className="premium-roadmap-model-icon">{plan.businessIcon}</span>
               {plan.businessName}
             </h3>
-            <p>{copy.roadmap.heroDescription(plan.businessName)}</p>
-            <div className="premium-roadmap-stats">
-              <span className="premium-roadmap-stat">
-                <strong>{plan.unlockedMonths}</strong>
-                <small>{copy.roadmap.statMonths}</small>
-              </span>
-              <span className="premium-roadmap-stat">
-                <strong>{completed.size}</strong>
-                <small>{copy.roadmap.statDays}</small>
-              </span>
-              <span className="premium-roadmap-stat">
-                <strong>{plan.totalUnlockedDays}</strong>
-                <small>{copy.roadmap.statAccessibleDays}</small>
-              </span>
-              <span className="premium-roadmap-stat">
-                <strong>{TOTAL_ROADMAP_DAYS}</strong>
-                <small>{copy.roadmap.statTotalDays}</small>
-              </span>
-            </div>
-            <p className="premium-roadmap-unlock-hint">
-              Les <strong>6 chapitres</strong> (180 jours) sont accessibles dès ton abonnement. Avance à ton rythme.
+            <p className="premium-roadmap-hero-lead">
+              {completed.size}/{plan.totalUnlockedDays} jours · {completion}% global
             </p>
+            <details className="premium-roadmap-more">
+              <summary>Infos parcours</summary>
+              <p>{copy.roadmap.heroDescription(plan.businessName)}</p>
+              <div className="premium-roadmap-stats">
+                <span className="premium-roadmap-stat">
+                  <strong>{plan.unlockedMonths}</strong>
+                  <small>{copy.roadmap.statMonths}</small>
+                </span>
+                <span className="premium-roadmap-stat">
+                  <strong>{completed.size}</strong>
+                  <small>{copy.roadmap.statDays}</small>
+                </span>
+                <span className="premium-roadmap-stat">
+                  <strong>{plan.totalUnlockedDays}</strong>
+                  <small>{copy.roadmap.statAccessibleDays}</small>
+                </span>
+                <span className="premium-roadmap-stat">
+                  <strong>{TOTAL_ROADMAP_DAYS}</strong>
+                  <small>{copy.roadmap.statTotalDays}</small>
+                </span>
+              </div>
+              <p className="premium-roadmap-unlock-hint">
+                Les <strong>6 chapitres</strong> (180 jours) sont accessibles dès ton abonnement. Avance à ton
+                rythme.
+              </p>
+            </details>
           </div>
-          <ProgressRing value={completion} label="global" />
+          <ProgressRing value={completion} size={72} stroke={6} label="global" />
         </div>
       </header>
 
       {activeMonth.month === 1 && (
-        <div className="premium-roadmap-phases" aria-label="Structure du parcours. 8 étapes coach">
-          {COACHING_PHASES.map((phase) => (
-            <span key={phase.id} className="premium-roadmap-phase-chip">
-              <small>{phase.id}</small>
-              {phase.name}
-            </span>
-          ))}
-        </div>
+        <details className="premium-roadmap-more premium-roadmap-more--phases">
+          <summary>Les 8 étapes coach</summary>
+          <div className="premium-roadmap-phases" aria-label="Structure du parcours. 8 étapes coach">
+            {COACHING_PHASES.map((phase) => (
+              <span key={phase.id} className="premium-roadmap-phase-chip">
+                <small>{phase.id}</small>
+                {phase.name}
+              </span>
+            ))}
+          </div>
+        </details>
       )}
 
-      <div className="premium-roadmap-timeline-wrap">
-        <div className="premium-roadmap-month-tabs" role="tablist" aria-label="Mois du parcours">
-          {plan.months.map((monthBlock) => {
-            const monthDays = monthBlock.weeks.flatMap((w) => w.days);
-            const monthCompleted = monthDays.filter((d) => completed.has(d.day)).length;
-            const monthDone =
-              monthBlock.unlocked && monthDays.length > 0 && monthCompleted === monthDays.length;
+      <div className="premium-roadmap-months-drawer">
+        <button
+          type="button"
+          className={`premium-roadmap-months-toggle${monthsOpen ? ' is-open' : ''}`}
+          aria-expanded={monthsOpen}
+          aria-controls="premium-roadmap-months-panel"
+          onClick={() => setMonthsOpen((open) => !open)}
+        >
+          <span className="premium-roadmap-months-toggle-main">
+            <span className="premium-roadmap-months-toggle-kicker">
+              Chapitre {activeMonth.month}/6
+            </span>
+            <strong>{activeMonth.label.split('.')[0].trim()}</strong>
+            {activeMonth.unlocked && (
+              <span className="premium-roadmap-months-toggle-meta">
+                {activeMonthCompleted}/{activeMonthDone.length} jours · {activeMonthPct}%
+              </span>
+            )}
+          </span>
+          <span className="premium-roadmap-months-toggle-action">
+            {monthsOpen ? 'Fermer' : 'Changer de mois'}
+            <span className="premium-roadmap-months-toggle-chevron" aria-hidden="true">
+              {monthsOpen ? '▴' : '▾'}
+            </span>
+          </span>
+        </button>
 
-            return (
-              <button
-                key={monthBlock.month}
-                type="button"
-                role="tab"
-                aria-selected={openMonth === monthBlock.month}
-                className={[
-                  'premium-roadmap-month-tab',
-                  openMonth === monthBlock.month ? 'is-active' : '',
-                  monthBlock.unlocked ? '' : 'is-locked',
-                  monthDone ? 'is-done' : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ')}
-                onClick={() => {
-                  if (!monthBlock.unlocked) return;
-                  setOpenMonth(monthBlock.month);
-                  setOpenWeek(1);
-                }}
-                disabled={!monthBlock.unlocked}
-              >
-                <span className="premium-roadmap-month-tab-num">M{monthBlock.month}</span>
-                <span className="premium-roadmap-month-tab-label">
-                  {monthBlock.unlocked ? monthBlock.label.split('.')[0].trim() : 'À venir'}
-                </span>
-                {monthBlock.unlocked ? (
-                  <span className="premium-roadmap-month-tab-progress">
-                    {monthCompleted}/{monthDays.length}
-                  </span>
-                ) : (
-                  <span className="premium-roadmap-month-tab-lock" aria-hidden="true">
-                    ◆
-                  </span>
-                )}
-              </button>
-            );
-          })}
+        <div
+          id="premium-roadmap-months-panel"
+          className={`premium-roadmap-months-panel${monthsOpen ? ' is-open' : ''}`}
+          aria-hidden={!monthsOpen}
+        >
+          <div className="premium-roadmap-months-panel-inner">
+            <div className="premium-roadmap-timeline-wrap">
+              <div className="premium-roadmap-month-tabs" role="tablist" aria-label="Mois du parcours">
+                {plan.months.map((monthBlock) => {
+                  const monthDays = monthBlock.weeks.flatMap((w) => w.days);
+                  const monthCompleted = monthDays.filter((d) => completed.has(d.day)).length;
+                  const monthDone =
+                    monthBlock.unlocked &&
+                    monthDays.length > 0 &&
+                    monthCompleted === monthDays.length;
+
+                  return (
+                    <button
+                      key={monthBlock.month}
+                      type="button"
+                      role="tab"
+                      aria-selected={openMonth === monthBlock.month}
+                      className={[
+                        'premium-roadmap-month-tab',
+                        openMonth === monthBlock.month ? 'is-active' : '',
+                        monthBlock.unlocked ? '' : 'is-locked',
+                        monthDone ? 'is-done' : '',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                      onClick={() => {
+                        if (!monthBlock.unlocked) return;
+                        setOpenMonth(monthBlock.month);
+                        setOpenWeek(1);
+                        setMonthsOpen(false);
+                      }}
+                      disabled={!monthBlock.unlocked}
+                    >
+                      <span className="premium-roadmap-month-tab-num">M{monthBlock.month}</span>
+                      <span className="premium-roadmap-month-tab-label">
+                        {monthBlock.unlocked ? monthBlock.label.split('.')[0].trim() : 'À venir'}
+                      </span>
+                      {monthBlock.unlocked ? (
+                        <span className="premium-roadmap-month-tab-progress">
+                          {monthCompleted}/{monthDays.length}
+                        </span>
+                      ) : (
+                        <span className="premium-roadmap-month-tab-lock" aria-hidden="true">
+                          ◆
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="premium-roadmap-month-panel">
-        <div className="premium-roadmap-month-head">
+        <div className="premium-roadmap-month-head premium-roadmap-month-head--compact">
           <div>
-            <span className="premium-roadmap-eyebrow">Chapitre {activeMonth.month} / 6</span>
-            <h4>{activeMonth.label}</h4>
             {activeMonthMeta && (
-              <p className="premium-roadmap-chapter-arc">{activeMonthMeta.arc}</p>
+              <details className="premium-roadmap-more premium-roadmap-more--inline">
+                <summary>Objectif du chapitre</summary>
+                <p className="premium-roadmap-chapter-arc">{activeMonthMeta.arc}</p>
+              </details>
             )}
           </div>
-          {activeMonth.unlocked && (
-            <div className="premium-roadmap-month-progress">
-              <div className="premium-roadmap-month-progress-bar">
-                <div style={{ width: `${activeMonthPct}%` }} />
-              </div>
-              <span>{activeMonthPct}% du mois</span>
-            </div>
-          )}
         </div>
 
         {!activeMonth.unlocked && (
@@ -439,10 +499,11 @@ export default function PremiumRoadmap({
                     {week.days.map((day, dayIndex) => {
                       const done = completed.has(day.day);
                       const isLast = dayIndex === week.days.length - 1;
+                      const isExpanded = expandedDay === day.day;
                       return (
                         <li
                           key={day.day}
-                          className={`premium-roadmap-day${done ? ' is-done' : ''}${isLast ? ' is-last' : ''}`}
+                          className={`premium-roadmap-day${done ? ' is-done' : ''}${isLast ? ' is-last' : ''}${isExpanded ? ' is-expanded' : ' is-collapsed'}`}
                         >
                           <div className="premium-roadmap-day-rail" aria-hidden="true">
                             <button
@@ -458,37 +519,55 @@ export default function PremiumRoadmap({
                             {!isLast && <span className="premium-roadmap-day-line" />}
                           </div>
                           <div className="premium-roadmap-day-card">
-                            <div className="premium-roadmap-day-head">
-                              <span className="premium-roadmap-day-marker">Jour {day.dayInMonth}</span>
-                              {day.phaseId && day.phaseName && (
-                                <span className="premium-roadmap-day-phase">
-                                  Étape {day.phaseId}/8. {day.phaseName}
+                            <button
+                              type="button"
+                              className="premium-roadmap-day-summary"
+                              aria-expanded={isExpanded}
+                              onClick={() => setExpandedDay(isExpanded ? null : day.day)}
+                            >
+                              <span className="premium-roadmap-day-summary-main">
+                                <span className="premium-roadmap-day-head">
+                                  <span className="premium-roadmap-day-marker">
+                                    Jour {day.dayInMonth}
+                                  </span>
+                                  {done && <span className="premium-roadmap-day-badge">Terminé</span>}
                                 </span>
-                              )}
-                              {done && <span className="premium-roadmap-day-badge">Terminé</span>}
-                            </div>
-                            <strong>{day.title}</strong>
-                            <p className="premium-roadmap-day-objective">{day.objective}</p>
-                            <ul className="premium-roadmap-day-tasks">
-                              {day.tasks.map((task) => (
-                                <li key={task}>{task}</li>
-                              ))}
-                            </ul>
-                            {day.tip && (
-                              <p className="premium-roadmap-day-tip">
-                                <strong>{plan.businessName}</strong>
-                                <span>{day.tip}</span>
-                              </p>
+                                <strong>{day.title}</strong>
+                              </span>
+                              <span className="premium-roadmap-day-chevron" aria-hidden="true">
+                                {isExpanded ? '−' : '+'}
+                              </span>
+                            </button>
+                            {isExpanded && (
+                              <div className="premium-roadmap-day-body">
+                                {day.phaseId && day.phaseName && (
+                                  <span className="premium-roadmap-day-phase">
+                                    Étape {day.phaseId}/8 · {day.phaseName}
+                                  </span>
+                                )}
+                                <p className="premium-roadmap-day-objective">{day.objective}</p>
+                                <ul className="premium-roadmap-day-tasks">
+                                  {day.tasks.map((task) => (
+                                    <li key={task}>{task}</li>
+                                  ))}
+                                </ul>
+                                {day.tip && (
+                                  <p className="premium-roadmap-day-tip">
+                                    <strong>{plan.businessName}</strong>
+                                    <span>{day.tip}</span>
+                                  </p>
+                                )}
+                                <div className="premium-roadmap-day-actions">
+                                  <button
+                                    type="button"
+                                    className="btn btn-ghost btn-sm premium-roadmap-day-coach"
+                                    onClick={() => handleTalkToCoach(day)}
+                                  >
+                                    En parler avec le coach
+                                  </button>
+                                </div>
+                              </div>
                             )}
-                            <div className="premium-roadmap-day-actions">
-                              <button
-                                type="button"
-                                className="btn btn-ghost btn-sm premium-roadmap-day-coach"
-                                onClick={() => handleTalkToCoach(day)}
-                              >
-                                En parler avec le coach
-                              </button>
-                            </div>
                           </div>
                         </li>
                       );
@@ -501,15 +580,9 @@ export default function PremiumRoadmap({
         </div>
       </div>
 
-      <div className="premium-roadmap-footer">
-        <div className="premium-roadmap-footer-icon" aria-hidden="true">
-          ◈
-        </div>
-        <p>
-          Une étape te bloque ? Le <strong>Coach IA</strong> détaille chaque jour selon ton
-          modèle {plan.businessName}.
-        </p>
-        <Link href="/espace?section=coach" className="btn btn-primary btn-sm">
+      <div className="premium-roadmap-footer premium-roadmap-footer--compact">
+        <p>Bloqué sur une étape ?</p>
+        <Link href="/espace?section=coach" className="btn btn-ghost btn-sm">
           Ouvrir le coach
         </Link>
       </div>

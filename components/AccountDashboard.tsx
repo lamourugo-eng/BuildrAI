@@ -667,22 +667,11 @@ export default function AccountDashboard({
 
           {section === 'parcours' &&
             (isSubscribed ? (
-              <>
-                <DashFounderPath
-                  isSubscribed={isSubscribed}
-                  hasProfile={Boolean(profile || activeId)}
-                  businessId={activeId}
-                  coachMessages={stats.coachMessages}
-                  roadmapProgress={roadmapProgress}
-                  onGo={goTo}
-                  variant="compact"
-                />
-                <PremiumRoadmap
-                  businessId={activeId}
-                  isSubscribed={isSubscribed}
-                  onProgressChange={setRoadmapProgress}
-                />
-              </>
+              <PremiumRoadmap
+                businessId={activeId}
+                isSubscribed={isSubscribed}
+                onProgressChange={setRoadmapProgress}
+              />
             ) : profile || activeId ? (
               <FreeRoadmapTeaser
                 profile={profile ?? loadQuizProfile()}
