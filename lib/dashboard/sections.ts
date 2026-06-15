@@ -34,7 +34,7 @@ const DASHBOARD_SECTION_MAP: Record<DashboardSection, DashboardSectionDef> = {
     id: 'overview',
     label: 'Vue d\'ensemble',
     icon: 'space',
-    description: 'Résumé de ton progression',
+    description: 'Résumé de ta progression',
     href: '/espace',
   },
   coach: {

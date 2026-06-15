@@ -265,7 +265,7 @@ export default function LoginForm(props: LoginFormProps = {}) {
         <div className="auth-success">
           <h2>Compte créé</h2>
           <p>
-            Un email de confirmation a été envoyé à <strong>{email}</strong>. Ouvrez-le sur ton
+            Un email de confirmation a été envoyé à <strong>{email}</strong>. Ouvre-le sur ton
             téléphone dans <strong>Safari ou Chrome</strong> (pas seulement l&apos;aperçu Gmail).
             Puis connecte-toi.
             {newsletterOptIn && (
@@ -294,7 +294,7 @@ export default function LoginForm(props: LoginFormProps = {}) {
         <form onSubmit={handleForgotPassword} className="auth-form">
           <h2 className="auth-form-title">Mot de passe oublié</h2>
           <p className="auth-form-lead">
-            Entre ton email. Nous t&apos;enverrons un lien de réinitialisation.
+            Entre ton email. On t&apos;enverra un lien de réinitialisation.
           </p>
 
           <label htmlFor="email-forgot">Adresse email</label>

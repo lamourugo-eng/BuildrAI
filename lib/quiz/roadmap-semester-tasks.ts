@@ -8,7 +8,7 @@ import {
 } from '@/lib/quiz/roadmap-legal-exit';
 
 const TASK_BANK = [
-  'Bloquez 45 min focus. Téléphone en silencieux.',
+  'Bloque 45 min focus. Téléphone en silencieux.',
   'Note le résultat mesurable attendu avant de commencer.',
   'Documente ce qui a marché pour réutiliser demain.',
   'Partage un blocage au coach IA si tu es coincé.',
@@ -18,7 +18,7 @@ const TASK_BANK = [
 const TITLE_TASKS: Record<string, string[]> = {
   'Audit du premier mois': [
     'Liste tout ce que tu as lancé (page, offre, contacts, ventes)',
-    'Classez chaque action : à garder / à améliorer / à abandonner',
+    'Classe chaque action : à garder / à améliorer / à abandonner',
     'Note ton KPI #1 du mois 1 (ventes, essais, RDV…)',
   ],
   'Ce qui a converti': [
@@ -33,7 +33,7 @@ const TITLE_TASKS: Record<string, string[]> = {
   ],
   'Chiffre du pipeline': [
     'Comptez prospects chauds / tièdes / froids dans un tableau simple',
-    'Estimez la valeur totale du pipeline sur 30 jours',
+    'Estime la valeur totale du pipeline sur 30 jours',
     'Identifie les 5 dossiers à closer en priorité',
   ],
   'Relances personnalisées': [
@@ -83,7 +83,7 @@ const TITLE_TASKS: Record<string, string[]> = {
   ],
   'Interview 2 clients satisfaits': [
     'Prépare 5 questions (pourquoi vous, moment clé, amélioration)',
-    'Menez 2 entretiens de 20 min',
+    'Mène 2 entretiens de 20 min',
     'Extrayez 2 citations utilisables en preuve sociale',
   ],
   'Vision à 6 mois (1 phrase)': [
@@ -111,7 +111,7 @@ function tasksFromTitlePattern(title: string): string[] | null {
   if (t.includes('objectif mois') || t.includes('objectif ca')) {
     return [
       'Fixe un chiffre CA ou clients cible pour le mois',
-      'Décomposez en objectif hebdomadaire',
+      'Décompose en objectif hebdomadaire',
       'Identifie l\'action quotidienne qui soutient cet objectif',
     ];
   }
@@ -119,14 +119,14 @@ function tasksFromTitlePattern(title: string): string[] | null {
     return [
       'Relis les bilans du mois écoulé',
       'Choisis 3 actions non négociables pour le mois suivant',
-      'Bloquez les créneaux récurrents dans l\'agenda',
+      'Bloque les créneaux récurrents dans l\'agenda',
     ];
   }
   if (t.includes('relance') || t.includes('script')) {
     return [
       'Rédige ou améliore ton script en 3 parties : accroche, valeur, CTA',
       'Teste sur 3 prospects aujourd\'hui',
-      'Ajustez selon les réponses reçues',
+      'Ajuste selon les réponses reçues',
     ];
   }
   if (t.includes('pipeline') || t.includes('prospects')) {
@@ -139,8 +139,8 @@ function tasksFromTitlePattern(title: string): string[] | null {
   if (t.includes('contenu') || t.includes('publier')) {
     return [
       'Produisez 1 contenu utile pour ton cible (post, email, vidéo courte)',
-      'Incluez un CTA clair vers ton offre',
-      'Republiez ou recyclez un contenu performant passé',
+      'Inclue un CTA clair vers ton offre',
+      'Republie ou recycle un contenu performant passé',
     ];
   }
   if (t.includes('partenaire') || t.includes('parrainage')) {
@@ -213,10 +213,10 @@ export function buildSemesterDayTasks(
   const baseTasks = [
     ...core,
     businessOverlay
-      ? `Reliez cette action à ton KPI ${profile.name} : ${phaseHint || 'progression mesurable cette semaine'}.`
+      ? `Relie cette action à ton KPI ${profile.name} : ${phaseHint || 'progression mesurable cette semaine'}.`
       : phaseHint
         ? `Focus ${profile.name} (étape ${phaseId}/8) : ${phaseHint}`
-        : `Reliez cette action à ton modèle ${profile.name}.`,
+        : `Relie cette action à ton modèle ${profile.name}.`,
     dayInMonth % 7 === 0
       ? 'Bilan hebdo : 1 victoire, 1 blocage, 1 priorité semaine prochaine.'
       : TASK_BANK[dayInMonth % TASK_BANK.length],

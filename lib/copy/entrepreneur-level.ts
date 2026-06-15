@@ -113,11 +113,11 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
         },
         intermediate: {
           label: 'Vue d\'ensemble',
-          description: 'Résumé de ton progression',
+          description: 'Résumé de ta progression',
         },
         experienced: {
           label: 'Vue d\'ensemble',
-          description: 'Pilotage de ton progression et priorités',
+          description: 'Pilotage de ta progression et priorités',
         },
       }),
       coach: pickCopy(tier, {

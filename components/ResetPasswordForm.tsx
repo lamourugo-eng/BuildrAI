@@ -118,7 +118,7 @@ export default function ResetPasswordForm() {
           id="confirm-password"
           value={confirm}
           onChange={setConfirm}
-          placeholder="Retapez le mot de passe"
+          placeholder="Retape le mot de passe"
           autoComplete="new-password"
           minLength={6}
         />

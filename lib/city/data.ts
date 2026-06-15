@@ -58,7 +58,7 @@ export const CITY_LEVELS: CityLevel[] = [
     id: 1,
     name: 'Débutant',
     minXp: 0,
-    tagline: 'Un petit bureau, un terrain vide. Tu posez la première pierre.',
+    tagline: 'Un petit bureau, un terrain vide. Tu poses la première pierre.',
     scene: 'seed',
     visualTier: 'beginner',
     accent: '#94a3b8',
@@ -178,7 +178,7 @@ export const CITY_BUILDINGS: CityBuildingDef[] = [
   {
     id: 'premium_hq',
     name: 'QG BuildrAI',
-    description: 'Abonnement actif. Tu investissez dans ton progression.',
+    description: 'Abonnement actif. Tu investis dans ta progression.',
     icon: '◈',
     slot: { x: 28, y: 68 },
   },

@@ -159,7 +159,7 @@ export default function BusinessModelPicker({
       {variant === 'profile' && (
         <div className="biz-picker biz-picker--profile">
           <p className="biz-picker-profile-hint">
-            Choisis le modèle sur lequel le coach tu accompagne. Recommandé ou autre. Changer
+            Choisis le modèle sur lequel le coach t&apos;accompagne. Recommandé ou autre. Changer
             de modèle efface l&apos;historique de discussion du modèle actuel.
           </p>
 

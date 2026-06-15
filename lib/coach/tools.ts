@@ -35,7 +35,7 @@ const SITE_TOOLS: Record<TechBand, Record<BusinessId, SiteToolRecommendation>> =
     freelance: {
       primary: 'Notion (page publique)',
       url: 'https://notion.so',
-      why: 'Vitrine rapide + portfolio, zéro code, tu éditez le texte comme un document',
+      why: 'Vitrine rapide + portfolio, zéro code, tu édites le texte comme un document',
       cost: 'Gratuit',
       setupSteps: [
         'Créer une page Notion « Mon offre »',

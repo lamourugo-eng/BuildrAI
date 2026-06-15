@@ -215,7 +215,7 @@ export default function AssistanceSection({
             <span className="assistance-contact-badge">Abonnés Premium</span>
             <h3>Une question sans réponse ?</h3>
             <p>
-              L&apos;assistance par email tu met en contact direct avec le créateur de BuildrAI.
+              L&apos;assistance par email te met en contact direct avec le créateur de BuildrAI.
               Écris à <a href={contactMailto}>{CONTACT_EMAIL}</a> en indiquant ton email de
               compte. Réponse sous 24 à 48 h ouvrées.
             </p>

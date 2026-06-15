@@ -53,7 +53,7 @@ const GAMIFICATION_HIGHLIGHTS = [
   {
     icon: '📈',
     title: 'Progression visible',
-    desc: 'Jours cochés, chapitres, XP : tu vois concrètement avancer.',
+    desc: 'Jours cochés, chapitres, XP : tu vois concrètement ta progression.',
   },
 ] as const;
 
@@ -110,13 +110,13 @@ export function Hero({ onOpenQuiz, userEmail = null, onOpenLogin }: HeroProps) {
             Parcours entrepreneurial · 180 jours
           </div>
           <h1>
-            Passe de zéro idée à ton premier business en 180 jours{' '}
+            Crée ton premier business à partir de zéro en seulement 180 jours{' '}
             <em>avec un coach IA qui te donne chaque jour la prochaine action.</em>
           </h1>
           <ul className="hero-benefits landing-only-desktop">
             <li>Découvre quel business correspond à ton profil</li>
             <li>L&apos;IA crée un plan personnalisé sur 180 jours</li>
-            <li>Le coach tu accompagne au quotidien, étape par étape</li>
+            <li>Le coach t&apos;accompagne au quotidien, étape par étape</li>
           </ul>
           <div className="hero-cta">
             <a
@@ -480,13 +480,13 @@ export function How({ onOpenQuiz }: LandingSectionsProps = {}) {
     },
     {
       num: '02',
-      title: 'Reçois ton stratégie personnalisée',
+      title: 'Reçois ta stratégie personnalisée',
       desc: 'Analyse de profil, modèles business adaptés (SaaS, freelance, e-commerce…) et plan 180 jours calibré sur ton choix.',
     },
     {
       num: '03',
       title: 'Avance chaque jour avec ton coach IA',
-      desc: 'Micro-étapes concrètes, outils recommandés, mémoire de ton projet. Le coach connaît ton parcours jour J.',
+      desc: 'Micro-étapes concrètes, outils recommandés, mémoire de ton projet. Le coach suit ton avancement jour après jour.',
     },
     {
       num: '04',
@@ -499,7 +499,7 @@ export function How({ onOpenQuiz }: LandingSectionsProps = {}) {
     <section className="how landing-section landing-section--how" id="how">
       <div className="container">
         <div className="section-header landing-section-header">
-          <span className="section-tag">Comment ça marche</span>
+          <span className="section-tag">Comment ça marche ?</span>
           <h2>De l&apos;idée à l&apos;action, étape par étape</h2>
           <p>
             Une expérience de lancement structurée — pas une simple conversation avec une IA.
@@ -791,7 +791,7 @@ export function Footer() {
             <li><a href="#features">Outils</a></li>
             <li><a href="#pricing">Tarifs</a></li>
             <li><a href="#journey">La méthode</a></li>
-            <li><a href="#how">Comment ça marche</a></li>
+            <li><a href="#how">Comment ça marche ?</a></li>
             <li><a href="#faq">FAQ</a></li>
           </ul>
         </div>

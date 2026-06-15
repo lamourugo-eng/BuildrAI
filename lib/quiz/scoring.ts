@@ -41,33 +41,33 @@ const BUDGET_FIT_LABELS: Record<BudgetFit, string> = {
 const BUDGET_ADVICE: Record<BusinessId, Record<InvestmentBand, string>> = {
   freelance: {
     minimal: 'Idéal avec moins de 100 € : lance-toi avec ton expertise et des outils gratuits.',
-    moderate: 'Avec 100 à 1 000 €, professionnalisez ton image (site, portfolio, outils pro).',
-    substantial: 'Au-delà de 1 000 €, accélérez la prospection (pub ciblée, formations, assistant).',
+    moderate: 'Avec 100 à 1 000 €, professionnalise ton image (site, portfolio, outils pro).',
+    substantial: 'Au-delà de 1 000 €, accélère la prospection (pub ciblée, formations, assistant).',
   },
   consulting: {
     minimal: 'Moins de 100 € suffit : ton crédibilité et ton réseau sont tes premiers atouts.',
-    moderate: 'Avec 100 à 1 000 €, investissez dans un site pro et des supports pour rassurer tes clients.',
-    substantial: 'Au-delà de 1 000 €, financez contenu expert, événements et acquisition ciblée.',
+    moderate: 'Avec 100 à 1 000 €, investis dans un site pro et des supports pour rassurer tes clients.',
+    substantial: 'Au-delà de 1 000 €, finance du contenu expert, des événements et une acquisition ciblée.',
   },
   content: {
     minimal: 'Moins de 100 € : smartphone, outils gratuits et régularité suffisent pour démarrer.',
     moderate: 'Avec 100 à 1 000 €, améliore la qualité (micro, montage, site) pour monétiser plus vite.',
-    substantial: 'Au-delà de 1 000 €, accélérez avec sponsoring, formations ou une petite équipe éditoriale.',
+    substantial: 'Au-delà de 1 000 €, accélère avec sponsoring, formations ou une petite équipe éditoriale.',
   },
   agency: {
-    minimal: 'Moins de 100 € : démarrez en solo sur une niche. Le relationnel compte plus que le budget.',
-    moderate: 'Avec 100 à 1 000 €, financez un site crédible et tes premiers outils de delivery.',
-    substantial: 'Au-delà de 1 000 €, recrutez en freelance et investissez dans l\'acquisition commerciale.',
+    minimal: 'Moins de 100 € : démarre en solo sur une niche. Le relationnel compte plus que le budget.',
+    moderate: 'Avec 100 à 1 000 €, finance un site crédible et tes premiers outils de delivery.',
+    substantial: 'Au-delà de 1 000 €, recrute en freelance et investis dans l\'acquisition commerciale.',
   },
   ecommerce: {
     minimal: 'Moins de 100 € : teste une micro-collection ou du dropshipping sans stock au départ.',
     moderate: 'Avec 100 à 1 000 €, lance site, premiers stocks et pub ciblée sur une niche.',
-    substantial: 'Au-delà de 1 000 €, construisez une vraie marque avec stock, pub et identité visuelle.',
+    substantial: 'Au-delà de 1 000 €, construis une vraie marque avec stock, pub et identité visuelle.',
   },
   impact: {
     minimal: 'Moins de 100 € : valide l\'impact avec un pilote local avant d\'investir davantage.',
-    moderate: 'Avec 100 à 1 000 €, structurez l\'offre et touchez tes premiers bénéficiaires.',
-    substantial: 'Au-delà de 1 000 €, scalez l\'impact tout en renforçant le modèle économique.',
+    moderate: 'Avec 100 à 1 000 €, structure l\'offre et touche tes premiers bénéficiaires.',
+    substantial: 'Au-delà de 1 000 €, scale l\'impact tout en renforçant le modèle économique.',
   },
   saas: {
     minimal: 'Moins de 100 € : prototype no-code ou offre de conseil pour financer le produit.',
@@ -76,16 +76,16 @@ const BUDGET_ADVICE: Record<BusinessId, Record<InvestmentBand, string>> = {
   },
   marketplace: {
     minimal: 'Moins de 100 € : lance manuellement sur une micro-niche avant de coder la plateforme.',
-    moderate: 'Avec 100 à 1 000 €, financez une V1 simple sur un marché très ciblé.',
-    substantial: 'Au-delà de 1 000 €, construisez la plateforme et amorcez offre et demande.',
+    moderate: 'Avec 100 à 1 000 €, finance une V1 simple sur un marché très ciblé.',
+    substantial: 'Au-delà de 1 000 €, construis la plateforme et amorce offre et demande.',
   },
   ofm: {
     minimal:
-      'Moins de 100 € : démarrez en solo OFM avec charte, Notion et prospection modèles OnlyFans (Twitter/X).',
+      'Moins de 100 € : démarre en solo OFM avec charte, Notion et prospection modèles OnlyFans (Twitter/X).',
     moderate:
-      'Avec 100 à 1 000 €, professionnalisez contrats OFM, CRM et page agence pour signer tes premiers modèles OnlyFans.',
+      'Avec 100 à 1 000 €, professionnalise contrats OFM, CRM et page agence pour signer tes premiers modèles OnlyFans.',
     substantial:
-      'Au-delà de 1 000 €, structurez chatters + process acquisition abonnés OnlyFans avec reporting transparent.',
+      'Au-delà de 1 000 €, structure chatters + process acquisition abonnés OnlyFans avec reporting transparent.',
   },
 };
 

@@ -43,7 +43,7 @@ const LEGAL_GUIDES: Record<BusinessId, BusinessLegalGuide> = {
       },
     ],
     caution:
-      'Évitez de mélanger compte perso et Stripe pro sans structure. Bloquant pour une revente. Propriété du code et du nom de domaine au nom de la société dès que possible.',
+      'Évite de mélanger compte perso et Stripe pro sans structure. Bloquant pour une revente. Propriété du code et du nom de domaine au nom de la société dès que possible.',
     accountantNote:
       'Consulte un expert-comptable avant dépassement des plafonds micro. Bascule SASU souvent au bon moment entre 2k€ et 5k€ MRR selon charges.',
   },
@@ -62,7 +62,7 @@ const LEGAL_GUIDES: Record<BusinessId, BusinessLegalGuide> = {
       },
     ],
     caution:
-      'Le portage ou micro convient au test ; dès missions > 6 mois avec le même client, structurez (EURL/SASU).',
+      'Le portage ou micro convient au test ; dès missions > 6 mois avec le même client, structure (EURL/SASU).',
     accountantNote: 'Vérifie le statut de non-salarié (pas de lien de subordination) sur missions longues.',
   },
   ecommerce: {
@@ -125,7 +125,7 @@ const LEGAL_GUIDES: Record<BusinessId, BusinessLegalGuide> = {
         pros: 'Éligibilité financements. Limites sur distribution profits',
       },
     ],
-    caution: 'Clarifiez statut dès le départ si tu visez label ESUS ou subventions.',
+    caution: 'Clarifie le statut dès le départ si tu vises le label ESUS ou des subventions.',
     accountantNote: 'Conseil juridique spécialisé ESS recommandé.',
   },
   consulting: {
@@ -364,7 +364,7 @@ export function buildLegalExitTasks(
         `Décide du statut retenu (priorité : ${legal.recommended[1]?.form ?? legal.recommended[0].form})`,
         'Liste documents : pièce identité, justificatif domicile, déclaration non-condamnation',
         'Guichet unique INPI (guichet-entreprises.fr) ou expert-comptable pour SASU/SAS',
-        'Ouvrez compte bancaire pro dès immatriculation reçue',
+        'Ouvre un compte bancaire pro dès immatriculation reçue',
         legal.accountantNote,
       ];
     case 'legal-contracts':

@@ -19,7 +19,7 @@ const BUSINESS_TEASERS: Record<
     accelerate: 'Parcours 180 jours calibré SaaS : activation, churn J7, MRR et canaux outbound/SEO.',
   },
   freelance: {
-    validate: 'Valide ton niche : 5 RDV prospects, devis testés, ajustez offre forfait ou TJM.',
+    validate: 'Valide ta niche : 5 RDV prospects, devis testés, ajuste l\'offre forfait ou TJM.',
     launch: 'Page 5 blocs + packages Découverte/Mission + scripts prospection LinkedIn et réseau.',
     accelerate: 'Pipeline missions, relances, marge par TJM et passage en rétainer récurrent.',
   },
@@ -74,7 +74,7 @@ export function buildFreeRoadmap(snapshot: QuizProfileSnapshot | null): RoadmapT
       id: 'clarify',
       phase: 'Étape 1',
       title: 'Définir ta direction',
-      teaser: `À partir de ${personality.toLowerCase()} et du modèle ${profile.name}, définissez le problème client précis et la transformation promise.`,
+      teaser: `À partir de ${personality.toLowerCase()} et du modèle ${profile.name}, définis le problème client précis et la transformation promise.`,
       locked: false,
     },
     {

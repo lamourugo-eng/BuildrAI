@@ -170,7 +170,7 @@ export const RESOURCE_UI: Record<
     badge: 'Prompt IA',
     icon: '🤖',
     format: 'À copier-coller',
-    beginnerTip: 'Ajoute ton niche en haut du prompt pour des idées plus précises.',
+    beginnerTip: 'Ajoute ta niche en haut du prompt pour des idées plus précises.',
   },
   'prompt-market': {
     badge: 'Prompt IA',

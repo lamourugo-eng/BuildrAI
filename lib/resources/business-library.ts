@@ -570,7 +570,7 @@ Contexte niche : ${ctx.nicheExamples[0]}.`,
           copyable: true,
           template: `Analyse le marché pour une offre ${ctx.label} ciblant ${ctx.clientType}.
 
-Niche : [ton niche]
+Niche : [ta niche]
 Zone : [pays / ville / online]
 
 Structure ta réponse :

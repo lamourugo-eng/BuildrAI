@@ -67,7 +67,7 @@ function presenceTasks(businessId: BusinessId, step: 'choose' | 'hero' | 'soluti
         return [
           `Intègre les textes dans ${tool.primary}`,
           'Vérifie mobile + formulaire contact modèle OnlyFans',
-          'Partage à 2 modèles de ton niche pour feedback (anonyme si besoin)',
+          'Partage à 2 modèles de ta niche pour feedback (anonyme si besoin)',
         ];
     }
   }
@@ -77,12 +77,12 @@ function presenceTasks(businessId: BusinessId, step: 'choose' | 'hero' | 'soluti
       return [
         `Compare ${tool.primary} (${tool.url}) avec ${tool.alternatives.split(' ou ')[0] ?? 'une alternative'}`,
         `Crée le compte sur ${tool.primary}. Coût : ${tool.cost}`,
-        hint || `Liste les sections de ton page ${businessProfiles[businessId].name}`,
+        hint || `Liste les sections de ta page ${businessProfiles[businessId].name}`,
       ];
     case 'hero':
       return [
         'Rédige le bloc hero : accroche + sous-titre + CTA principal',
-        'Le visiteur doit comprendre ton promesse en 10 secondes',
+        'Le visiteur doit comprendre ta promesse en 10 secondes',
         `Adapte le hero au parcours d'achat typique ${businessProfiles[businessId].name}`,
       ];
     case 'solution':
@@ -152,13 +152,13 @@ export const MONTH1_DAY_BLUEPRINTS: Month1DayBlueprint[] = [
     ],
     businessFocus: {
       saas: 'Promets un résultat mesurable : gain de temps, revenus ou réduction d\'erreurs.',
-      freelance: 'Quantifiez le résultat livré (livraison, CA, image) en fin de mission.',
+      freelance: 'Quantifie le résultat livré (livraison, CA, image) en fin de mission.',
       ecommerce: 'Décris la transformation émotionnelle + fonctionnelle après l\'achat.',
       agency: 'Promets un résultat projet clair (site live, leads, recrutement validé…).',
       marketplace: 'Décris la valeur créée pour chaque côté de la plateforme.',
       impact: 'Chiffre l\'impact attendu (bénéficiaires, CO₂, inclusion…) + bénéfice client.',
       consulting: 'Promets une décision ou un KPI amélioré en fin de mission.',
-      content: 'Décris ce que ton audience saura, fera ou ressentira après tu suivre.',
+      content: 'Décris ce que ton audience saura, fera ou ressentira après t\'avoir suivie.',
       ofm: 'Promets un résultat modèle OnlyFans : croissance abonnés/revenus, régularité contenu, ops chatting structurées.',
     },
   },
@@ -199,8 +199,8 @@ export const MONTH1_DAY_BLUEPRINTS: Month1DayBlueprint[] = [
       freelance: 'Précise qui mandate la mission (dirigeant, marketing, RH) et pourquoi maintenant.',
       ecommerce: 'Décris le moment d\'achat (impulsion, cadeau, besoin récurrent).',
       agency: 'Identifie le décideur projet et les freins internes (budget, timing, priorité).',
-      marketplace: 'Crée un persona pour chaque côté si tu ciblez les deux. Ou approfondissez le côté #1.',
-      impact: 'Lie les valeurs du persona à ton mission. Pourquoi il tu choisirait.',
+      marketplace: 'Crée un persona pour chaque côté si tu cibles les deux. Ou approfondis le côté #1.',
+      impact: 'Lie les valeurs du persona à ta mission. Pourquoi il te choisirait.',
       consulting: 'Décris le contexte entreprise (croissance, crise, pivot) qui déclenche l\'appel.',
       content: 'Décris les habitudes de consommation contenu de ton persona.',
       ofm: 'Décris le profil modèle OnlyFans : abonnés actuels, revenus $/mois, blocages (acquisition, chatting, contenu).',
@@ -222,7 +222,7 @@ export const MONTH1_DAY_BLUEPRINTS: Month1DayBlueprint[] = [
       ecommerce: 'Micro pour tester ; société quand stock, TVA ou volume le justifient.',
       agency: 'Société dès sous-traitance ou contrats cadre. Pas avant la première mission signée.',
       marketplace: 'Anticipe SASU. Formalise quand les premières transactions sont récurrentes.',
-      impact: 'Clarifiez le statut cible (ASS, SAS…) une fois le modèle économique prouvé.',
+      impact: 'Clarifie le statut cible (ASS, SAS…) une fois le modèle économique prouvé.',
       consulting: 'Micro en validation ; SASU/EURL quand grands comptes ou missions longues.',
       content: 'Micro pour premiers revenus ; SASU si produits, équipe ou revente média envisagée.',
       ofm: 'Micro en phase test OFM ; SASU si plusieurs modèles OnlyFans et équipe chatters.',
@@ -239,15 +239,15 @@ export const MONTH1_DAY_BLUEPRINTS: Month1DayBlueprint[] = [
       'Note les mots exacts utilisés par tes interlocuteurs',
     ],
     businessFocus: {
-      saas: 'Interrogez des utilisateurs potentiels sur leur workflow actuel et budget logiciel.',
-      freelance: 'Parlez à 3 prospects sur leur dernier projet externalisé ou non.',
-      ecommerce: 'Sondez des acheteurs sur leur marque actuelle et critères d\'achat.',
-      agency: 'Échangez avec des dirigeants sur leurs derniers projets confiés ou ratés.',
-      marketplace: 'Interviewez des offreurs OU des demandeurs selon ton côté prioritaire.',
-      impact: 'Parlez à bénéficiaires et payeurs. Valide que les deux existent.',
-      consulting: 'Menez 3 entretiens diagnostic light (15 min) avec ton réseau.',
-      content: 'Sondez ton audience cible sur le contenu qu\'ils consomment et paieraient.',
-      ofm: 'Échangez avec 3 modèles OnlyFans sur leurs blocages business (sans pitch agressif ni promesse de $).',
+      saas: 'Interroge des utilisateurs potentiels sur leur workflow actuel et budget logiciel.',
+      freelance: 'Parle à 3 prospects sur leur dernier projet externalisé ou non.',
+      ecommerce: 'Sonde des acheteurs sur leur marque actuelle et critères d\'achat.',
+      agency: 'Échange avec des dirigeants sur leurs derniers projets confiés ou ratés.',
+      marketplace: 'Interview des offreurs OU des demandeurs selon ton côté prioritaire.',
+      impact: 'Parle à bénéficiaires et payeurs. Valide que les deux existent.',
+      consulting: 'Mène 3 entretiens diagnostic light (15 min) avec ton réseau.',
+      content: 'Sonde ton audience cible sur le contenu qu\'ils consomment et paieraient.',
+      ofm: 'Échange avec 3 modèles OnlyFans sur leurs blocages business (sans pitch agressif ni promesse de $).',
     },
   },
   {
@@ -256,10 +256,10 @@ export const MONTH1_DAY_BLUEPRINTS: Month1DayBlueprint[] = [
     title: 'Synthèse terrain & bilan semaine 1',
     objective: 'Ajuster le cap et verrouiller la semaine 2.',
     baseTasks: [
-      'Résumez les 3 insights les plus importants des échanges',
+      'Résume les 3 insights les plus importants des échanges',
       'Relis problème, promesse et persona. Cohérence ?',
       'Fixe 1 objectif mesurable pour la semaine 2',
-      'Bloquez 45 min/jour dans ton agenda pour la suite',
+      'Bloque 45 min/jour dans ton agenda pour la suite',
     ],
     businessFocus: {
       saas: 'Objectif S2 : offre + landing structure validées par 1 prospect.',
@@ -306,7 +306,7 @@ export const MONTH1_DAY_BLUEPRINTS: Month1DayBlueprint[] = [
       ],
       marketplace: [
         'Décris la transaction type sur ton plateforme',
-        'Liste ce que tu facilitez (matching, paiement, confiance)',
+        'Liste ce que tu facilites (matching, paiement, confiance)',
         'Définis la promesse pour le côté que tu lances en premier',
       ],
       impact: [
@@ -331,25 +331,25 @@ export const MONTH1_DAY_BLUEPRINTS: Month1DayBlueprint[] = [
       ],
     },
     businessFocus: {
-      saas: 'Alignez l\'offre sur un job-to-be-done unique. Pas 10 features.',
+      saas: 'Aligne l\'offre sur un job-to-be-done unique. Pas 10 features.',
       freelance: 'Un forfait clair vaut mieux que « je fais tout ».',
       ecommerce: 'Mieux vaut une gamme serrée qu\'un catalogue fourre-tout.',
       agency: 'Une prestation phare facilite la vente et la delivery.',
       marketplace: 'Commence par une transaction simple, pas toute la plateforme.',
       impact: 'L\'impact doit être mesurable. Pas seulement inspirant.',
       consulting: 'Le diagnostic payant filtre les bons clients.',
-      content: 'Monétisez tôt. Même un petit produit valide la demande.',
-      ofm: 'Le modèle OnlyFans reste décisionnaire sur le contenu. Tu structurez l\'ops et la croissance.',
+      content: 'Monétise tôt. Même un petit produit valide la demande.',
+      ofm: 'Le modèle OnlyFans reste décisionnaire sur le contenu. Tu structures l\'ops et la croissance.',
     },
   },
   {
     day: 9,
     phaseId: 3,
     title: 'Différenciation',
-    objective: 'Expliquer pourquoi tu plutôt qu\'une alternative.',
+    objective: 'Expliquer pourquoi toi plutôt qu\'une alternative.',
     baseTasks: [
       'Liste 3 différenciateurs honnêtes',
-      'Transformez chacun en bénéfice client',
+      'Transforme chacun en bénéfice client',
       'Prépare une réponse à « Pourquoi pas un concurrent ? »',
     ],
     businessFocus: {
@@ -571,8 +571,8 @@ export const MONTH1_DAY_BLUEPRINTS: Month1DayBlueprint[] = [
     objective: 'Vérifier que tu es prêt à prospecter.',
     baseTasks: [
       'Teste le parcours complet : page → contact → offre',
-      'Corrigez les frictions identifiées',
-      'Prépare ton liste de 20 prospects types',
+      'Corrige les frictions identifiées',
+      'Prépare ta liste de 20 prospects types',
     ],
     businessFocus: {
       saas: 'Parcours test : landing → CTA essai/démo → email de bienvenue.',
@@ -598,7 +598,7 @@ export const MONTH1_DAY_BLUEPRINTS: Month1DayBlueprint[] = [
     ],
     businessFocus: {
       saas: 'Cible décideurs + utilisateurs finaux selon B2B/B2C.',
-      freelance: 'Mix réseau chaud + LinkedIn ciblé sur ton niche.',
+      freelance: 'Mix réseau chaud + LinkedIn ciblé sur ta niche.',
       ecommerce: 'Influenceurs micro, communautés niche, clients lookalike.',
       agency: 'Entreprises secteur cible avec signaux d\'achat (recrutement, refonte…).',
       marketplace: '20 early adopters côté prioritaire. Nom, contact, besoin.',
@@ -681,7 +681,7 @@ export const MONTH1_DAY_BLUEPRINTS: Month1DayBlueprint[] = [
     objective: 'Formaliser une offre commerciale.',
     baseTasks: [
       'Envoie une proposition écrite à un prospect chaud',
-      'Incluez prix, délais, livrables et prochaine étape',
+      'Inclue prix, délais, livrables et prochaine étape',
       'Planifie un point de décision sous 48 h',
     ],
     businessFocus: {
@@ -770,10 +770,10 @@ export const MONTH1_DAY_BLUEPRINTS: Month1DayBlueprint[] = [
       freelance: 'Ajuste forfait, scope ou pricing selon 1ère mission.',
       ecommerce: 'Ajuste fiche produit, prix ou bundle.',
       agency: 'Standardise process delivery après 1ère mission.',
-      marketplace: 'Corrigez friction #1 identifiée sur la plateforme.',
+      marketplace: 'Corrige la friction #1 identifiée sur la plateforme.',
       impact: 'Renforcez preuve impact sur la page.',
       consulting: 'Affine diagnostic → mission conversion.',
-      content: 'Doublez sur format/contenu qui convertit.',
+      content: 'Double sur format/contenu qui convertit.',
       ofm: 'Affine charte OFM et services selon le 1er modèle OnlyFans signé.',
     },
   },

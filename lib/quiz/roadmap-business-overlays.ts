@@ -132,7 +132,7 @@ const BUSINESS_TITLE_OVERLAYS: Partial<
 function buildTitleTaskOverlays(): Record<BusinessId, Record<string, string[]>> {
   const sharedAudit = (id: BusinessId, metrics: string[]) => [
     `Liste tout ce que tu as lancé ce mois 1 (${metrics.join(', ')})`,
-    'Classez : à garder / à améliorer / à abandonner',
+    'Classe : à garder / à améliorer / à abandonner',
     `Fixe ton KPI #1 ${businessProfiles[id].name} pour le mois 2`,
   ];
 
@@ -141,7 +141,7 @@ function buildTitleTaskOverlays(): Record<BusinessId, Record<string, string[]>> 
       'Audit du premier mois': sharedAudit('saas', ['landing', 'essais', 'démos', 'MRR']),
       'Chiffre du pipeline': [
         'Comptez essais actifs & démos bookées dans un tableau',
-        'Estimez MRR si 100 % des essais convertissent',
+        'Estime le MRR si 100 % des essais convertissent',
         'Identifie les 5 comptes à closer en priorité',
       ],
       'Mesurer coût d\'acquisition': [
@@ -229,7 +229,7 @@ function buildTitleTaskOverlays(): Record<BusinessId, Record<string, string[]>> 
       ]),
       'Chiffre du pipeline': [
         'Liste modèles OnlyFans : discussion / essai / contrat actif',
-        'Estimez revenus OnlyFans gérables sur 30 jours (commission agence)',
+        'Estime les revenus OnlyFans gérables sur 30 jours (commission agence)',
         'Priorise 3 modèles à closer avec charte OFM',
       ],
       'Relances personnalisées': [

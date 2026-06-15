@@ -97,7 +97,7 @@ const BUSINESS_PHASE_HINTS: Partial<Record<BusinessId, Record<number, string>>> 
   freelance: {
     1: 'Problème = situation où le client externalise (deadline, compétence manquante, surcharge).',
     2: 'Persona = décideur qui mandate (dirigeant, marketing, ops) + budget mission.',
-    3: 'Forfait signature : résultat + durée + livrables. Évitez « je fais tout ».',
+    3: 'Forfait signature : résultat + durée + livrables. Évite « je fais tout ».',
     4: 'Headline = « J\'aide [cible] à [résultat] en [délai] ». Pas ton métier seul.',
     5: 'Page 5 blocs : Headline résultat, 3 services, Process, Preuves, CTA RDV 30min',
     6: 'Package Découverte + Mission + Rétainer. Prix TJM ou forfait',

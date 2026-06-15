@@ -84,7 +84,7 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
     ],
     firstSteps: [
       'Clarifier avec ton coach le problème précis à résoudre et le type de client (B2B ou B2C)',
-      'Co-construire ton proposition de valeur et ce qui rend ton SaaS unique',
+      'Co-construire ta proposition de valeur et ce qui rend ton SaaS unique',
       'Définir ensemble la première version concrète de ton offre (fonctionnalités, prix, promesse)',
     ],
     metrics: { cost: 'Moyen', revenue: '3-6 mois', scale: 'Très forte', autonomy: 'Équipe' },
@@ -136,8 +136,8 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
       'Concurrence sur les grandes plateformes',
     ],
     firstSteps: [
-      'Définir avec ton coach ton niche, ton client type et ton angle de marque',
-      'Structurer ta première gamme produit et ton promesse client',
+      'Définir avec ton coach ta niche, ton client type et ton angle de marque',
+      'Structurer ta première gamme produit et ta promesse client',
       'Construire un plan de lancement personnalisé (offre, prix, canal de vente)',
     ],
     metrics: { cost: 'Moyen', revenue: '2-4 mois', scale: 'Forte', autonomy: 'Souple' },
@@ -154,7 +154,7 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
     strengths: [
       'Premier euro dès la première mission',
       'On grandit grâce à la réputation',
-      'Le relationnel est ton force',
+      'Le relationnel est ta force',
     ],
     challenges: [
       'Dépendance aux clients',
@@ -164,7 +164,7 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
     firstSteps: [
       'Choisir avec ton coach une spécialisation (secteur + type de prestation)',
       'Définir ton offre signature, ton process de delivery et ton pricing',
-      'Préparer ton stratégie pour signer tes 3 premiers clients cibles',
+      'Préparer ta stratégie pour signer tes 3 premiers clients cibles',
     ],
     metrics: { cost: 'Faible', revenue: '1-3 mois', scale: 'Moyenne', autonomy: 'Équipe' },
     whyMatch: 'Tu aimes les gens et travailler en équipe sur des projets concrets.',
@@ -200,7 +200,7 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
     name: 'Impact / social',
     icon: '🌱',
     description:
-      "Ton activité répond à un problème social ou environnemental tout en étant rentable : recyclage, inclusion, éducation, santé accessible… Les clients achètent parce que le produit est utile ET parce qu'ils adhèrent à ton mission. La motivation est forte, mais il faut prouver que le modèle économique tient la route. Pas seulement l'impact.",
+      "Ton activité répond à un problème social ou environnemental tout en étant rentable : recyclage, inclusion, éducation, santé accessible… Les clients achètent parce que le produit est utile ET parce qu'ils adhèrent à ta mission. La motivation est forte, mais il faut prouver que le modèle économique tient la route. Pas seulement l'impact.",
     traits: ['Mission', 'Utile', 'Communauté', 'Sens'],
     examples: 'Recyclage, inclusion, éducation',
     strengths: [
@@ -210,7 +210,7 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
     ],
     challenges: [
       'Trouver le bon équilibre impact / rentabilité',
-      'Bien expliquer ton mission',
+      'Bien expliquer ta mission',
       'Parfois plus lent au départ',
     ],
     firstSteps: [
@@ -266,8 +266,8 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
       'La visibilité change souvent',
     ],
     firstSteps: [
-      'Définir avec ton coach ton niche, ton audience cible et ton promesse éditoriale',
-      'Structurer ton ligne éditoriale et ton premier produit monétisable',
+      'Définir avec ton coach ta niche, ton audience cible et ta promesse éditoriale',
+      'Structurer ta ligne éditoriale et ton premier produit monétisable',
       'Construire un plan de publication et de conversion sur 30 jours',
     ],
     metrics: { cost: 'Très faible', revenue: '4-8 mois', scale: 'Forte', autonomy: 'Totale' },
@@ -294,7 +294,7 @@ export const businessProfiles: Record<BusinessId, BusinessProfile> = {
     ],
     firstSteps: [
       'Formaliser ton cadre OFM : consentement, limites de contenu, partage des revenus, confidentialité',
-      'Définir ton niche de modèles OnlyFans et ton offre (chatting, acquisition, contenu, ops)',
+      'Définir ta niche de modèles OnlyFans et ton offre (chatting, acquisition, contenu, ops)',
       'Signer un contrat OFM clair avant tout management. Le modèle reste décisionnaire',
     ],
     metrics: { cost: 'Faible', revenue: '2-4 mois', scale: 'Forte', autonomy: 'Équipe' },
@@ -380,7 +380,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
   },
   {
-    question: 'Ton plus grande force…',
+    question: 'Ta plus grande force…',
     options: [
       { icon: '🗣️', label: 'Contact & vente', desc: 'Convaincre, négocier, créer des liens', scores: { agency: 3, ofm: 2, marketplace: 2, consulting: 1 } },
       { icon: '⚙️', label: 'Technique', desc: 'Construire, améliorer, automatiser', scores: { saas: 3, ecommerce: 1, freelance: 1 } },

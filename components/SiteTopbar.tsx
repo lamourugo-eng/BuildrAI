@@ -99,7 +99,7 @@ export default function SiteTopbar({
         },
         {
           id: 'how',
-          label: 'Comment ça marche',
+          label: 'Comment ça marche ?',
           icon: 'flow',
           onClick: () => goToSection('#how'),
         },

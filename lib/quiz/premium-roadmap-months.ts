@@ -161,7 +161,7 @@ export const SEMESTER_MONTH_THEMES: MonthTheme[] = [
       'Leçon produit n°1', 'Leçon vente n°1', 'Leçons ops & rétention. Synthèse',
       'Bilan rétention semestre',
       'Lister toutes tes tâches récurrentes', '1ère tâche à déléguer', 'Profil freelance / outil / associé',
-      'Process documenté pour déléguer', 'Budget délégation mois 7', 'Risque n°1 si tu scalez seul',
+      'Process documenté pour déléguer', 'Budget délégation mois 7', 'Risque n°1 si tu scales seul',
       'Bilan délégation',
       'Vision à 6 mois (1 phrase)', '3 priorités stratégiques S2 & objectifs chiffrés',
       'Roadmap trimestre 3 (high level)', 'Métriques revente. Export 12 mois', 'Data room light. Due diligence',
