@@ -85,17 +85,17 @@ export default function SiteTopbar({
           href: variant === 'landing' ? '/' : undefined,
         },
         {
-          id: 'features',
-          label: 'Outils',
-          icon: 'grid',
-          description: 'Coach, parcours, ville, analyse…',
-          onClick: () => goToSection('#features'),
-        },
-        {
           id: 'pricing',
           label: 'Tarifs',
           icon: 'pricing',
           onClick: () => goToSection('#pricing'),
+        },
+        {
+          id: 'features',
+          label: 'Ton espace',
+          icon: 'grid',
+          description: 'Coach, parcours, ville, analyse…',
+          onClick: () => goToSection('#features'),
         },
         {
           id: 'how',

@@ -60,6 +60,10 @@ export type SiteCopy = {
     statCoach: string;
     statStreak: string;
     statPlan: string;
+    todayTitle: string;
+    todaySubtitle: string;
+    primaryToolsTitle: string;
+    primaryToolsSubtitle: string;
     quickAccessTitle: string;
     quickAccessSubtitle: string;
   };
@@ -308,6 +312,26 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
         beginner: 'Formule',
         intermediate: 'Formule',
         experienced: 'Plan',
+      }),
+      todayTitle: pickCopy(tier, {
+        beginner: 'Aujourd\'hui',
+        intermediate: 'Aujourd\'hui',
+        experienced: 'Priorité du jour',
+      }),
+      todaySubtitle: pickCopy(tier, {
+        beginner: 'Une seule action à faire maintenant',
+        intermediate: 'Ta prochaine étape dans le parcours',
+        experienced: 'Prochaine action du parcours 180 j',
+      }),
+      primaryToolsTitle: pickCopy(tier, {
+        beginner: 'Tes outils',
+        intermediate: 'Tes outils principaux',
+        experienced: 'Pilotage',
+      }),
+      primaryToolsSubtitle: pickCopy(tier, {
+        beginner: 'Coach, plan et ville',
+        intermediate: 'Coach IA, parcours et Ma ville',
+        experienced: 'Coach, roadmap et empire visuel',
       }),
       quickAccessTitle: pickCopy(tier, {
         beginner: 'Accès rapide',

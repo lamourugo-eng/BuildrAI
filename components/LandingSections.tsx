@@ -788,8 +788,8 @@ export function Footer() {
         <div className="footer-links">
           <h4>Produit</h4>
           <ul>
-            <li><a href="#features">Outils</a></li>
             <li><a href="#pricing">Tarifs</a></li>
+            <li><a href="#features">Ton espace</a></li>
             <li><a href="#journey">La méthode</a></li>
             <li><a href="#how">Comment ça marche ?</a></li>
             <li><a href="#faq">FAQ</a></li>

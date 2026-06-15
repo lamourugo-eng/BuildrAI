@@ -6522,6 +6522,117 @@ ul { list-style: none; }
   gap: 24px;
 }
 
+.dash-overview--clear {
+  gap: 20px;
+}
+
+.dash-hero--slim .dash-hero-inner {
+  padding: 22px 24px 20px;
+}
+
+.dash-hero--slim .dash-hero-main > p {
+  margin-bottom: 12px;
+}
+
+.dash-hero-stats--slim {
+  margin-bottom: 0;
+}
+
+.dash-overview-block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.dash-overview-block-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dash-overview-block-head h3 {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.dash-overview-block-head p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+.dash-overview-block-head--compact p {
+  display: block;
+  font-size: 0.8125rem;
+}
+
+.dash-overview-block--today {
+  gap: 10px;
+}
+
+.dash-overview-block--today .premium-roadmap--compact {
+  margin: 0;
+}
+
+.dash-overview-block--today .dash-path-sync {
+  margin-top: 2px;
+}
+
+.dash-overview-primary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.dash-overview--clear .dash-card--tool {
+  padding: 14px 14px 12px;
+  min-height: 0;
+  gap: 4px;
+}
+
+.dash-overview--clear .dash-card--tool .dash-card-icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.dash-overview--clear .dash-card--tool .dash-card-value {
+  font-size: 0.9375rem;
+}
+
+.dash-overview-body--clear {
+  gap: 14px;
+}
+
+.dash-overview-block--more {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 960px) {
+  .dash-overview-primary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .dash-overview-primary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .dash-hero--hub {
   position: relative;
   overflow: hidden;

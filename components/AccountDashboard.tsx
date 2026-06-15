@@ -261,14 +261,14 @@ export default function AccountDashboard({
           className={`dash-content dash-content--live${section === 'coach' ? ' dash-content--flush' : ''}`}
         >
           {section === 'overview' && (
-            <div className="dash-overview dash-overview--modern">
-              <section className="dash-hero dash-hero--hub">
+            <div className="dash-overview dash-overview--modern dash-overview--clear">
+              <section className="dash-hero dash-hero--hub dash-hero--slim">
                 <div className="dash-hero-glow" aria-hidden="true" />
                 <div className="dash-hero-inner">
                   <div className="dash-hero-main">
                     <p className="dash-hero-kicker">
                       <span className="dash-live-dot" aria-hidden="true" />
-                      Vue d&apos;ensemble
+                      {copy.overview.kicker}
                       {firstName ? `. Bonjour, ${firstName}` : ''}
                     </p>
                     {isSubscribed ? (
@@ -285,47 +285,27 @@ export default function AccountDashboard({
                             'Ton espace fondateur'
                           )}
                         </h2>
-                        <p>
-                          {activeBiz
-                            ? copy.overview.subscribedSubtitle
-                            : copy.overview.freeSubtitle}
-                        </p>
-                        <div className="dash-hero-stats">
+                        <p>{copy.overview.subscribedSubtitle}</p>
+                        <div className="dash-hero-stats dash-hero-stats--slim">
                           <span className="dash-hero-stat">
                             <strong>{roadmapProgress}%</strong>
                             <span>{copy.overview.statRoadmap}</span>
                           </span>
                           <span className="dash-hero-stat">
-                            <strong>{coachProgress}%</strong>
-                            <span>{copy.overview.statCoach}</span>
-                          </span>
-                          <span className="dash-hero-stat">
                             <strong>{city.streakDays} j</strong>
                             <span>{copy.overview.statStreak}</span>
                           </span>
-                          <span className="dash-hero-stat">
+                          <span className="dash-hero-stat dash-hero-stat--muted">
                             <strong>{planName}</strong>
                             <span>{copy.overview.statPlan}</span>
                           </span>
-                        </div>
-                        <div className="dash-hero-progress">
-                          <div className="account-progress-bar">
-                            <div
-                              className="account-progress-fill"
-                              style={{ width: `${planProgress}%` }}
-                            />
-                          </div>
-                          <span className="dash-progress-pulse">{planProgress}%</span>
                         </div>
                       </>
                     ) : (
                       <>
                         <h2>Plan gratuit. Ton profil est prêt</h2>
-                        <p>
-                          Quiz, analyse de profil et modèles business adaptés sont débloqués.
-                          Passe à l&apos;abonnement pour le parcours 180 jours et le coach IA.
-                        </p>
-                        <div className="dash-hero-stats">
+                        <p>{copy.overview.freeSubtitle}</p>
+                        <div className="dash-hero-stats dash-hero-stats--slim">
                           <span className="dash-hero-stat">
                             <strong>{profile ? 'Profil OK' : 'Quiz'}</strong>
                             <span>{profile ? 'Complété' : 'À faire'}</span>
@@ -358,7 +338,11 @@ export default function AccountDashboard({
                 </div>
               </section>
 
-              <div className="dash-overview-roadmap dash-overview-roadmap--priority">
+              <section className="dash-overview-block dash-overview-block--today">
+                <header className="dash-overview-block-head">
+                  <h3>{copy.overview.todayTitle}</h3>
+                  <p>{copy.overview.todaySubtitle}</p>
+                </header>
                 {isSubscribed ? (
                   <PremiumRoadmap
                     businessId={activeId}
@@ -369,76 +353,90 @@ export default function AccountDashboard({
                 ) : (
                   profile && <FreeRoadmapTeaser profile={profile} variant="dashboard" />
                 )}
-              </div>
+                <DashFounderPath
+                  isSubscribed={isSubscribed}
+                  hasProfile={Boolean(profile || activeId)}
+                  businessId={activeId}
+                  coachMessages={stats.coachMessages}
+                  roadmapProgress={roadmapProgress}
+                  onGo={goTo}
+                  variant="compact"
+                />
+              </section>
 
-              <DashFounderPath
-                isSubscribed={isSubscribed}
-                hasProfile={Boolean(profile || activeId)}
-                businessId={activeId}
-                coachMessages={stats.coachMessages}
-                roadmapProgress={roadmapProgress}
-                onGo={goTo}
-              />
+              {isSubscribed && (
+                <section className="dash-overview-block dash-overview-block--primary">
+                  <header className="dash-overview-block-head">
+                    <h3>{copy.overview.primaryToolsTitle}</h3>
+                    <p>{copy.overview.primaryToolsSubtitle}</p>
+                  </header>
+                  <div className="dash-overview-primary-grid">
+                    <article
+                      className="dash-card dash-card--tile dash-card--primary dash-card--tool"
+                      onClick={() => goTo('coach')}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => e.key === 'Enter' && goTo('coach')}
+                    >
+                      <span className="dash-card-icon" aria-hidden="true">
+                        ◈
+                      </span>
+                      <span className="dash-card-label">{copy.sections.coach.label}</span>
+                      <p className="dash-card-value">Parler au coach</p>
+                      <p className="dash-card-meta">{stats.coachMessages} messages échangés</p>
+                    </article>
+                    <article
+                      className="dash-card dash-card--tile dash-card--primary dash-card--tool"
+                      onClick={() => goTo('parcours')}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => e.key === 'Enter' && goTo('parcours')}
+                    >
+                      <span className="dash-card-icon" aria-hidden="true">
+                        ◎
+                      </span>
+                      <span className="dash-card-label">{copy.sections.parcours.label}</span>
+                      <p className="dash-card-value">
+                        {roadmapProgress > 0 ? `${roadmapProgress}% complété` : 'Commencer'}
+                      </p>
+                      <p className="dash-card-meta">Plan 180 jours sur ton modèle</p>
+                    </article>
+                    <article
+                      className="dash-card dash-card--tile dash-card--primary dash-card--tool"
+                      onClick={() => goTo('ville')}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => e.key === 'Enter' && goTo('ville')}
+                    >
+                      <span className="dash-card-icon" aria-hidden="true">
+                        🏙
+                      </span>
+                      <span className="dash-card-label">{copy.sections.ville.label}</span>
+                      <p className="dash-card-value">
+                        {city.hasAvatar ? city.level.name : 'Créer ton avatar'}
+                      </p>
+                      <p className="dash-card-meta">
+                        {city.unlockedBuildingCount}/{city.buildings.length} districts débloqués
+                      </p>
+                    </article>
+                  </div>
+                </section>
+              )}
 
-              <div className="dash-overview-body">
+              <div className="dash-overview-body dash-overview-body--clear">
                 <DashCityPreview
                   city={city}
                   newBuildingIds={newBuildings}
                   onOpen={() => goTo('ville')}
                 />
 
-                <div className="dash-overview-aside dash-overview-aside--compact">
-                  <header className="dash-overview-section-head dash-overview-section-head--compact">
-                    <h3>Explorer ton espace</h3>
-                    <p>Raccourcis vers profil, notes et formules.</p>
+                <section className="dash-overview-block dash-overview-block--more">
+                  <header className="dash-overview-block-head dash-overview-block-head--compact">
+                    <h3>{copy.overview.quickAccessTitle}</h3>
+                    <p>{copy.overview.quickAccessSubtitle}</p>
                   </header>
 
                   <div className="dash-overview-grid dash-overview-grid--compact">
-                    {isSubscribed && (
-                      <>
-                        <article
-                          className="dash-card dash-card--tile dash-card--primary"
-                          onClick={() => goTo('coach')}
-                          role="button"
-                          tabIndex={0}
-                          onKeyDown={(e) => e.key === 'Enter' && goTo('coach')}
-                        >
-                          <div className="dash-card-top">
-                            <span className="dash-card-icon" aria-hidden="true">
-                              ◈
-                            </span>
-                            <span className="dash-card-chevron" aria-hidden="true">
-                              →
-                            </span>
-                          </div>
-                          <span className="dash-card-label">{copy.sections.coach.label}</span>
-                          <p className="dash-card-value">Parler au coach</p>
-                          <p className="dash-card-meta">{stats.coachMessages} messages échangés</p>
-                        </article>
-                        <article
-                          className="dash-card dash-card--tile dash-card--primary"
-                          onClick={() => goTo('parcours')}
-                          role="button"
-                          tabIndex={0}
-                          onKeyDown={(e) => e.key === 'Enter' && goTo('parcours')}
-                        >
-                          <div className="dash-card-top">
-                            <span className="dash-card-icon" aria-hidden="true">
-                              ◎
-                            </span>
-                            <span className="dash-card-chevron" aria-hidden="true">
-                              →
-                            </span>
-                          </div>
-                          <span className="dash-card-label">{copy.sections.parcours.label}</span>
-                          <p className="dash-card-value">
-                            {roadmapProgress > 0 ? `${roadmapProgress}% complété` : 'Jour 1'}
-                          </p>
-                          <p className="dash-card-meta">Plan 180 jours calibré sur ton modèle</p>
-                        </article>
-                      </>
-                    )}
-
                     <article
                       className="dash-card dash-card--tile"
                       onClick={() => goTo('profil')}
@@ -660,7 +658,7 @@ export default function AccountDashboard({
                       </p>
                     </article>
                   </div>
-                </div>
+                </section>
               </div>
             </div>
           )}

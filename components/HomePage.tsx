@@ -95,8 +95,8 @@ export default function HomePage({
           <LandingJourney onOpenQuiz={openQuiz} />
           <LandingTrust />
           <How onOpenQuiz={openQuiz} />
-          <Features onOpenQuiz={openQuiz} />
           <Pricing onOpenLogin={() => setLoginOpen(true)} userEmail={userEmail} />
+          <Features onOpenQuiz={openQuiz} />
           <div className="landing-only-desktop">
             <LandingNewsletter userEmail={userEmail} />
           </div>
