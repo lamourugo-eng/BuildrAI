@@ -321,9 +321,9 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
         experienced: 'Priorité du jour',
       }),
       todaySubtitle: pickCopy(tier, {
-        beginner: 'Une seule action à faire maintenant',
-        intermediate: 'Ta prochaine étape dans le parcours',
-        experienced: 'Prochaine action du parcours 180 j',
+        beginner: 'Ta prochaine action en un clic',
+        intermediate: 'Priorité du moment',
+        experienced: 'Action prioritaire',
       }),
       primaryToolsTitle: pickCopy(tier, {
         beginner: 'Tes outils',
@@ -341,9 +341,9 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
         experienced: 'Raccourcis',
       }),
       quickAccessSubtitle: pickCopy(tier, {
-        beginner: 'Tout en un clic, sans jargon',
-        intermediate: 'Profil, outils et ressources en un clic',
-        experienced: 'Sections clés de ton espace',
+        beginner: 'Tout en un tap',
+        intermediate: 'Sections de l\'espace',
+        experienced: 'Navigation rapide',
       }),
     },
     coach: {

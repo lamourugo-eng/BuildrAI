@@ -1,7 +1,11 @@
 'use client';
 
 import {
+  extractCoachToolsContent,
+  formatCoachHeadingLine,
+  isCoachHeadingLine,
   parseCoachMessage,
+  stripCoachToolSections,
   stripMarkdownBold,
 } from '@/lib/coach/parse-message';
 
@@ -9,42 +13,69 @@ interface CoachMessageViewProps {
   content: string;
 }
 
-function TextBlock({ text }: { text: string }) {
+function CoachTextBlock({ text }: { text: string }) {
+  const lines = stripMarkdownBold(text)
+    .split('\n')
+    .map((line) => line.trimEnd())
+    .filter((line) => line.trim());
+
   return (
     <div className="coach-msg-block-body">
-      {stripMarkdownBold(text)
-        .split('\n')
-        .filter((line) => line.trim())
-        .map((line, i) => (
-          <p key={i}>{line}</p>
-        ))}
+      {lines.map((line, i) => {
+        const trimmed = line.trim();
+        if (isCoachHeadingLine(trimmed)) {
+          const level = trimmed.match(/^(#+)/)?.[1].length ?? 3;
+          return (
+            <p
+              key={i}
+              className={
+                level <= 2
+                  ? 'coach-msg-heading coach-msg-heading--main'
+                  : 'coach-msg-heading'
+              }
+            >
+              {formatCoachHeadingLine(trimmed)}
+            </p>
+          );
+        }
+        return <p key={i}>{trimmed}</p>;
+      })}
     </div>
   );
 }
 
+function CoachToolsPanel({ tools }: { tools: string }) {
+  if (!tools.trim()) return null;
+
+  return (
+    <details className="coach-msg-details coach-msg-details--tools">
+      <summary>
+        <span className="coach-msg-details-chevron" aria-hidden="true">
+          ▾
+        </span>
+        <span aria-hidden="true">🛠️</span>
+        Outils recommandés
+      </summary>
+      <CoachTextBlock text={tools} />
+    </details>
+  );
+}
+
 export function stripCoachToolSection(content: string): string {
-  return content
-    .replace(/\n\n🛠️?\s*OUTIL(?:S|\s*&\s*MÉTHODE|\s*RECOMMANDÉS)[\s\S]*$/i, '')
-    .trim();
+  return stripCoachToolSections(content);
 }
 
 export default function CoachMessageView({ content }: CoachMessageViewProps) {
   const parsed = parseCoachMessage(content);
+  const toolsContent =
+    extractCoachToolsContent(content) || parsed.tool.trim();
+  const bodyWithoutTools = stripCoachToolSections(content);
 
   if (!parsed.structured) {
-    const mainText = parsed.tool ? stripCoachToolSection(content) : content;
-
     return (
       <>
-        <p className="coach-message-text">{stripMarkdownBold(mainText)}</p>
-        {parsed.tool && (
-          <details className="coach-msg-details coach-msg-details--standalone" open>
-            <summary>
-              <span aria-hidden="true">🛠️</span> Outils recommandés
-            </summary>
-            <TextBlock text={parsed.tool} />
-          </details>
-        )}
+        <CoachTextBlock text={bodyWithoutTools} />
+        <CoachToolsPanel tools={toolsContent} />
       </>
     );
   }
@@ -74,7 +105,7 @@ export default function CoachMessageView({ content }: CoachMessageViewProps) {
           <span className="coach-msg-label">
             <span aria-hidden="true">➡️</span> À faire maintenant
           </span>
-          <TextBlock text={parsed.nextStep} />
+          <CoachTextBlock text={parsed.nextStep} />
         </div>
       )}
 
@@ -83,27 +114,24 @@ export default function CoachMessageView({ content }: CoachMessageViewProps) {
           <span className="coach-msg-label">
             <span aria-hidden="true">✅</span> Ton livrable
           </span>
-          <TextBlock text={parsed.deliverable} />
+          <CoachTextBlock text={parsed.deliverable} />
         </div>
-      )}
-
-      {parsed.tool && (
-        <details className="coach-msg-details">
-          <summary>
-            <span aria-hidden="true">🛠️</span> Outils recommandés
-          </summary>
-          <TextBlock text={parsed.tool} />
-        </details>
       )}
 
       {parsed.plan && (
         <details className="coach-msg-details">
           <summary>
-            <span aria-hidden="true">📋</span> Parcours restant
+            <span className="coach-msg-details-chevron" aria-hidden="true">
+              ▾
+            </span>
+            <span aria-hidden="true">📋</span>
+            Parcours restant
           </summary>
-          <TextBlock text={parsed.plan} />
+          <CoachTextBlock text={parsed.plan} />
         </details>
       )}
+
+      <CoachToolsPanel tools={toolsContent} />
     </div>
   );
 }

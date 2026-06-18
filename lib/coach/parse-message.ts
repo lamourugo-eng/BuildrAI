@@ -62,3 +62,39 @@ export function parseCoachMessage(content: string): ParsedCoachSections {
 export function stripMarkdownBold(text: string): string {
   return text.replace(/\*\*/g, '');
 }
+
+const TOOL_SECTION_REGEX =
+  /(?:^|\n\n)🛠️?\s*OUTIL(?:S|\s*&\s*MÉTHODE|\s*RECOMMANDÉS)?[^\n]*\n[\s\S]*?(?=(?:\n\n[🎯📍📋🛠️✅➡️❓🧭])|$)/gi;
+
+/** Extrait le contenu des blocs outils (sans les titres de section). */
+export function extractCoachToolsContent(content: string): string {
+  const blocks: string[] = [];
+  const pattern = new RegExp(TOOL_SECTION_REGEX.source, 'gi');
+
+  let match: RegExpExecArray | null;
+  while ((match = pattern.exec(content)) !== null) {
+    const body = match[0]
+      .replace(/^(?:\n\n)?🛠️?\s*OUTIL(?:S|\s*&\s*MÉTHODE|\s*RECOMMANDÉS)?[^\n]*\n?/i, '')
+      .trim();
+    if (body) blocks.push(body);
+  }
+
+  return blocks.join('\n\n');
+}
+
+/** Retire tous les blocs outils du corps du message. */
+export function stripCoachToolSections(content: string): string {
+  return content.replace(new RegExp(TOOL_SECTION_REGEX.source, 'gi'), '').trim();
+}
+
+export function isCoachHeadingLine(line: string): boolean {
+  return /^#{1,3}\s+\S/.test(line.trim());
+}
+
+export function formatCoachHeadingLine(line: string): string {
+  const trimmed = line.trim();
+  if (trimmed.startsWith('### ')) return trimmed.slice(4).trim();
+  if (trimmed.startsWith('## ')) return trimmed.slice(3).trim();
+  if (trimmed.startsWith('# ')) return trimmed.slice(2).trim();
+  return trimmed;
+}
