@@ -1,4 +1,5 @@
 import type { BusinessId } from '@/lib/quiz/data';
+import { withoutFocusBlockTasks } from '@/lib/quiz/roadmap-task-filters';
 
 export interface LegalFormOption {
   form: string;
@@ -487,8 +488,6 @@ export function buildDenseDailyTasks(
 
   if (dayInMonth % 7 === 0) {
     extra.push('Bilan hebdo : 1 victoire, 1 blocage, 1 priorité semaine prochaine.');
-  } else {
-    extra.push('Bloc focus 45 min minimum. Téléphone en silencieux.');
   }
 
   if (month >= 5 && exit.resaleRelevant && dayInMonth >= 18) {
@@ -496,6 +495,8 @@ export function buildDenseDailyTasks(
   }
 
   const merged = [...baseTasks, ...extra];
-  const unique = [...new Set(merged.map((t) => t.trim()).filter(Boolean))];
+  const unique = withoutFocusBlockTasks(
+    [...new Set(merged.map((t) => t.trim()).filter(Boolean))]
+  );
   return unique.slice(0, 6);
 }

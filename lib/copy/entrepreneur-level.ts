@@ -74,6 +74,8 @@ export type SiteCopy = {
     phaseBadge: (phase: number) => string;
     growthBadge: string;
     quickPrompts: { label: string; message: string }[];
+    resumePlanLabel: string;
+    resumePlanMessage: string;
     welcomeNoProfile: string;
     welcomeWithProfile: (businessName: string) => string;
   };
@@ -371,19 +373,32 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
         intermediate: 'Accelerator',
         experienced: 'Accelerator',
       }),
+      resumePlanLabel: pickCopy(tier, {
+        beginner: 'Reprendre mon plan',
+        intermediate: 'Reprendre mon plan',
+        experienced: 'Reprendre le plan',
+      }),
+      resumePlanMessage: pickCopy(tier, {
+        beginner: 'On reprend mon plan là où je m\'étais arrêté.',
+        intermediate: 'On reprend mon plan là où on s\'était arrêté.',
+        experienced: 'Reprends le fil du plan. Priorité du jour.',
+      }),
       quickPrompts: pickCopy(tier, {
         beginner: [
           { label: 'Continuer', message: 'On continue là où on s\'était arrêté, en simple s\'il te plaît' },
+          { label: 'Question libre', message: 'J\'ai une question sur mon business : ' },
           { label: 'Où j\'en suis', message: 'Où j\'en suis dans mon plan ? Quelle est la prochaine petite action ?' },
           { label: 'Mon site', message: 'Je veux une page web simple. Guide-moi pas à pas' },
         ],
         intermediate: [
           { label: 'Continuer', message: 'On continue là où on s\'était arrêté' },
+          { label: 'Question libre', message: 'J\'ai une question business : ' },
           { label: 'Mon parcours', message: 'Où j\'en suis dans mon parcours ? Quelle est la prochaine étape ?' },
           { label: 'Créer mon site', message: 'Quel outil pour mon site ? Guide-moi étape par étape' },
         ],
         experienced: [
           { label: 'Reprendre', message: 'Reprends le fil. Où en sommes-nous et quelle est la prochaine micro-étape ?' },
+          { label: 'Question libre', message: 'Question business : ' },
           { label: 'Parcours', message: 'État du parcours 180j vs phase coach. Priorité du jour ?' },
           { label: 'Go-to-market', message: 'Canal d\'acquisition prioritaire cette semaine. Script et KPI' },
         ],
@@ -401,9 +416,9 @@ Complète le profil quiz ou décris directement ton contexte et tes contraintes.
       }),
       welcomeWithProfile: (businessName) =>
         pickCopy(tier, {
-          beginner: `Bonjour ! On avance ensemble sur ton ${businessName}. Je t'explique tout simplement.`,
-          intermediate: `Bonjour ! On construit ton ${businessName} ensemble. Je rédige, tu valides.`,
-          experienced: `Bonjour. Objectif : exécution sur ${businessName}. Livrables actionnables, une micro-étape à la fois.`,
+          beginner: `Bonjour ! On avance ensemble sur ton ${businessName}. Pose-moi n'importe quelle question business, je t'explique tout simplement.`,
+          intermediate: `Bonjour ! On construit ton ${businessName} ensemble. Pose tes questions (stratégie, prix, marketing, outils…) ou clique « Continuer » pour avancer étape par étape.`,
+          experienced: `Bonjour. Objectif : exécution sur ${businessName}. Questions business libres ou micro-étapes structurées — livrables actionnables à chaque échange.`,
         }),
     },
     roadmap: {

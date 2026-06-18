@@ -1,4 +1,5 @@
 import type { RoadmapProgress } from '@/lib/account/roadmap-storage';
+import { normalizeRoadmapProgress } from '@/lib/account/roadmap-storage';
 import { isValidBusinessId } from '@/lib/quiz/business-choices';
 import {
   getUserProfile,
@@ -15,11 +16,28 @@ function parseRoadmapProgress(raw: unknown): RoadmapProgress | null {
   if (!progress.businessId || !isValidBusinessId(progress.businessId)) return null;
   if (!Array.isArray(progress.completedDays)) return null;
 
-  return {
+  const completedTasks =
+    progress.completedTasks && typeof progress.completedTasks === 'object'
+      ? Object.fromEntries(
+          Object.entries(progress.completedTasks as Record<string, unknown>)
+            .map(([dayKey, indices]) => {
+              const day = Number(dayKey);
+              if (!Number.isFinite(day) || !Array.isArray(indices)) return null;
+              return [
+                day,
+                indices.filter((index): index is number => Number.isFinite(index)),
+              ] as const;
+            })
+            .filter((entry): entry is readonly [number, number[]] => entry != null)
+        )
+      : {};
+
+  return normalizeRoadmapProgress({
     businessId: progress.businessId,
     completedDays: progress.completedDays.filter((day) => Number.isFinite(day)),
+    completedTasks,
     updatedAt: progress.updatedAt ?? new Date().toISOString(),
-  };
+  });
 }
 
 export async function GET() {

@@ -11,6 +11,11 @@ import { useEntrepreneurCopy } from '@/components/EntrepreneurCopyProvider';
 import { getPhaseDisplayName } from '@/lib/copy/entrepreneur-level';
 import type { SiteCopy } from '@/lib/copy/entrepreneur-level';
 import { loadLocalNotepad } from '@/lib/account/notepad-storage';
+import {
+  getRoadmapDayTaskIndices,
+  loadRoadmapProgress,
+  ROADMAP_PROGRESS_EVENT,
+} from '@/lib/account/roadmap-storage';
 import type { PlanId } from '@/lib/stripe';
 import Link from 'next/link';
 import {
@@ -32,9 +37,17 @@ import {
 } from '@/lib/coach/roadmap-coach-context';
 import { TOTAL_ROADMAP_DAYS } from '@/lib/quiz/roadmap-program';
 import {
+  applyCoachRoadmapTaskSync,
+  formatRoadmapTaskSyncNotice,
+  inferCompletedTaskIndices,
+} from '@/lib/coach/roadmap-task-sync';
+import { detectCoachInteractionMode } from '@/lib/coach/interaction-mode';
+import {
   detectRoadmapDayInMessage,
   getRoadmapDayForCoach,
+  roadmapDayToCoachContext,
 } from '@/lib/coach/resolve-roadmap-day';
+import { resolveCurrentRoadmapStep } from '@/lib/quiz/current-roadmap-step';
 import { getPhaseById } from '@/lib/coach/journey';
 import { COACH_BUDGET_ERROR_CODE } from '@/lib/coach/token-budget';
 import { getSiteToolRecommendation } from '@/lib/coach/tools';
@@ -53,6 +66,34 @@ import {
 } from '@/lib/account/analytics-storage';
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+
+function getRoadmapCompletedIndicesForDay(
+  businessId: BusinessId,
+  day: number,
+  totalTasks: number
+): number[] {
+  const progress = loadRoadmapProgress();
+  return getRoadmapDayTaskIndices(
+    progress?.businessId === businessId ? progress : null,
+    day,
+    totalTasks
+  );
+}
+
+function resolveCoachRoadmapContext(
+  businessId: BusinessId | undefined,
+  activeContext: RoadmapCoachContext | null,
+  profile: QuizProfileSnapshot | null,
+  isSubscribed: boolean
+): RoadmapCoachContext | undefined {
+  if (activeContext) return activeContext;
+  if (!businessId || !isSubscribed) return undefined;
+
+  const step = resolveCurrentRoadmapStep(businessId, true);
+  if (step.status === 'completed_all') return undefined;
+
+  return roadmapDayToCoachContext(step.day, businessId, profile?.topBusinessName);
+}
 
 interface Message {
   role: 'user' | 'assistant';
@@ -226,6 +267,9 @@ export default function Coach({
   );
   const [notepadOpen, setNotepadOpen] = useState(false);
   const [coachLimitReached, setCoachLimitReached] = useState(false);
+  const [taskSyncNotice, setTaskSyncNotice] = useState<string | null>(null);
+  const [roadmapProgressTick, setRoadmapProgressTick] = useState(0);
+  const [planLinked, setPlanLinked] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const initializedRef = useRef(false);
   const roadmapHandledRef = useRef(false);
@@ -328,6 +372,7 @@ export default function Coach({
       setUseProductMemory(false);
       setActiveRoadmapContext(null);
       clearActiveRoadmapCoachContext();
+      setPlanLinked(false);
       setConversationMessages([]);
       setCoachingPhase(1);
       const welcome = buildResetWelcomeMessage(nextProfile);
@@ -364,7 +409,30 @@ export default function Coach({
 
   useEffect(() => {
     const stored = loadActiveRoadmapCoachContext();
-    if (stored) setActiveRoadmapContext(stored);
+    if (stored) {
+      setActiveRoadmapContext(stored);
+      return;
+    }
+
+    const profile = activeProfile ?? quizProfile;
+    const businessId = selectedBusinessId ?? profile?.topBusinessId;
+    const ctx = resolveCoachRoadmapContext(businessId, null, profile, isSubscribed);
+    if (ctx) {
+      setActiveRoadmapContext(ctx);
+      persistActiveRoadmapCoachContext(ctx);
+    }
+  }, [activeProfile, quizProfile, selectedBusinessId, isSubscribed]);
+
+  useEffect(() => {
+    if (!taskSyncNotice) return;
+    const timer = window.setTimeout(() => setTaskSyncNotice(null), 6000);
+    return () => window.clearTimeout(timer);
+  }, [taskSyncNotice]);
+
+  useEffect(() => {
+    const onProgress = () => setRoadmapProgressTick((tick) => tick + 1);
+    window.addEventListener(ROADMAP_PROGRESS_EVENT, onProgress);
+    return () => window.removeEventListener(ROADMAP_PROGRESS_EVENT, onProgress);
   }, []);
 
   useEffect(() => {
@@ -383,6 +451,7 @@ export default function Coach({
 
     setActiveRoadmapContext(ctx);
     persistActiveRoadmapCoachContext(ctx);
+    setPlanLinked(true);
     setMessages((prev) => appendRoadmapWelcomeIfNew(prev, welcome, ctx.title));
   }, [initializing, searchParams, activeProfile, router]);
 
@@ -392,17 +461,27 @@ export default function Coach({
 
   function resolveRoadmapPayloadForSend(
     text: string,
-    businessId: BusinessId | undefined
+    businessId: BusinessId | undefined,
+    linkedToPlan: boolean
   ): RoadmapCoachContext | undefined {
-    let payload = activeRoadmapContext ?? undefined;
-
     if (businessId) {
       const detectedDay = detectRoadmapDayInMessage(text);
       if (detectedDay != null) {
         const resolved = getRoadmapDayForCoach(businessId, detectedDay);
-        if (resolved) payload = resolved;
+        if (resolved) {
+          setActiveRoadmapContext(resolved);
+          persistActiveRoadmapCoachContext(resolved);
+          setPlanLinked(true);
+          return resolved;
+        }
       }
     }
+
+    if (!linkedToPlan) return undefined;
+
+    const payload =
+      activeRoadmapContext ??
+      resolveCoachRoadmapContext(businessId, null, activeProfile, isSubscribed);
 
     if (payload) {
       setActiveRoadmapContext(payload);
@@ -412,10 +491,43 @@ export default function Coach({
     return payload;
   }
 
-  async function sendMessage(text: string) {
+  function resumePlan() {
+    const businessId = selectedBusinessId ?? activeProfile?.topBusinessId;
+    const ctx =
+      activeRoadmapContext ??
+      (businessId
+        ? resolveCoachRoadmapContext(businessId, null, activeProfile, isSubscribed)
+        : undefined);
+
+    if (ctx) {
+      setActiveRoadmapContext(ctx);
+      persistActiveRoadmapCoachContext(ctx);
+    }
+
+    void sendMessage(copy.coach.resumePlanMessage, { forcePlan: true });
+  }
+
+  async function sendMessage(
+    text: string,
+    options?: { forcePlan?: boolean; forceFree?: boolean }
+  ) {
     if (!text.trim() || loading || initializing || coachLimitReached) return;
 
-    const userMessage: Message = { role: 'user', content: text.trim() };
+    const trimmed = text.trim();
+    const interaction = detectCoachInteractionMode(trimmed);
+    const nextPlanLinked = options?.forcePlan
+      ? true
+      : options?.forceFree || interaction === 'question'
+        ? false
+        : interaction === 'progression'
+          ? true
+          : planLinked;
+
+    if (nextPlanLinked !== planLinked) {
+      setPlanLinked(nextPlanLinked);
+    }
+
+    const userMessage: Message = { role: 'user', content: trimmed };
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setLoading(true);
@@ -426,12 +538,24 @@ export default function Coach({
     const notepadSnippet = loadLocalNotepad().content;
 
     try {
-      const roadmapPayload = resolveRoadmapPayloadForSend(userMessage.content, businessId);
+      const roadmapPayload = resolveRoadmapPayloadForSend(
+        userMessage.content,
+        businessId,
+        nextPlanLinked
+      );
+      const roadmapCompletedTasks =
+        roadmapPayload && businessId
+          ? getRoadmapCompletedIndicesForDay(
+              businessId,
+              roadmapPayload.day,
+              roadmapPayload.tasks.length
+            )
+          : [];
       const phaseMeta = getPhaseById(coachingPhase);
-      const memoryForApi = getCoachMemoryContext(localMemory);
-      const enrichedMemory = memoryForApi
+      const baseMemory = getCoachMemoryContext(localMemory);
+      const enrichedMemory = baseMemory
         ? {
-            ...memoryForApi,
+            ...baseMemory,
             coachingPhase,
             coachingStepLabel: phaseMeta?.name,
           }
@@ -450,14 +574,32 @@ export default function Coach({
             }
           : null;
 
+      const apiInteractionMode: 'question' | 'progression' =
+        nextPlanLinked && roadmapPayload ? 'progression' : interaction;
+      const memoryPayload =
+        apiInteractionMode === 'question' && !nextPlanLinked
+          ? enrichedMemory
+            ? {
+                ...enrichedMemory,
+                coachingPhase: undefined,
+                coachingStepLabel: undefined,
+                progressPoint: '',
+                lastAction: '',
+              }
+            : null
+          : enrichedMemory;
+
       const body =
         useProductMemory && businessId
           ? {
               message: userMessage.content,
               businessId,
               profile: activeProfile,
-              roadmapContext: roadmapPayload,
+              roadmapContext: nextPlanLinked ? roadmapPayload : undefined,
+              roadmapCompletedTasks,
               notepadSnippet,
+              coachPlanLinked: nextPlanLinked,
+              coachInteractionMode: apiInteractionMode,
             }
           : {
               messages: [
@@ -465,9 +607,12 @@ export default function Coach({
                 { role: 'user' as const, content: userMessage.content },
               ].map(({ role, content }) => ({ role, content })),
               profile: activeProfile,
-              memory: enrichedMemory,
-              roadmapContext: roadmapPayload,
+              memory: memoryPayload,
+              roadmapContext: nextPlanLinked ? roadmapPayload : undefined,
+              roadmapCompletedTasks,
               notepadSnippet,
+              coachPlanLinked: nextPlanLinked,
+              coachInteractionMode: apiInteractionMode,
             };
 
       const res = await fetch('/api/chat', {
@@ -501,7 +646,7 @@ export default function Coach({
         setMessages(
           withRoadmapWelcomeInDisplay(
             buildChatDisplay(welcome, data.memory.messages),
-            roadmapCtx,
+            nextPlanLinked ? roadmapCtx : null,
             businessName
           )
         );
@@ -520,7 +665,7 @@ export default function Coach({
         setMessages(
           withRoadmapWelcomeInDisplay(
             buildChatDisplay(welcome, updated.messages),
-            roadmapCtx,
+            nextPlanLinked ? roadmapCtx : null,
             businessName
           )
         );
@@ -540,6 +685,38 @@ export default function Coach({
       if (data.roadmapContext) {
         setActiveRoadmapContext(data.roadmapContext);
         persistActiveRoadmapCoachContext(data.roadmapContext);
+      }
+
+      const syncContext = (() => {
+        if (nextPlanLinked) {
+          return roadmapPayload ?? data.roadmapContext ?? activeRoadmapContext ?? null;
+        }
+        const ctx = activeRoadmapContext;
+        if (!ctx || !businessId) return null;
+        const done = getRoadmapCompletedIndicesForDay(
+          businessId,
+          ctx.day,
+          ctx.tasks.length
+        );
+        const detected = inferCompletedTaskIndices({
+          reply: assistantMessage.content,
+          tasks: ctx.tasks,
+          alreadyDone: done,
+          userMessage: userMessage.content,
+        });
+        return detected.length ? ctx : null;
+      })();
+      if (syncContext && businessId) {
+        const storedProgress = loadRoadmapProgress();
+        const syncResult = applyCoachRoadmapTaskSync(
+          businessId,
+          syncContext,
+          assistantMessage.content,
+          storedProgress?.businessId === businessId ? storedProgress : null,
+          userMessage.content
+        );
+        const notice = syncResult ? formatRoadmapTaskSyncNotice(syncResult) : null;
+        if (notice) setTaskSyncNotice(notice);
       }
 
       recordCoachMessage();
@@ -564,6 +741,59 @@ export default function Coach({
   const recommendedTool = activeProfile
     ? getSiteToolRecommendation(activeProfile.topBusinessId, activeProfile.techLevel)
     : null;
+  function handleQuickPrompt(prompt: { label: string; message: string }) {
+    const label = prompt.label.toLowerCase();
+    if (label.includes('question')) {
+      void sendMessage(prompt.message, { forceFree: true });
+      return;
+    }
+    if (
+      label.includes('continuer') ||
+      label.includes('reprendre') ||
+      label.includes('parcours') ||
+      label.includes('où j')
+    ) {
+      void sendMessage(prompt.message, { forcePlan: true });
+      return;
+    }
+    void sendMessage(prompt.message);
+  }
+
+  const canResumePlan = Boolean(
+    !planLinked &&
+      isSubscribed &&
+      activeProfile &&
+      (activeRoadmapContext ??
+        resolveCoachRoadmapContext(
+          selectedBusinessId ?? activeProfile.topBusinessId,
+          null,
+          activeProfile,
+          isSubscribed
+        ))
+  );
+  const roadmapTaskProgress =
+    activeRoadmapContext && activeProfile && activeRoadmapContext.tasks.length > 0
+      ? (() => {
+          void roadmapProgressTick;
+          return {
+            done: getRoadmapCompletedIndicesForDay(
+              activeProfile.topBusinessId,
+              activeRoadmapContext.day,
+              activeRoadmapContext.tasks.length
+            ).length,
+            total: activeRoadmapContext.tasks.length,
+          };
+        })()
+      : null;
+  const lastUserMessageIndex = messages.reduce(
+    (last, msg, index) => (msg.role === 'user' ? index : last),
+    -1
+  );
+  const showResumeOnReply =
+    canResumePlan &&
+    lastUserMessageIndex >= 0 &&
+    messages.length - 1 > lastUserMessageIndex &&
+    messages[messages.length - 1]?.role === 'assistant';
 
   if (!isSubscribed) {
     return <CoachPaywall loggedIn={loggedIn} />;
@@ -660,10 +890,15 @@ export default function Coach({
           </div>
 
           <div className="coach-panel-actions">
-            {activeRoadmapContext && (
+            {activeRoadmapContext && planLinked && (
               <span className="coach-roadmap-badge" title={activeRoadmapContext.title}>
                 {copy.coach.roadmapBadge}
                 {activeRoadmapContext.day}/{TOTAL_ROADMAP_DAYS}
+                {roadmapTaskProgress && (
+                  <span className="coach-roadmap-badge-tasks">
+                    · {roadmapTaskProgress.done}/{roadmapTaskProgress.total} actions
+                  </span>
+                )}
               </span>
             )}
             {activeProfile && (
@@ -706,14 +941,29 @@ export default function Coach({
                     BA
                   </div>
                 )}
-                <div
-                  className={`coach-bubble coach-bubble--${msg.role === 'user' ? 'user' : 'bot'}`}
-                >
-                  {msg.role === 'assistant' ? (
-                    <CoachMessageView content={msg.content} />
-                  ) : (
-                    <p className="coach-message-text">{msg.content}</p>
-                  )}
+                <div className="coach-msg-stack">
+                  <div
+                    className={`coach-bubble coach-bubble--${msg.role === 'user' ? 'user' : 'bot'}`}
+                  >
+                    {msg.role === 'assistant' ? (
+                      <CoachMessageView content={msg.content} />
+                    ) : (
+                      <p className="coach-message-text">{msg.content}</p>
+                    )}
+                  </div>
+                  {msg.role === 'assistant' &&
+                    i === messages.length - 1 &&
+                    !loading &&
+                    showResumeOnReply && (
+                      <button
+                        type="button"
+                        className="coach-resume-plan-btn"
+                        onClick={resumePlan}
+                        disabled={loading || initializing || coachLimitReached}
+                      >
+                        {copy.coach.resumePlanLabel}
+                      </button>
+                    )}
                 </div>
               </div>
             ))
@@ -740,12 +990,22 @@ export default function Coach({
 
         <footer className="coach-composer">
           <div className="coach-quick-prompts">
+            {canResumePlan && (
+              <button
+                type="button"
+                className="coach-prompt-chip coach-prompt-chip--plan"
+                onClick={resumePlan}
+                disabled={loading || initializing || coachLimitReached}
+              >
+                {copy.coach.resumePlanLabel}
+              </button>
+            )}
             {copy.coach.quickPrompts.map((prompt) => (
               <button
                 key={prompt.label}
                 type="button"
                 className="coach-prompt-chip"
-                onClick={() => sendMessage(prompt.message)}
+                onClick={() => handleQuickPrompt(prompt)}
                 disabled={loading || initializing || coachLimitReached}
               >
                 {prompt.label}
@@ -768,6 +1028,12 @@ export default function Coach({
               </>
             )}
           </div>
+
+          {taskSyncNotice && (
+            <p className="coach-task-sync-notice" role="status" aria-live="polite">
+              {taskSyncNotice}
+            </p>
+          )}
 
           <form className="coach-composer-form" onSubmit={handleSubmit}>
             <input

@@ -2,10 +2,13 @@
 
 import {
   getRoadmapCompletionPercent,
+  getRoadmapDayTasksDoneCount,
+  isRoadmapTaskDone,
   loadRoadmapProgress,
   ROADMAP_PROGRESS_EVENT,
   ROADMAP_PROGRESS_KEY,
   toggleRoadmapDay,
+  toggleRoadmapTask,
   type RoadmapProgress,
 } from '@/lib/account/roadmap-storage';
 import {
@@ -30,6 +33,20 @@ interface PremiumRoadmapProps {
   isSubscribed: boolean;
   variant?: 'full' | 'compact';
   onProgressChange?: (percent: number) => void;
+}
+
+function RoadmapCheckIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 12 10" fill="none" aria-hidden="true">
+      <path
+        d="M1.5 5.2 4.4 8.1 10.5 1.9"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
 
 export default function PremiumRoadmap({
@@ -92,7 +109,7 @@ export default function PremiumRoadmap({
     const next =
       stored?.businessId === activeId
         ? stored
-        : { businessId: activeId, completedDays: [], updatedAt: new Date().toISOString() };
+        : { businessId: activeId, completedDays: [], completedTasks: {}, updatedAt: new Date().toISOString() };
     setProgress(next);
     onProgressChange?.(
       getRoadmapCompletionPercent(next.completedDays, plan.totalUnlockedDays)
@@ -162,12 +179,30 @@ export default function PremiumRoadmap({
     router.push('/espace?section=coach&fromRoadmap=1');
   }
 
-  function handleToggle(day: number, checked: boolean, locked?: boolean) {
+  function handleToggle(day: number, checked: boolean, locked?: boolean, totalTasks = 0) {
     const activeId = resolvedBusinessId ?? resolveActiveBusinessId();
     if (!activeId || !isSubscribed || locked) return;
     const dayMeta = plan?.activeDays.find((d) => d.day === day);
     if (dayMeta?.locked) return;
-    const next = toggleRoadmapDay(activeId, day, checked);
+    const next = toggleRoadmapDay(activeId, day, checked, totalTasks);
+    setProgress(next);
+    onProgressChange?.(
+      getRoadmapCompletionPercent(next.completedDays, plan?.totalUnlockedDays ?? 30)
+    );
+  }
+
+  function handleToggleTask(
+    day: number,
+    taskIndex: number,
+    totalTasks: number,
+    checked: boolean,
+    locked?: boolean
+  ) {
+    const activeId = resolvedBusinessId ?? resolveActiveBusinessId();
+    if (!activeId || !isSubscribed || locked) return;
+    const dayMeta = plan?.activeDays.find((d) => d.day === day);
+    if (dayMeta?.locked) return;
+    const next = toggleRoadmapTask(activeId, day, taskIndex, totalTasks, checked);
     setProgress(next);
     onProgressChange?.(
       getRoadmapCompletionPercent(next.completedDays, plan?.totalUnlockedDays ?? 30)
@@ -498,25 +533,47 @@ export default function PremiumRoadmap({
                   <ol className="premium-roadmap-days">
                     {week.days.map((day, dayIndex) => {
                       const done = completed.has(day.day);
+                      const taskTotal = day.tasks.length;
+                      const tasksDone = getRoadmapDayTasksDoneCount(progress, day.day, taskTotal);
+                      const partialTasks = taskTotal > 0 && tasksDone > 0 && tasksDone < taskTotal;
                       const isLast = dayIndex === week.days.length - 1;
                       const isExpanded = expandedDay === day.day;
                       return (
                         <li
                           key={day.day}
-                          className={`premium-roadmap-day${done ? ' is-done' : ''}${isLast ? ' is-last' : ''}${isExpanded ? ' is-expanded' : ' is-collapsed'}`}
+                          className={[
+                            'premium-roadmap-day',
+                            done ? 'is-done' : '',
+                            partialTasks ? 'is-partial' : '',
+                            isLast ? 'is-last' : '',
+                            isExpanded ? 'is-expanded' : 'is-collapsed',
+                          ]
+                            .filter(Boolean)
+                            .join(' ')}
                         >
-                          <div className="premium-roadmap-day-rail" aria-hidden="true">
+                          <div className="premium-roadmap-day-rail">
                             <button
                               type="button"
-                              className={`premium-roadmap-day-dot${done ? ' is-done' : ''}`}
+                              className={[
+                                'premium-roadmap-check',
+                                'premium-roadmap-day-check',
+                                done ? 'is-checked' : '',
+                                partialTasks ? 'is-partial' : '',
+                              ]
+                                .filter(Boolean)
+                                .join(' ')}
                               aria-label={
                                 done
                                   ? `Marquer le jour ${day.dayInMonth} comme non terminé`
                                   : `Marquer le jour ${day.dayInMonth} comme terminé`
                               }
-                              onClick={() => handleToggle(day.day, !done, day.locked)}
-                            />
-                            {!isLast && <span className="premium-roadmap-day-line" />}
+                              onClick={() => handleToggle(day.day, !done, day.locked, taskTotal)}
+                            >
+                              <span className="premium-roadmap-check-box" aria-hidden="true">
+                                <RoadmapCheckIcon className="premium-roadmap-check-icon" />
+                              </span>
+                            </button>
+                            {!isLast && <span className="premium-roadmap-day-line" aria-hidden="true" />}
                           </div>
                           <div className="premium-roadmap-day-card">
                             <button
@@ -531,6 +588,11 @@ export default function PremiumRoadmap({
                                     Jour {day.dayInMonth}
                                   </span>
                                   {done && <span className="premium-roadmap-day-badge">Terminé</span>}
+                                  {!done && partialTasks && (
+                                    <span className="premium-roadmap-day-badge premium-roadmap-day-badge--progress">
+                                      {tasksDone}/{taskTotal} actions
+                                    </span>
+                                  )}
                                 </span>
                                 <strong>{day.title}</strong>
                               </span>
@@ -546,10 +608,78 @@ export default function PremiumRoadmap({
                                   </span>
                                 )}
                                 <p className="premium-roadmap-day-objective">{day.objective}</p>
+                                {taskTotal > 0 && (
+                                  <div className="premium-roadmap-day-tasks-head">
+                                    <div className="premium-roadmap-day-tasks-head-row">
+                                      <span className="premium-roadmap-day-tasks-label">
+                                        Actions du jour
+                                      </span>
+                                      <span className="premium-roadmap-day-tasks-count">
+                                        {tasksDone}/{taskTotal}
+                                      </span>
+                                    </div>
+                                    <div
+                                      className="premium-roadmap-day-tasks-bar"
+                                      role="progressbar"
+                                      aria-valuenow={tasksDone}
+                                      aria-valuemin={0}
+                                      aria-valuemax={taskTotal}
+                                      aria-label={`${tasksDone} action${tasksDone > 1 ? 's' : ''} sur ${taskTotal}`}
+                                    >
+                                      <span
+                                        className="premium-roadmap-day-tasks-bar-fill"
+                                        style={{
+                                          width: `${Math.round((tasksDone / taskTotal) * 100)}%`,
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                )}
                                 <ul className="premium-roadmap-day-tasks">
-                                  {day.tasks.map((task) => (
-                                    <li key={task}>{task}</li>
-                                  ))}
+                                  {day.tasks.map((task, taskIndex) => {
+                                    const taskDone = isRoadmapTaskDone(
+                                      progress,
+                                      day.day,
+                                      taskIndex,
+                                      taskTotal
+                                    );
+                                    return (
+                                      <li
+                                        key={`${day.day}-${taskIndex}`}
+                                        className={taskDone ? 'is-done' : ''}
+                                      >
+                                        <label
+                                          className={`premium-roadmap-day-task premium-roadmap-check${taskDone ? ' is-checked' : ''}`}
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            className="premium-roadmap-day-task-check"
+                                            checked={taskDone}
+                                            onChange={(event) =>
+                                              handleToggleTask(
+                                                day.day,
+                                                taskIndex,
+                                                taskTotal,
+                                                event.target.checked,
+                                                day.locked
+                                              )
+                                            }
+                                          />
+                                          <span className="premium-roadmap-check-box" aria-hidden="true">
+                                            <RoadmapCheckIcon className="premium-roadmap-check-icon" />
+                                          </span>
+                                          <span className="premium-roadmap-day-task-content">
+                                            <span className="premium-roadmap-day-task-step">
+                                              Action {taskIndex + 1}
+                                            </span>
+                                            <span className="premium-roadmap-day-task-text">
+                                              {task}
+                                            </span>
+                                          </span>
+                                        </label>
+                                      </li>
+                                    );
+                                  })}
                                 </ul>
                                 {day.tip && (
                                   <p className="premium-roadmap-day-tip">

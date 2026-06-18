@@ -8,7 +8,6 @@ import {
 } from '@/lib/quiz/roadmap-legal-exit';
 
 const TASK_BANK = [
-  'Bloque 45 min focus. Téléphone en silencieux.',
   'Note le résultat mesurable attendu avant de commencer.',
   'Documente ce qui a marché pour réutiliser demain.',
   'Partage un blocage au coach IA si tu es coincé.',

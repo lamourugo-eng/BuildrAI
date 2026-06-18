@@ -1,6 +1,8 @@
 import type { RoadmapProgress } from '@/lib/account/roadmap-storage';
 import {
   loadRoadmapProgress,
+  mergeRoadmapCompletedTasks,
+  normalizeRoadmapProgress,
   saveRoadmapProgress,
 } from '@/lib/account/roadmap-storage';
 import { isValidBusinessId } from '@/lib/quiz/business-choices';
@@ -17,25 +19,27 @@ function isValidRoadmapProgress(raw: unknown): raw is RoadmapProgress {
 
 function mergeRoadmapProgress(local: RoadmapProgress | null, remote: RoadmapProgress | null): RoadmapProgress | null {
   if (!local && !remote) return null;
-  if (!local) return remote;
-  if (!remote) return local;
+  if (!local) return remote ? normalizeRoadmapProgress(remote) : null;
+  if (!remote) return normalizeRoadmapProgress(local);
   if (local.businessId !== remote.businessId) {
     const localUpdated = local.updatedAt ? new Date(local.updatedAt).getTime() : 0;
     const remoteUpdated = remote.updatedAt ? new Date(remote.updatedAt).getTime() : 0;
-    return localUpdated >= remoteUpdated ? local : remote;
+    return normalizeRoadmapProgress(localUpdated >= remoteUpdated ? local : remote);
   }
 
+  const mergedTasks = mergeRoadmapCompletedTasks(local.completedTasks, remote.completedTasks);
   const mergedDays = [...new Set([...local.completedDays, ...remote.completedDays])].sort(
     (a, b) => a - b
   );
   const localUpdated = local.updatedAt ? new Date(local.updatedAt).getTime() : 0;
   const remoteUpdated = remote.updatedAt ? new Date(remote.updatedAt).getTime() : 0;
 
-  return {
+  return normalizeRoadmapProgress({
     businessId: local.businessId,
     completedDays: mergedDays,
+    completedTasks: mergedTasks,
     updatedAt: new Date(Math.max(localUpdated, remoteUpdated)).toISOString(),
-  };
+  });
 }
 
 export async function syncRoadmapProgressToServer(

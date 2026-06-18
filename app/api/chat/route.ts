@@ -12,6 +12,16 @@ import {
   recordCoachTokenUsage,
 } from '@/lib/coach/token-usage';
 import { enrichCoachReply } from '@/lib/coach/enrich-reply';
+import { resolveContextualTools } from '@/lib/coach/contextual-tools';
+import { parseCoachValidatedActionIndices, appendInferredCoachValidations } from '@/lib/coach/roadmap-task-sync';
+import {
+  buildCoachProgressionReminderConcise,
+  buildCoachQaReminderConcise,
+} from '@/lib/coach/concise-style';
+import type { CoachInteractionMode } from '@/lib/coach/interaction-mode';
+import {
+  detectCoachInteractionMode,
+} from '@/lib/coach/interaction-mode';
 import {
   appendProductExchange,
   isMissingTableError,
@@ -23,7 +33,7 @@ import {
   resolveCoachingPhase,
 } from '@/lib/coach/plan-builder';
 import { truncateNotepadForPrompt } from '@/lib/coach/prompt-memory';
-import { resolveRoadmapCoachContextForMessage } from '@/lib/coach/resolve-roadmap-day';
+import { detectRoadmapDayInMessage, getRoadmapDayForCoach } from '@/lib/coach/resolve-roadmap-day';
 import {
   buildRoadmapCoachReminder,
   parseRoadmapCoachContext,
@@ -65,21 +75,61 @@ function buildCoachReminder(
   phase: number,
   businessId: BusinessId | null,
   techLevel?: string,
-  roadmapContext?: ReturnType<typeof parseRoadmapCoachContext>
+  roadmapContext?: ReturnType<typeof parseRoadmapCoachContext>,
+  interactionMode: ReturnType<typeof detectCoachInteractionMode> = 'progression',
+  completedRoadmapTaskIndices: number[] = []
 ): string {
   if (roadmapContext) {
-    return buildRoadmapCoachReminder(roadmapContext);
+    return buildRoadmapCoachReminder(roadmapContext, completedRoadmapTaskIndices);
+  }
+  if (interactionMode === 'question') {
+    return buildCoachQaReminderConcise();
   }
   const toolHint =
     businessId && phase >= 4
-      ? ` Outil imposé pour ce client : ${getRecommendedToolSummary(businessId, techLevel).primary}.`
+      ? ` Outil : ${getRecommendedToolSummary(businessId, techLevel).primary}.`
       : '';
-  return `[Consigne interne] Structure : SITUATION / PARCOURS (Étape X/8 + sous-étape 5.1-5.8 si étape 5) / PLAN (liste numérotée. Ne pas être vague) / OUTIL & MÉTHODE (nom exact + URL + coût + 3 clics. OBLIGATOIRE étape 5) / LIVRABLE DÉTAILLÉ / PROCHAINE MICRO-ÉTAPE 15-30 min.${toolHint} INTERDIT : « choisis un outil », « mets en ligne » sans guide. Ne répète pas la dernière réponse mot pour mot.`;
+  return buildCoachProgressionReminderConcise(toolHint);
+}
+
+function resolveRoadmapContextForRequest(
+  userText: string,
+  businessId: BusinessId | null | undefined,
+  explicitContext: ReturnType<typeof parseRoadmapCoachContext>,
+  planLinked: boolean
+): ReturnType<typeof parseRoadmapCoachContext> {
+  if (!businessId) return planLinked ? (explicitContext ?? null) : null;
+
+  const detectedDay = detectRoadmapDayInMessage(userText);
+  if (detectedDay != null) {
+    const resolved = getRoadmapDayForCoach(businessId, detectedDay);
+    if (resolved) return resolved;
+  }
+
+  if (!planLinked) return null;
+  return explicitContext ?? null;
+}
+
+function resolveInteractionModeForRequest(
+  userText: string,
+  roadmapContext: ReturnType<typeof parseRoadmapCoachContext>,
+  clientMode: unknown
+): CoachInteractionMode {
+  if (roadmapContext) return 'question';
+  if (clientMode === 'question' || clientMode === 'progression') {
+    return clientMode;
+  }
+  return detectCoachInteractionMode(userText);
+}
+
+function parseCompletedRoadmapTaskIndices(raw: unknown): number[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.filter((index): index is number => Number.isFinite(index) && index >= 0);
 }
 
 /**
  * Coach IA BuildrAI.
- * Connecté : { message, businessId, profile, roadmapContext?, notepadSnippet? }
+ * Connecté : { message, businessId, profile, roadmapContext?, roadmapCompletedTasks?, notepadSnippet? }
  * Anonyme : { messages[], profile, memory, roadmapContext?, notepadSnippet? }
  */
 export async function POST(request: Request) {
@@ -88,6 +138,9 @@ export async function POST(request: Request) {
     const profile = body.profile as QuizProfileSnapshot | null | undefined;
     const clientMemory = body.memory as CoachMemoryContext | null | undefined;
     const parsedRoadmapContext = parseRoadmapCoachContext(body.roadmapContext);
+    const planLinked = body.coachPlanLinked === true;
+    const explicitRoadmapContext = planLinked ? parsedRoadmapContext : null;
+    const roadmapCompletedTasks = parseCompletedRoadmapTaskIndices(body.roadmapCompletedTasks);
     const notepadSnippet = truncateNotepadForPrompt(
       typeof body.notepadSnippet === 'string' ? body.notepadSnippet : ''
     );
@@ -167,10 +220,16 @@ export async function POST(request: Request) {
     }
 
     const userText = lastMessage.content.trim();
-    const roadmapContext = resolveRoadmapCoachContextForMessage(
+    const roadmapContext = resolveRoadmapContextForRequest(
       userText,
       validBusinessId ?? profile?.topBusinessId ?? null,
-      parsedRoadmapContext
+      explicitRoadmapContext,
+      planLinked
+    );
+    const interactionMode = resolveInteractionModeForRequest(
+      userText,
+      roadmapContext,
+      body.coachInteractionMode
     );
 
     const openai = getOpenAI();
@@ -194,7 +253,9 @@ export async function POST(request: Request) {
           profile,
           memoryContext ?? null,
           roadmapContext,
-          notepadSnippet || undefined
+          notepadSnippet || undefined,
+          interactionMode,
+          roadmapCompletedTasks
         ),
       },
       ...history,
@@ -204,7 +265,9 @@ export async function POST(request: Request) {
           reminderPhase,
           validBusinessId,
           profile?.techLevel,
-          roadmapContext
+          roadmapContext,
+          interactionMode,
+          roadmapCompletedTasks
         )}`,
       },
     ];
@@ -212,10 +275,11 @@ export async function POST(request: Request) {
     const completion = await openai.chat.completions.create({
       model: getCoachModel(),
       messages: completionMessages,
-      temperature: roadmapContext ? 0.45 : 0.35,
-      max_tokens: roadmapContext ? 1800 : 1400,
-      presence_penalty: 0.1,
-      frequency_penalty: 0.25,
+      temperature: roadmapContext || interactionMode === 'question' ? 0.45 : 0.35,
+      max_tokens:
+        roadmapContext || interactionMode === 'question' ? 1400 : 1100,
+      presence_penalty: 0.15,
+      frequency_penalty: 0.35,
     });
 
     const rawReply = completion.choices[0]?.message?.content?.trim();
@@ -240,14 +304,24 @@ export async function POST(request: Request) {
       }
     }
 
-    const reply = enrichCoachReply(rawReply, {
+    let reply = enrichCoachReply(rawReply, {
       businessId: validBusinessId ?? profile?.topBusinessId,
       techLevel: profile?.techLevel,
       coachingPhase: memoryContext?.coachingPhase,
       coachingStepLabel: memoryContext?.coachingStepLabel,
       userMessage: userText,
       roadmapContext,
+      interactionMode,
     });
+
+    if (roadmapContext && planLinked) {
+      reply = appendInferredCoachValidations(
+        reply,
+        userText,
+        roadmapContext.tasks,
+        roadmapCompletedTasks
+      );
+    }
 
     const coachingPhase = roadmapContext
       ? memoryContext?.coachingPhase ?? 1
@@ -259,6 +333,14 @@ export async function POST(request: Request) {
             profile?.techLevel
           )
         : null;
+
+    const contextualTools = resolveContextualTools({
+      userMessage: userText,
+      reply,
+      businessId: validBusinessId ?? profile?.topBusinessId ?? null,
+      techLevel: profile?.techLevel,
+      coachingPhase,
+    });
 
     let savedMemory = null;
 
@@ -299,6 +381,18 @@ export async function POST(request: Request) {
               name: recommendedTool.primary,
               url: recommendedTool.url,
               cost: recommendedTool.cost,
+            }
+          : null,
+        contextualTools: contextualTools.map((tool) => ({
+          name: tool.name,
+          url: tool.url,
+          cost: tool.cost,
+        })),
+        roadmapTaskSync: roadmapContext
+          ? {
+              day: roadmapContext.day,
+              validatedInReply: parseCoachValidatedActionIndices(reply),
+              totalTasks: roadmapContext.tasks.length,
             }
           : null,
       },

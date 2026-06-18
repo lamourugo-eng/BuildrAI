@@ -1,4 +1,10 @@
+import { COACH_CONCISENESS_PROMPT, COACH_LENGTH_QUESTION } from '@/lib/coach/concise-style';
+import { buildContextualToolsPromptReference } from '@/lib/coach/contextual-tools';
 import { buildBusinessCoachExpertBlock } from '@/lib/coach/business-coach-context';
+import {
+  buildRoadmapTasksProgressBlock,
+  formatCoachActionValidationLine,
+} from '@/lib/coach/roadmap-task-sync';
 import { buildRoadmapMemorySnippet, truncateNotepadForPrompt } from '@/lib/coach/prompt-memory';
 import type { CoachMemoryContext } from '@/lib/coach/memory-context';
 import { getCoachLanguageBlock, resolveCopyTier } from '@/lib/copy/entrepreneur-level';
@@ -26,7 +32,7 @@ export interface RoadmapCoachContext {
 export const ROADMAP_COACH_MODE_PROMPT = `Tu es BuildrAI Coach. Mode **Parcours premium (${TOTAL_ROADMAP_DAYS} jours)**.
 
 ## Mission
-L'utilisateur discute d'un **jour précis** du parcours. Tu réponds à **n'importe quelle question** en lien avec ce jour :
+L'utilisateur discute d'un **jour précis** du parcours, ou pose une **question business** (même hors sujet du jour). Tu réponds à **n'importe quelle question** orientée entrepreneuriat :
 - comment réaliser une action, clarification, exemple concret, texte prêt à copier-coller ;
 - Adaptation à son modèle business, budget et niveau tech ;
 - **OnlyFans Management (OFM)** : modèles OnlyFans, chatting, acquisition abonnés, commission sur revenus plateforme, charte éthique. Jamais de promesses de revenus garantis ;
@@ -39,8 +45,16 @@ L'utilisateur discute d'un **jour précis** du parcours. Tu réponds à **n'impo
 - Appuie-toi sur le titre, l'objectif, les actions et le conseil du jour. Enrichis avec ton expertise **spécifique au modèle business** du client (métriques, canaux, pricing typiques).
 - Structure libre (titres courts, listes, exemples). **Interdit** d'imposer le format rigide SITUATION / PARCOURS 8 étapes / PLAN numéroté coach sauf demande explicite du client.
 - Sois actionnable : checklists, scripts, décisions, outils nommés (avec URL si pertinent).
+- **Outils précis obligatoires** : Reddit (+ subreddit), Typeform, Cal.com, Stripe… Jamais « cherche sur des forums » sans nommer Reddit ou Indie Hackers.
+- **Synchronisation Mon plan (format unique)** : pour cocher une action dans Mon plan, termine par une ligne exacte :
+  « ✅ Action N validée : [résumé court] » (N = numéro).
+  **Si le client a déjà fourni le livrable dans son message** (ex. phrase « Mon client galère parce que… », choix B2B/B2C, liste de frustrations), **ne le fais pas recommencer** : reconnais ce qu'il a fait et valide chaque action concernée (jusqu'à 3 par message).
+  Sans cette ligne, Mon plan ne sera pas mis à jour.
+- **Interdit** : proposer un « Bloc Focus » ou « 45 minutes sans distractions ». Pas de conseils de gestion du temps génériques.
 - Une seule question de clarification si indispensable.
-- Longueur : 150–450 mots selon la complexité de la question.`;
+- ${COACH_LENGTH_QUESTION}
+
+${COACH_CONCISENESS_PROMPT}`;
 
 function formatRoadmapDayTasks(tasks: string[]): string {
   if (!tasks.length) return '';
@@ -108,33 +122,48 @@ Quelle que soit ta question sur cette étape. Comment faire, quoi prioriser, exe
 }
 
 /** Bloc injecté dans le prompt système quand l'utilisateur vient du parcours premium. */
-export function buildRoadmapCoachSystemBlock(ctx: RoadmapCoachContext): string {
+export function buildRoadmapCoachSystemBlock(
+  ctx: RoadmapCoachContext,
+  completedTaskIndices: number[] = []
+): string {
   const phaseLine = ctx.phaseName ? `\n- Phase coach liée : ${ctx.phaseName}` : '';
   const tasksLine = ctx.tasks.length
     ? `\n- Actions du jour (reproduire telles quelles si tu les cites) :\n${formatRoadmapDayTasks(ctx.tasks)}`
     : '';
   const tipLine = ctx.tip ? `\n- Conseil modèle : ${ctx.tip}` : '';
+  const progressLine = ctx.tasks.length
+    ? `\n\n${buildRoadmapTasksProgressBlock(ctx, completedTaskIndices)}`
+    : '';
 
   return `L'utilisateur pose une question sur le **jour ${ctx.dayInMonth}** du parcours premium (chapitre ${ctx.month}, **jour global ${ctx.day}/${TOTAL_ROADMAP_DAYS}**) :
 - Titre : ${ctx.title}
-- Objectif : ${ctx.objective}${phaseLine}${tasksLine}${tipLine}
+- Objectif : ${ctx.objective}${phaseLine}${tasksLine}${tipLine}${progressLine}
 
 Tu connais l'intégralité du parcours (${TOTAL_ROADMAP_DAYS} jours). Ici, concentre-toi sur **ce jour** et réponds à **toute** question du client (pratique, stratégique, rédaction, outil, priorisation, juridique, revente) sans renvoyer vers un plan coach générique ni répéter un message de session précédente.`;
 }
 
 /** Consigne interne ajoutée au message utilisateur côté API. */
-export function buildRoadmapCoachReminder(ctx: RoadmapCoachContext): string {
+export function buildRoadmapCoachReminder(
+  ctx: RoadmapCoachContext,
+  completedTaskIndices: number[] = []
+): string {
   const tasksHint = ctx.tasks.length
     ? ` Actions du jour : ${ctx.tasks.join('. ')}.`
     : '';
-  return `[Consigne interne. Parcours jour ${ctx.day}/${TOTAL_ROADMAP_DAYS}] Contexte : « ${ctx.title} ».${tasksHint} Réponds UNIQUEMENT à la question du client sur ce jour (ou sur une autre étape du parcours si le client la cite explicitement). Pas de format coach 8 étapes imposé. Pas de répétition de la dernière action mémorisée.`;
+  const nextIndex = ctx.tasks.findIndex((_, index) => !completedTaskIndices.includes(index));
+  const focusHint =
+    nextIndex >= 0
+      ? ` Priorise Action ${nextIndex + 1}. Si le client a DÉJÀ fourni un livrable dans son message (texte rédigé, B2B/B2C, liste…), valide-le sans refaire : « ${formatCoachActionValidationLine(nextIndex + 1, 'résumé court')} » pour chaque action concernée.`
+      : ' Toutes les actions du jour sont déjà cochées.';
+  return `[Consigne interne. Parcours jour ${ctx.day}/${TOTAL_ROADMAP_DAYS}] « ${ctx.title} ».${tasksHint}${focusHint} Réponse dense, 100–280 mots. Pas de format 8 étapes. Pas de remplissage.`;
 }
 
 export function buildRoadmapCoachFullSystemPrompt(
   profile: QuizProfileSnapshot | null | undefined,
   ctx: RoadmapCoachContext,
   memory?: CoachMemoryContext | null,
-  notepadSnippet?: string
+  notepadSnippet?: string,
+  completedTaskIndices: number[] = []
 ): string {
   const memoryBlock = buildRoadmapMemorySnippet(memory);
   const notepad = truncateNotepadForPrompt(notepadSnippet);
@@ -182,8 +211,10 @@ ${expertBlock}`;
 
   return `${ROADMAP_COACH_MODE_PROMPT}
 
+${buildContextualToolsPromptReference(ctx.businessId ?? profile?.topBusinessId)}
+
 ## Jour du parcours en discussion
-${buildRoadmapCoachSystemBlock(ctx)}${businessBlock}${memoryBlock}${notepadBlock}`;
+${buildRoadmapCoachSystemBlock(ctx, completedTaskIndices)}${businessBlock}${memoryBlock}${notepadBlock}`;
 }
 
 function parseRoadmapTasks(raw: unknown): string[] {

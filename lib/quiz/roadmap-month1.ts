@@ -259,7 +259,6 @@ export const MONTH1_DAY_BLUEPRINTS: Month1DayBlueprint[] = [
       'Résume les 3 insights les plus importants des échanges',
       'Relis problème, promesse et persona. Cohérence ?',
       'Fixe 1 objectif mesurable pour la semaine 2',
-      'Bloque 45 min/jour dans ton agenda pour la suite',
     ],
     businessFocus: {
       saas: 'Objectif S2 : offre + landing structure validées par 1 prospect.',

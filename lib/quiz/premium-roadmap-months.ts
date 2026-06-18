@@ -11,6 +11,7 @@ import {
   resolveBusinessWeekObjective,
 } from '@/lib/quiz/roadmap-business-overlays';
 import { buildSemesterDayTasks } from '@/lib/quiz/roadmap-semester-tasks';
+import { withoutFocusBlockTasks } from '@/lib/quiz/roadmap-task-filters';
 import { getSemesterChapterMeta } from '@/lib/quiz/roadmap-program';
 import type { RoadmapDay } from '@/lib/quiz/premium-roadmap';
 
@@ -277,7 +278,9 @@ export function buildMonthRoadmapDays(
       phaseName: phaseName(phaseId),
       title,
       objective,
-      tasks: buildTasksForDay(businessId, month, dayInMonth, title, objective, week),
+      tasks: withoutFocusBlockTasks(
+        buildTasksForDay(businessId, month, dayInMonth, title, objective, week)
+      ),
       tip: dayTip(businessId, month, week, title, phaseId),
     };
   });

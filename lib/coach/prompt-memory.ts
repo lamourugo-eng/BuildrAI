@@ -56,6 +56,38 @@ Utilise ces notes si elles éclairent la question. Ne les recopie pas intégrale
   return `\n\n${sections.join('\n\n')}`;
 }
 
+/** Mémoire allégée en mode question libre (sans rappel d'étape / phase). */
+export function buildQuestionMemoryPromptBlock(
+  memory?: CoachMemoryContext | null,
+  notepadSnippet?: string
+): string {
+  const notepad = truncateNotepadForPrompt(notepadSnippet);
+  if (!memory && !notepad) return '';
+
+  const sections: string[] = [];
+
+  if (memory?.sessionSummary?.trim()) {
+    sections.push(`## Contexte projet (interne)
+${memory.sessionSummary.trim()}
+Ne mentionne pas l'étape du parcours ni « où en est le client » sauf demande explicite.`);
+  }
+
+  const recent = memory ? formatRecentExchanges(memory) : '';
+  if (recent) {
+    sections.push(`## Derniers échanges
+${recent}`);
+  }
+
+  if (notepad) {
+    sections.push(`## Bloc-notes du client
+${notepad}
+
+Utilise si pertinent. Ne recopie pas intégralement.`);
+  }
+
+  return sections.length ? `\n\n${sections.join('\n\n')}` : '';
+}
+
 /** Contexte projet minimal en mode parcours (sans imposer le format 8 étapes). */
 export function buildRoadmapMemorySnippet(memory?: CoachMemoryContext | null): string {
   if (!memory) return '';

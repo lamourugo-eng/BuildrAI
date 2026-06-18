@@ -9,11 +9,22 @@ export function buildBusinessCoachExpertBlock(
     phaseId?: number;
     techLevel?: string;
     compact?: boolean;
+    questionMode?: boolean;
   }
 ): string {
   const profile = businessProfiles[businessId];
   const phaseId = options?.phaseId;
   const compact = options?.compact ?? false;
+  const questionMode = options?.questionMode ?? false;
+
+  if (questionMode) {
+    return `## Expertise ${profile.name}
+- **Marché type** : ${profile.examples}
+- **Forces** : ${profile.strengths.join('. ')}
+- **Défis** : ${profile.challenges.join('. ')}
+- **Métriques clés** : ${getBusinessMetricsHint(businessId)}
+- Ne mentionne pas l'étape du parcours ni la phase coach.`;
+  }
 
   const phaseHints = COACHING_PHASES.map((p) => {
     const hint = getBusinessPhaseHint(businessId, p.id);

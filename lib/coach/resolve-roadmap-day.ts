@@ -1,5 +1,6 @@
 import type { RoadmapCoachContext } from '@/lib/coach/roadmap-coach-context';
 import { buildPremiumRoadmap, type RoadmapDay } from '@/lib/quiz/premium-roadmap';
+import { withoutFocusBlockTasks } from '@/lib/quiz/roadmap-task-filters';
 import { MAX_ROADMAP_MONTHS, TOTAL_ROADMAP_DAYS } from '@/lib/quiz/roadmap-program';
 import type { BusinessId } from '@/lib/quiz/data';
 
@@ -14,7 +15,7 @@ export function roadmapDayToCoachContext(
     month: day.month,
     title: day.title,
     objective: day.objective,
-    tasks: day.tasks,
+    tasks: withoutFocusBlockTasks(day.tasks),
     tip: day.tip,
     businessId,
     businessName,

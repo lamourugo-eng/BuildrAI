@@ -5,6 +5,15 @@ import {
   resolvePresenceSubstep,
   shouldInjectToolSection,
 } from '@/lib/coach/plan-builder';
+import {
+  formatContextualToolsBlock,
+  resolveContextualTools,
+} from '@/lib/coach/contextual-tools';
+import {
+  isCoachFreeQuestionMode,
+  sanitizeCoachReplyForQuestionMode,
+} from '@/lib/coach/question-mode';
+import type { CoachInteractionMode } from '@/lib/coach/interaction-mode';
 import type { RoadmapCoachContext } from '@/lib/coach/roadmap-coach-context';
 import type { BusinessId } from '@/lib/quiz/data';
 
@@ -15,6 +24,7 @@ interface EnrichContext {
   coachingStepLabel?: string;
   userMessage?: string;
   roadmapContext?: RoadmapCoachContext | null;
+  interactionMode?: CoachInteractionMode;
 }
 
 function replaceOrInsertSection(
@@ -48,29 +58,50 @@ function replaceOrInsertSection(
 }
 
 /**
- * Garantit plan numéroté + recommandation outil concrète dans chaque réponse pertinente.
+ * Garantit plan numéroté + outils concrets adaptés au contenu de la réponse.
  */
 export function enrichCoachReply(rawReply: string, ctx: EnrichContext): string {
-  if (ctx.roadmapContext) {
-    return rawReply.trim();
-  }
-
-  const phase = resolveCoachingPhase(
-    rawReply,
-    ctx.coachingPhase,
-    ctx.userMessage
-  );
-  const substep = resolvePresenceSubstep(rawReply, ctx.coachingStepLabel);
-  const businessId = ctx.businessId ?? undefined;
-
   let reply = rawReply.trim();
 
-  const planBody = buildParcoursPlanBlock(phase, businessId, substep);
-  reply = replaceOrInsertSection(reply, '📋', 'PLAN (ce qui reste)', planBody);
+  const contextualTools = resolveContextualTools({
+    userMessage: ctx.userMessage,
+    reply: rawReply,
+    businessId: ctx.businessId,
+    techLevel: ctx.techLevel,
+    coachingPhase: ctx.coachingPhase,
+  });
 
-  if (businessId && shouldInjectToolSection(phase, ctx.userMessage)) {
-    const toolBody = buildToolMethodSection(businessId, ctx.techLevel);
-    reply = replaceOrInsertSection(reply, '🛠️', 'OUTIL & MÉTHODE', toolBody);
+  const isProgression = !ctx.roadmapContext && ctx.interactionMode !== 'question';
+
+  if (isProgression) {
+    const phase = resolveCoachingPhase(
+      rawReply,
+      ctx.coachingPhase,
+      ctx.userMessage
+    );
+    const substep = resolvePresenceSubstep(rawReply, ctx.coachingStepLabel);
+    const businessId = ctx.businessId ?? undefined;
+
+    const planBody = buildParcoursPlanBlock(phase, businessId, substep);
+    reply = replaceOrInsertSection(reply, '📋', 'PLAN (ce qui reste)', planBody);
+
+    if (
+      businessId &&
+      shouldInjectToolSection(phase, ctx.userMessage) &&
+      contextualTools.length === 0
+    ) {
+      const toolBody = buildToolMethodSection(businessId, ctx.techLevel);
+      reply = replaceOrInsertSection(reply, '🛠️', 'OUTIL & MÉTHODE', toolBody);
+    }
+  }
+
+  if (contextualTools.length > 0) {
+    const toolBody = formatContextualToolsBlock(contextualTools);
+    reply = replaceOrInsertSection(reply, '🛠️', 'OUTILS RECOMMANDÉS', toolBody);
+  }
+
+  if (isCoachFreeQuestionMode(ctx.interactionMode ?? 'progression', Boolean(ctx.roadmapContext))) {
+    reply = sanitizeCoachReplyForQuestionMode(reply);
   }
 
   return reply;

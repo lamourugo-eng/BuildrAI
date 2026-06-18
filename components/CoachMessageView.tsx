@@ -22,11 +22,31 @@ function TextBlock({ text }: { text: string }) {
   );
 }
 
+export function stripCoachToolSection(content: string): string {
+  return content
+    .replace(/\n\n🛠️?\s*OUTIL(?:S|\s*&\s*MÉTHODE|\s*RECOMMANDÉS)[\s\S]*$/i, '')
+    .trim();
+}
+
 export default function CoachMessageView({ content }: CoachMessageViewProps) {
   const parsed = parseCoachMessage(content);
 
   if (!parsed.structured) {
-    return <p className="coach-message-text">{stripMarkdownBold(content)}</p>;
+    const mainText = parsed.tool ? stripCoachToolSection(content) : content;
+
+    return (
+      <>
+        <p className="coach-message-text">{stripMarkdownBold(mainText)}</p>
+        {parsed.tool && (
+          <details className="coach-msg-details coach-msg-details--standalone" open>
+            <summary>
+              <span aria-hidden="true">🛠️</span> Outils recommandés
+            </summary>
+            <TextBlock text={parsed.tool} />
+          </details>
+        )}
+      </>
+    );
   }
 
   return (
@@ -70,7 +90,7 @@ export default function CoachMessageView({ content }: CoachMessageViewProps) {
       {parsed.tool && (
         <details className="coach-msg-details">
           <summary>
-            <span aria-hidden="true">🛠️</span> Outil recommandé
+            <span aria-hidden="true">🛠️</span> Outils recommandés
           </summary>
           <TextBlock text={parsed.tool} />
         </details>

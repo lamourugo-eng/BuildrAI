@@ -12,7 +12,7 @@ const SECTION_MARKERS = [
   { key: 'situation' as const, match: /🎯\s*SITUATION/i },
   { key: 'parcours' as const, match: /📍\s*PARCOURS/i },
   { key: 'plan' as const, match: /📋\s*PLAN/i },
-  { key: 'tool' as const, match: /🛠️?\s*OUTIL/i },
+  { key: 'tool' as const, match: /🛠️?\s*OUTIL(?:S|\s*&\s*MÉTHODE|\s*RECOMMANDÉS)?/i },
   { key: 'deliverable' as const, match: /✅\s*LIVRABLE/i },
   { key: 'nextStep' as const, match: /➡️\s*PROCHAINE/i },
 ];
