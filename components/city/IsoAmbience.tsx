@@ -29,6 +29,7 @@ function IsoLamp({ x, y, z, compact }: { x: number; y: number; z: number; compac
       style={{ left: x, top: y, zIndex: z }}
       aria-hidden="true"
     >
+      <span className="iso-lamp-glow" />
       <span className="iso-lamp-arm" />
       <span className="iso-lamp-head" />
       <span className="iso-lamp-pole" />

@@ -2,6 +2,7 @@
 
 import type { CitySnapshot } from '@/lib/city/engine';
 import CityHud from '@/components/city/CityHud';
+import CityWorldOverlay from '@/components/city/CityWorldOverlay';
 import FounderCharacter from '@/components/city/FounderCharacter';
 import IsoBuilding from '@/components/city/IsoBuilding';
 import IsoTile from '@/components/city/IsoTile';
@@ -78,13 +79,25 @@ export default function CityWorld({
     >
       <div className="city-world-sky" aria-hidden="true">
         <span className="city-world-glow" />
+        <span className="city-world-nebula" />
         <span className="city-iso-cloud city-iso-cloud--a" />
         <span className="city-iso-cloud city-iso-cloud--b" />
+        <span className="city-iso-cloud city-iso-cloud--c" />
         <span className="city-iso-horizon" />
-        {tier === 'advanced' && <span className="city-world-stars" />}
+        {tier !== 'beginner' && <span className="city-world-stars" />}
+      </div>
+
+      <div className="city-world-frame" aria-hidden="true">
+        <span className="city-world-frame-corner city-world-frame-corner--tl" />
+        <span className="city-world-frame-corner city-world-frame-corner--tr" />
+        <span className="city-world-frame-corner city-world-frame-corner--bl" />
+        <span className="city-world-frame-corner city-world-frame-corner--br" />
+        <span className="city-world-scanline" />
       </div>
 
       <CityHud snapshot={snapshot} compact={compact} />
+
+      {!compact && <CityWorldOverlay snapshot={snapshot} />}
 
       <div className="city-iso-viewport">
         <div className={`city-iso-scene${compact ? ' city-iso-scene--compact' : ''}`}>

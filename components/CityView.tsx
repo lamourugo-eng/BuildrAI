@@ -44,31 +44,60 @@ interface CityShellHeaderProps {
 }
 
 function CityShellHeader({ city, onCustomize, locked }: CityShellHeaderProps) {
+  const districtPct = Math.round(
+    (city.unlockedBuildingCount / Math.max(city.buildings.length, 1)) * 100
+  );
+
   return (
     <header
-      className="city-shell-hero city-shell-hero--simple"
+      className="city-shell-hero city-shell-hero--premium"
       style={{ '--city-shell-accent': city.level.accent } as CSSProperties}
     >
+      <span className="city-shell-hero-glow" aria-hidden="true" />
+      <span className="city-shell-hero-grid" aria-hidden="true" />
+
       <div className="city-shell-hero-main">
         <div className="city-shell-hero-copy">
-          <span className="city-shell-eyebrow">Ma ville</span>
+          <div className="city-shell-hero-title-row">
+            <span className="city-shell-eyebrow">Ma ville</span>
+            <span className="city-shell-level-pill">
+              Niv. {city.level.id}
+            </span>
+          </div>
           <h2>
-            {locked
-              ? 'Ton personnage est prêt'
-              : `${city.level.name} · Niv. ${city.level.id}`}
+            {locked ? 'Ton personnage est prêt' : city.level.name}
           </h2>
           <p>
             {locked
-              ? 'Passe Premium pour voir ta ville évoluer avec ton parcours.'
-              : 'Chaque action coach ou parcours fait grandir ton empire.'}
+              ? 'Passe Premium pour voir ta civilisation évoluer avec ton parcours.'
+              : city.accomplishmentSummary || city.level.tagline}
           </p>
         </div>
 
         <div className="city-shell-hero-actions">
-          <button type="button" className="city-shell-btn" onClick={onCustomize}>
+          <button type="button" className="city-btn city-btn--glass" onClick={onCustomize}>
             <CustomizeIcon />
             Personnaliser
           </button>
+        </div>
+      </div>
+
+      <div className="city-shell-stats city-shell-stats--premium">
+        <div className="city-shell-stat">
+          <strong>{city.unlockedBuildingCount}</strong>
+          <span>Districts</span>
+        </div>
+        <div className="city-shell-stat">
+          <strong>{districtPct}%</strong>
+          <span>Empire</span>
+        </div>
+        <div className="city-shell-stat">
+          <strong>{city.roadmapProgress}%</strong>
+          <span>Parcours</span>
+        </div>
+        <div className="city-shell-stat city-shell-stat--accent">
+          <strong>{city.streakDays}j</strong>
+          <span>Série</span>
         </div>
       </div>
     </header>
@@ -100,9 +129,12 @@ export default function CityView({ isSubscribed }: CityViewProps) {
     refresh();
   }
 
+  const shellStyle = { '--city-shell-accent': city.level.accent } as CSSProperties;
+
   if (!city.hasAvatar) {
     return (
-      <div className="account-panel city-view city-view--onboarding">
+      <div className="account-panel city-view city-view--premium city-view--onboarding">
+        <div className="city-ambient-bg" aria-hidden="true" />
         <FounderCustomizer
           key="onboarding"
           variant="onboarding"
@@ -129,20 +161,21 @@ export default function CityView({ isSubscribed }: CityViewProps) {
   if (!isSubscribed) {
     return (
       <div
-        className="account-panel city-view city-view--locked"
-        style={{ '--city-shell-accent': city.level.accent } as CSSProperties}
+        className="account-panel city-view city-view--premium city-view--locked"
+        style={shellStyle}
       >
+        <div className="city-ambient-bg" aria-hidden="true" />
         <CityShellHeader city={city} onCustomize={openCustomizer} locked />
 
         {editCustomizer}
 
-        <div className="city-shell-world">
+        <div className="city-shell-world city-shell-world--premium">
           <CityWorld snapshot={city} />
         </div>
 
-        <div className="city-locked-cta city-locked-cta--simple">
+        <div className="city-locked-cta city-locked-cta--premium">
           <p>Abonne-toi pour débloquer la progression de ta ville avec le coach et le parcours.</p>
-          <Link href="/subscribe?plan=starter&period=monthly" className="btn btn-primary">
+          <Link href="/subscribe?plan=starter&period=monthly" className="city-btn city-btn--primary">
             Voir les formules
           </Link>
         </div>
@@ -151,15 +184,14 @@ export default function CityView({ isSubscribed }: CityViewProps) {
   }
 
   return (
-    <div
-      className="account-panel city-view"
-      style={{ '--city-shell-accent': city.level.accent } as CSSProperties}
-    >
+    <div className="account-panel city-view city-view--premium" style={shellStyle}>
+      <div className="city-ambient-bg" aria-hidden="true" />
+
       <CityShellHeader city={city} onCustomize={openCustomizer} />
 
       {editCustomizer}
 
-      <div className="city-shell-world">
+      <div className="city-shell-world city-shell-world--premium">
         <CityWorld snapshot={city} newBuildingIds={newBuildingIds} />
       </div>
 
