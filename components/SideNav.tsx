@@ -352,10 +352,8 @@ export default function SideNav({
         {footerItems.length > 0 && (
           <div className="side-nav-footer">
             {primaryCta && showFreeCta && (
-              <div className="side-nav-cta">
+              <div className="side-nav-cta side-nav-cta--compact">
                 <div className="side-nav-cta-badge">Plan gratuit</div>
-                <h3>Ton coach IA t&apos;attend</h3>
-                <p>Plan d&apos;action personnalisé, suivi et outils premium.</p>
                 <NavItem item={primaryCta} onClose={onClose} index={itemIndex} />
               </div>
             )}
