@@ -15,7 +15,24 @@ const COACH_VALIDATION_PATTERNS = [
   /\baction\s*(\d+)\s*(?:du\s+jour\s*)?(?:validee|valid[eé]e)\b/gi,
 ];
 
-const MAX_INFERRED_PER_MESSAGE = 3;
+/** Messages de navigation — ne doivent jamais cocher Mon plan. */
+const COACH_NAV_MESSAGE_PATTERNS = [
+  /\bon\s+(re)?prend(re|ons)\s+(mon\s+)?plan\b/i,
+  /\bcontinu(e|ons)\b/i,
+  /\bo[uù]\s*j['']?en\s+suis\b/i,
+  /\bprochaine\s*(micro[- ]?)?[eé]tape\b/i,
+  /\bpriorit[eé]\s+du\s+jour\b/i,
+  /\breprend(s|re)?\s+le\s+fil\b/i,
+  /\bquelle\s+est\s+la\s+prochaine\b/i,
+  /\b[oé]tat\s+du\s+parcours\b/i,
+];
+
+export function isCoachNavigationMessage(userMessage: string | undefined): boolean {
+  const user = userMessage?.trim() ?? '';
+  if (!user) return true;
+  if (user.length > 160) return false;
+  return COACH_NAV_MESSAGE_PATTERNS.some((pattern) => pattern.test(user));
+}
 
 function normalizeText(text: string): string {
   return text
@@ -29,12 +46,6 @@ export function formatCoachActionValidationLine(actionNumber: number, summary: s
     '{summary}',
     summary.trim()
   );
-}
-
-function summarizeTaskForValidation(task: string): string {
-  const trimmed = task.trim();
-  if (trimmed.length <= 52) return trimmed;
-  return `${trimmed.slice(0, 49)}…`;
 }
 
 /** Extrait tous les numéros d'actions validées dans la réponse du coach (format unique). */
@@ -63,13 +74,17 @@ function countListItems(text: string): number {
 }
 
 /** Détecte si le message utilisateur contient le livrable d'une action du jour. */
-function userMessageMatchesTask(task: string, userMessage: string, reply: string): boolean {
+function userMessageMatchesTask(task: string, userMessage: string): boolean {
   const user = normalizeText(userMessage);
-  const coach = normalizeText(reply);
   const taskNorm = normalizeText(task);
-  const combined = `${user}\n${coach}`;
 
   if (!user.trim()) return false;
+
+  if (/^(comment|pourquoi|qu['']est|c['']est quoi|explique|aide[- ]moi)\b/i.test(userMessage.trim())) {
+    if (!/\bmon client galere|mon offre|b2b|b2c|\d+\s*€|persona|frustration/i.test(user)) {
+      return false;
+    }
+  }
 
   if (/mon client galere|redige.*mon client|redigez.*mon client/i.test(taskNorm)) {
     return /mon client galere|galere parce que|client galle|client galere parce/i.test(user);
@@ -91,7 +106,7 @@ function userMessageMatchesTask(task: string, userMessage: string, reply: string
 
   if (/frequent et payant|frequence.*payant|probleme est payant/i.test(taskNorm)) {
     return /payant|marche|budget|douleur forte|frequence|demande|pret a payer|clients paier|assez de gens/i.test(
-      combined
+      user
     );
   }
 
@@ -142,20 +157,12 @@ function userMessageMatchesTask(task: string, userMessage: string, reply: string
   return hits >= Math.max(2, Math.ceil(keywords.length * 0.45));
 }
 
-function inferFromUserDeliverables(input: RoadmapTaskSyncInput): number[] {
-  const { userMessage, reply, tasks, alreadyDone } = input;
-  if (!userMessage?.trim() || !tasks.length) return [];
-
-  const inferred: number[] = [];
-  for (let index = 0; index < tasks.length; index++) {
-    if (alreadyDone.includes(index)) continue;
-    if (userMessageMatchesTask(tasks[index], userMessage, reply)) {
-      inferred.push(index);
-      if (inferred.length >= MAX_INFERRED_PER_MESSAGE) break;
-    }
-  }
-  return inferred;
+/** Le client a fourni le livrable attendu pour cette action (pas seulement posé une question). */
+export function userMessageFulfillsTask(task: string, userMessage: string | undefined): boolean {
+  if (!userMessage?.trim() || isCoachNavigationMessage(userMessage)) return false;
+  return userMessageMatchesTask(task, userMessage);
 }
+
 
 export interface RoadmapTaskSyncInput {
   reply: string;
@@ -165,44 +172,34 @@ export interface RoadmapTaskSyncInput {
 }
 
 /**
- * Actions cochées si :
- * 1) le coach écrit « ✅ Action N validée : … », ou
- * 2) le client a déjà fourni le livrable dans son message (mode plan).
+ * Actions cochées uniquement si :
+ * 1) le coach écrit « ✅ Action N validée : … », ET
+ * 2) le message client contient le livrable de cette action (pas un simple « continuer »).
  */
 export function inferCompletedTaskIndices(input: RoadmapTaskSyncInput): number[] {
-  const { reply, tasks, alreadyDone } = input;
-  if (!tasks.length) return [];
+  const { reply, tasks, alreadyDone, userMessage } = input;
+  if (!tasks.length || !userMessage?.trim() || isCoachNavigationMessage(userMessage)) {
+    return [];
+  }
 
-  const explicit = parseCoachValidatedActionIndices(reply).filter(
-    (index) => index < tasks.length && !alreadyDone.includes(index)
-  );
-
-  const inferred = inferFromUserDeliverables(input).filter(
-    (index) => !explicit.includes(index) && !alreadyDone.includes(index)
-  );
-
-  return [...explicit, ...inferred].sort((a, b) => a - b);
+  return parseCoachValidatedActionIndices(reply)
+    .filter(
+      (index) =>
+        index < tasks.length &&
+        !alreadyDone.includes(index) &&
+        userMessageFulfillsTask(tasks[index], userMessage)
+    )
+    .sort((a, b) => a - b);
 }
 
-/** Ajoute les lignes de validation manquantes quand le livrable est détecté dans le message client. */
+/** Conservé pour compatibilité — n'ajoute plus de validations automatiques. */
 export function appendInferredCoachValidations(
   reply: string,
-  userMessage: string,
-  tasks: string[],
-  alreadyDone: number[]
+  _userMessage: string,
+  _tasks: string[],
+  _alreadyDone: number[]
 ): string {
-  const explicit = new Set(parseCoachValidatedActionIndices(reply));
-  const inferred = inferFromUserDeliverables({ reply, tasks, alreadyDone, userMessage }).filter(
-    (index) => !explicit.has(index)
-  );
-
-  if (!inferred.length) return reply;
-
-  const lines = inferred.map((index) =>
-    formatCoachActionValidationLine(index + 1, summarizeTaskForValidation(tasks[index]))
-  );
-
-  return `${reply.trim()}\n\n${lines.join('\n')}`;
+  return reply;
 }
 
 export function buildRoadmapTasksProgressBlock(
@@ -227,10 +224,11 @@ export function buildRoadmapTasksProgressBlock(
   const nextLine =
     nextIndex >= 0
       ? `\n**Validation Mon plan (format OBLIGATOIRE)** :
-- Si le client a DÉJÀ fourni un livrable dans son message (phrase, choix B2B/B2C, liste…), ne le fais pas recommencer : valide avec « ✅ Action N validée : … ».
-- Sinon, quand tu l'aides à terminer l'Action ${nextIndex + 1}, termine par exactement :
+- Ne valide **jamais** sur un simple « continuer », « reprendre mon plan » ou une question sans livrable.
+- Guide d'abord l'Action ${nextIndex + 1}, demande au client de **faire l'exercice et coller sa réponse**.
+- Quand (et seulement quand) le client a fourni son livrable dans son message, termine par exactement :
 « ${validationExample} »
-Sans cette ligne, Mon plan ne sera pas mis à jour. Jusqu'à 3 actions par message si le client les a déjà faites.`
+Sans cette ligne + livrable client, Mon plan ne sera pas mis à jour. Une action à la fois sauf si le client envoie plusieurs livrables distincts.`
       : '\n**Toutes les actions du jour sont cochées.** Félicite brièvement et propose le jour suivant.';
 
   return `## Progression actions du jour (synchronisée avec Mon plan)

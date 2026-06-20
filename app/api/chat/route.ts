@@ -13,7 +13,7 @@ import {
 } from '@/lib/coach/token-usage';
 import { enrichCoachReply } from '@/lib/coach/enrich-reply';
 import { resolveContextualTools } from '@/lib/coach/contextual-tools';
-import { parseCoachValidatedActionIndices, appendInferredCoachValidations } from '@/lib/coach/roadmap-task-sync';
+import { parseCoachValidatedActionIndices } from '@/lib/coach/roadmap-task-sync';
 import {
   buildCoachProgressionReminderConcise,
   buildCoachQaReminderConcise,
@@ -313,15 +313,6 @@ export async function POST(request: Request) {
       roadmapContext,
       interactionMode,
     });
-
-    if (roadmapContext && planLinked) {
-      reply = appendInferredCoachValidations(
-        reply,
-        userText,
-        roadmapContext.tasks,
-        roadmapCompletedTasks
-      );
-    }
 
     const coachingPhase = roadmapContext
       ? memoryContext?.coachingPhase ?? 1

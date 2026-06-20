@@ -3,7 +3,6 @@ import { buildContextualToolsPromptReference } from '@/lib/coach/contextual-tool
 import { buildBusinessCoachExpertBlock } from '@/lib/coach/business-coach-context';
 import {
   buildRoadmapTasksProgressBlock,
-  formatCoachActionValidationLine,
 } from '@/lib/coach/roadmap-task-sync';
 import { buildRoadmapMemorySnippet, truncateNotepadForPrompt } from '@/lib/coach/prompt-memory';
 import type { CoachMemoryContext } from '@/lib/coach/memory-context';
@@ -48,8 +47,10 @@ L'utilisateur discute d'un **jour précis** du parcours, ou pose une **question 
 - **Outils précis obligatoires** : Reddit (+ subreddit), Typeform, Cal.com, Stripe… Jamais « cherche sur des forums » sans nommer Reddit ou Indie Hackers.
 - **Synchronisation Mon plan (format unique)** : pour cocher une action dans Mon plan, termine par une ligne exacte :
   « ✅ Action N validée : [résumé court] » (N = numéro).
-  **Si le client a déjà fourni le livrable dans son message** (ex. phrase « Mon client galère parce que… », choix B2B/B2C, liste de frustrations), **ne le fais pas recommencer** : reconnais ce qu'il a fait et valide chaque action concernée (jusqu'à 3 par message).
-  Sans cette ligne, Mon plan ne sera pas mis à jour.
+  **Uniquement** si le client a **envoyé son livrable** dans ce message (texte rédigé, choix B2B/B2C, liste complétée…).
+  **Interdit** de valider sur « continuer », « reprendre mon plan », « où j'en suis » ou une simple question.
+  **Interdit** de faire l'exercice à sa place puis valider : guide-le, attends sa réponse, puis valide.
+  Sans livrable client + cette ligne, Mon plan ne sera pas mis à jour.
 - **Interdit** : proposer un « Bloc Focus » ou « 45 minutes sans distractions ». Pas de conseils de gestion du temps génériques.
 - Une seule question de clarification si indispensable.
 - ${COACH_LENGTH_QUESTION}
@@ -118,7 +119,7 @@ export function buildRoadmapCoachWelcome(
 **${ctx.title}**
 ${ctx.objective}${phaseLine}${tasksBlock}${tipBlock}
 
-Quelle que soit ta question sur cette étape. Comment faire, quoi prioriser, exemple concret, texte à rédiger. Décris-la et on avance ensemble, adapté à ${businessName}.`;
+Pour faire avancer Mon plan, **fais une action du jour puis envoie ta réponse ici** (texte rédigé, choix, liste…). Je t'aide à affiner — je ne coche le plan que quand tu m'as envoyé ton livrable.`;
 }
 
 /** Bloc injecté dans le prompt système quand l'utilisateur vient du parcours premium. */
@@ -153,7 +154,7 @@ export function buildRoadmapCoachReminder(
   const nextIndex = ctx.tasks.findIndex((_, index) => !completedTaskIndices.includes(index));
   const focusHint =
     nextIndex >= 0
-      ? ` Priorise Action ${nextIndex + 1}. Si le client a DÉJÀ fourni un livrable dans son message (texte rédigé, B2B/B2C, liste…), valide-le sans refaire : « ${formatCoachActionValidationLine(nextIndex + 1, 'résumé court')} » pour chaque action concernée.`
+      ? ` Priorise Action ${nextIndex + 1}. Ne valide que si le client a collé son livrable dans CE message (pas sur « continuer » / « reprendre »). Sinon : explique l'exercice et demande sa réponse — sans ligne « ✅ Action N validée ».`
       : ' Toutes les actions du jour sont déjà cochées.';
   return `[Consigne interne. Parcours jour ${ctx.day}/${TOTAL_ROADMAP_DAYS}] « ${ctx.title} ».${tasksHint}${focusHint} Réponse dense, 100–280 mots. Pas de format 8 étapes. Pas de remplissage.`;
 }
