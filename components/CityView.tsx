@@ -85,7 +85,7 @@ function CityShellHeader({ city, onCustomize, locked }: CityShellHeaderProps) {
       <div className="city-shell-stats city-shell-stats--premium">
         <div className="city-shell-stat">
           <strong>{city.unlockedBuildingCount}</strong>
-          <span>Districts</span>
+          <span>Zones</span>
         </div>
         <div className="city-shell-stat">
           <strong>{districtPct}%</strong>

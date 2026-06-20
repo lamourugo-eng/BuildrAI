@@ -235,7 +235,7 @@ export function getSiteCopy(tier: CopyTier): SiteCopy {
         },
         experienced: {
           label: 'Ma ville',
-          description: 'Districts, étapes business et streaks',
+          description: 'Zones, étapes business et streaks',
         },
       }),
       blocnotes: pickCopy(tier, {

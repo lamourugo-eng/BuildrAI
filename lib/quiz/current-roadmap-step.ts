@@ -22,8 +22,10 @@ export function resolveCurrentRoadmapStep(
   const unlockedMonths = isSubscribed
     ? getUnlockedRoadmapMonths(loadSubscriptionMeta())
     : 1;
-  const plan = buildPremiumRoadmap(businessId, unlockedMonths);
   const progress = loadRoadmapProgress();
+  const marketSegment =
+    progress?.businessId === businessId ? progress.marketSegment ?? null : null;
+  const plan = buildPremiumRoadmap(businessId, unlockedMonths, { marketSegment });
   const completed = new Set(
     progress?.businessId === businessId ? progress.completedDays : []
   );

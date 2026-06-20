@@ -1,6 +1,13 @@
 import { COACHING_PHASES, getBusinessPhaseHint } from '@/lib/coach/journey';
 import { getSiteToolRecommendation } from '@/lib/coach/tools';
 import { businessProfiles, type BusinessId } from '@/lib/quiz/data';
+import type { MarketSegment } from '@/lib/quiz/market-segment';
+import { businessUsesMarketSegment } from '@/lib/quiz/market-segment';
+import {
+  applyMarketSegmentToMonth1Focus,
+  applyMarketSegmentToObjective,
+  applyMarketSegmentToTasks,
+} from '@/lib/quiz/market-segment-tasks';
 import {
   buildDenseDailyTasks,
   formatExitGuideTip,
@@ -800,17 +807,42 @@ export const MONTH1_DAY_BLUEPRINTS: Month1DayBlueprint[] = [
   },
 ];
 
-export function buildMonth1DayTasks(businessId: BusinessId, blueprint: Month1DayBlueprint): string[] {
+export function buildMonth1DayTasks(
+  businessId: BusinessId,
+  blueprint: Month1DayBlueprint,
+  marketSegment?: MarketSegment | null
+): string[] {
   const custom = blueprint.businessTasks?.[businessId];
-  if (custom?.length) return custom;
+  if (custom?.length) {
+    return marketSegment && businessUsesMarketSegment(businessId)
+      ? applyMarketSegmentToTasks(custom, businessId, marketSegment, blueprint.title)
+      : custom;
+  }
 
-  const focus = blueprint.businessFocus[businessId];
+  let focus = blueprint.businessFocus[businessId];
+  if (focus && marketSegment && businessUsesMarketSegment(businessId)) {
+    focus = applyMarketSegmentToMonth1Focus(
+      businessId,
+      marketSegment,
+      blueprint.day,
+      focus
+    );
+  }
+
   if (!blueprint.baseTasks.length) return focus ? [focus] : [];
 
+  let tasks: string[];
   if (focus) {
-    return [blueprint.baseTasks[0], blueprint.baseTasks[1], focus, ...blueprint.baseTasks.slice(2)];
+    tasks = [blueprint.baseTasks[0], blueprint.baseTasks[1], focus, ...blueprint.baseTasks.slice(2)];
+  } else {
+    tasks = [...blueprint.baseTasks];
   }
-  return [...blueprint.baseTasks];
+
+  if (marketSegment && businessUsesMarketSegment(businessId)) {
+    tasks = applyMarketSegmentToTasks(tasks, businessId, marketSegment, blueprint.title);
+  }
+
+  return tasks;
 }
 
 export function buildMonth1DayTip(businessId: BusinessId, phaseId: number): string | undefined {
@@ -821,10 +853,14 @@ export function buildMonth1DayTip(businessId: BusinessId, phaseId: number): stri
   return undefined;
 }
 
-export function buildMonth1RoadmapDay(businessId: BusinessId, blueprint: Month1DayBlueprint) {
+export function buildMonth1RoadmapDay(
+  businessId: BusinessId,
+  blueprint: Month1DayBlueprint,
+  marketSegment?: MarketSegment | null
+) {
   const week = weekForDay(blueprint.day);
   const profile = businessProfiles[businessId];
-  const baseTasks = buildMonth1DayTasks(businessId, blueprint);
+  const baseTasks = buildMonth1DayTasks(businessId, blueprint, marketSegment);
   const tasks = buildDenseDailyTasks(
     businessId,
     1,
@@ -842,6 +878,16 @@ export function buildMonth1RoadmapDay(businessId: BusinessId, blueprint: Month1D
     tip = formatExitGuideTip(businessId) ?? tip;
   }
 
+  let objective = blueprint.objective.replace(/ton modèle/gi, profile.name);
+  if (marketSegment && businessUsesMarketSegment(businessId)) {
+    objective = applyMarketSegmentToObjective(
+      objective,
+      businessId,
+      marketSegment,
+      blueprint.title
+    );
+  }
+
   return {
     day: blueprint.day,
     month: 1,
@@ -851,7 +897,7 @@ export function buildMonth1RoadmapDay(businessId: BusinessId, blueprint: Month1D
     phaseId: blueprint.phaseId,
     phaseName: phaseName(blueprint.phaseId),
     title: blueprint.title,
-    objective: blueprint.objective.replace(/ton modèle/gi, profile.name),
+    objective,
     tasks,
     tip,
   };

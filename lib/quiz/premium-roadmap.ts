@@ -1,4 +1,5 @@
 import { businessProfiles, type BusinessId } from '@/lib/quiz/data';
+import type { MarketSegment } from '@/lib/quiz/market-segment';
 import { buildMonthRoadmapDays } from '@/lib/quiz/premium-roadmap-months';
 import {
   DISPLAY_MONTH_LABELS,
@@ -71,15 +72,25 @@ function groupDaysByWeeks(days: RoadmapDay[]): RoadmapMonthBlock['weeks'] {
     }));
 }
 
+export interface PremiumRoadmapOptions {
+  marketSegment?: MarketSegment | null;
+}
+
 /** Chapitre N = mois N du parcours semestriel (30 jours natifs). */
-function buildDisplayMonthDays(displayMonth: number, businessId: BusinessId): RoadmapDay[] {
+function buildDisplayMonthDays(
+  displayMonth: number,
+  businessId: BusinessId,
+  marketSegment?: MarketSegment | null
+): RoadmapDay[] {
   const daysInMonth = getRoadmapMonthDayCount(displayMonth);
   const globalOffset = getGlobalDayOffset(displayMonth);
 
   const sourceDays =
     displayMonth === 1
-      ? MONTH1_DAY_BLUEPRINTS.map((blueprint) => buildMonth1RoadmapDay(businessId, blueprint))
-      : buildMonthRoadmapDays(displayMonth, businessId);
+      ? MONTH1_DAY_BLUEPRINTS.map((blueprint) =>
+          buildMonth1RoadmapDay(businessId, blueprint, marketSegment)
+        )
+      : buildMonthRoadmapDays(displayMonth, businessId, marketSegment);
 
   return sourceDays.map((sourceDay, index) => {
     const dayInMonth = index + 1;
@@ -97,15 +108,17 @@ function buildDisplayMonthDays(displayMonth: number, businessId: BusinessId): Ro
 
 export function buildPremiumRoadmap(
   businessId: BusinessId,
-  unlockedMonths: number
+  unlockedMonths: number,
+  options?: PremiumRoadmapOptions
 ): PremiumRoadmapPlan {
   const profile = businessProfiles[businessId];
   const monthsToShow = Math.min(MAX_ROADMAP_MONTHS, Math.max(1, unlockedMonths));
   const months: RoadmapMonthBlock[] = [];
+  const marketSegment = options?.marketSegment ?? null;
 
   for (let month = 1; month <= MAX_ROADMAP_MONTHS; month++) {
     const unlocked = month <= monthsToShow;
-    const days = buildDisplayMonthDays(month, businessId).map((d) => ({
+    const days = buildDisplayMonthDays(month, businessId, marketSegment).map((d) => ({
       ...d,
       locked: !unlocked,
     }));

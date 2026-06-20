@@ -12,14 +12,39 @@ const PROGRESSION_PATTERNS = [
 
 const QUESTION_PATTERNS = [
   /\?/,
-  /^(comment|pourquoi|quelle|quel|quels|quelles|combien|est-ce que|peux-tu|peut-on|explique|aide-moi|aide moi|différence|c'est quoi|que faire|dois-je|faut-il|conseil|conseille|avis|exemple|qu'est-ce|help)/i,
+  /^(comment|pourquoi|quelle|quel|quels|quelles|combien|est-ce que|peux-tu|peut-on|explique|aide-moi|aide moi|différence|c'est quoi|c est quoi|quest ce que|qu est ce|qu'est-ce|que faire|dois-je|faut-il|conseil|conseille|avis|exemple|qu'est-ce|help)/i,
   /\b(comment|pourquoi|quelle|quel|combien|explique|conseille|recommande|compare|choisir entre|meilleur|optimiser|stratégie|pricing|prix|juridique|legal|marketing|vente|prospect|client|outil|plateforme)\b/i,
 ];
+
+/** Question de définition / clarification — ne doit jamais valider une action Mon plan. */
+export function isCoachFreeQuestionMessage(userMessage?: string): boolean {
+  return detectCoachInteractionMode(userMessage) === 'question';
+}
+
+function isDefinitionalQuestion(text: string): boolean {
+  if (
+    /^(quest\s*ce\s*que|qu['']?\s*est[- ]ce\s*qu|qu['']?\s*est\s*qu|c['']?\s*est\s*quoi|c est quoi|d[eé]finis|d[eé]finition\s*(de|d['']|du)?|explique[- ]moi|aide[- ]moi\s+[àa]\s+comprendre)/i.test(
+      text
+    )
+  ) {
+    return true;
+  }
+
+  if (/\?/.test(text) && !PROGRESSION_PATTERNS.some((pattern) => pattern.test(text))) {
+    return true;
+  }
+
+  return false;
+}
 
 /** Détecte si l'utilisateur pose une question libre ou veut avancer dans le parcours 8 étapes. */
 export function detectCoachInteractionMode(userMessage?: string): CoachInteractionMode {
   const text = userMessage?.trim() ?? '';
   if (!text) return 'progression';
+
+  if (isDefinitionalQuestion(text)) {
+    return 'question';
+  }
 
   const looksLikeQuestion = QUESTION_PATTERNS.some((pattern) => pattern.test(text));
   const looksLikeProgression = PROGRESSION_PATTERNS.some((pattern) => pattern.test(text));

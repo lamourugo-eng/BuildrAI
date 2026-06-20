@@ -16,6 +16,7 @@ import { buildMemoryPromptBlock, buildQuestionMemoryPromptBlock, truncateNotepad
 import type { CoachMemoryContext } from '@/lib/coach/memory-context';
 import {
   buildRoadmapCoachFullSystemPrompt,
+  buildRoadmapCoachQuestionSystemPrompt,
   type RoadmapCoachContext,
 } from '@/lib/coach/roadmap-coach-context';
 import type { QuizProfileSnapshot } from '@/lib/quiz/profile-storage';
@@ -149,6 +150,16 @@ export function buildCoachSystemPrompt(
   interactionMode: CoachInteractionMode = 'progression',
   completedRoadmapTaskIndices: number[] = []
 ): string {
+  if (roadmapContext && interactionMode === 'question') {
+    return buildRoadmapCoachQuestionSystemPrompt(
+      profile,
+      roadmapContext,
+      memory,
+      notepadSnippet,
+      completedRoadmapTaskIndices
+    );
+  }
+
   if (roadmapContext) {
     return buildRoadmapCoachFullSystemPrompt(
       profile,

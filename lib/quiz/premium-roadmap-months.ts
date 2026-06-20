@@ -11,6 +11,9 @@ import {
   resolveBusinessWeekObjective,
 } from '@/lib/quiz/roadmap-business-overlays';
 import { buildSemesterDayTasks } from '@/lib/quiz/roadmap-semester-tasks';
+import type { MarketSegment } from '@/lib/quiz/market-segment';
+import { businessUsesMarketSegment } from '@/lib/quiz/market-segment';
+import { applyMarketSegmentToObjective } from '@/lib/quiz/market-segment-tasks';
 import { withoutFocusBlockTasks } from '@/lib/quiz/roadmap-task-filters';
 import { getSemesterChapterMeta } from '@/lib/quiz/roadmap-program';
 import type { RoadmapDay } from '@/lib/quiz/premium-roadmap';
@@ -219,16 +222,34 @@ function businessMonthTip(
   return getBusinessSemesterTip(businessId, month, week, title, phaseId);
 }
 
+function buildDayObjective(baseTitle: string, weekObjective: string): string {
+  if (baseTitle.toLowerCase().startsWith('bilan')) {
+    return `${baseTitle} — fais le point avant d'avancer. Contexte semaine : ${weekObjective}`;
+  }
+  return `Aujourd'hui : ${baseTitle}. Objectif semaine : ${weekObjective}`;
+}
+
 function buildTasksForDay(
   businessId: BusinessId,
   month: number,
   dayInMonth: number,
-  title: string,
+  baseTitle: string,
+  displayTitle: string,
   objective: string,
-  week: number
+  week: number,
+  marketSegment?: MarketSegment | null
 ): string[] {
   const phaseId = phaseForWeek(month, week);
-  return buildSemesterDayTasks(businessId, month, dayInMonth, title, objective, phaseId);
+  return buildSemesterDayTasks(
+    businessId,
+    month,
+    dayInMonth,
+    baseTitle,
+    displayTitle,
+    objective,
+    phaseId,
+    marketSegment
+  );
 }
 
 function dayTip(
@@ -243,7 +264,8 @@ function dayTip(
 
 export function buildMonthRoadmapDays(
   month: number,
-  businessId: BusinessId
+  businessId: BusinessId,
+  marketSegment?: MarketSegment | null
 ): RoadmapDay[] {
   const theme = getMonthTheme(month);
 
@@ -257,16 +279,24 @@ export function buildMonthRoadmapDays(
     const dayInMonth = index + 1;
     const week = weekForDayInMonth(dayInMonth);
     const phaseId = phaseForWeek(month, week);
+    const baseTitle = theme.dayTitles[index] ?? `Jour ${dayInMonth}`;
     const title = resolveBusinessDayTitle(
       businessId,
-      theme.dayTitles[index] ?? `Jour ${dayInMonth}`
+      baseTitle
     );
-    const objective = resolveBusinessWeekObjective(
-      businessId,
-      month,
-      week,
-      weekObjective(theme, week)
+    const weekObjectiveText = weekObjective(theme, week);
+    let objective = buildDayObjective(
+      baseTitle,
+      resolveBusinessWeekObjective(businessId, month, week, weekObjectiveText)
     );
+    if (marketSegment && businessUsesMarketSegment(businessId)) {
+      objective = applyMarketSegmentToObjective(
+        objective,
+        businessId,
+        marketSegment,
+        baseTitle
+      );
+    }
 
     return {
       day: dayInMonth,
@@ -279,9 +309,18 @@ export function buildMonthRoadmapDays(
       title,
       objective,
       tasks: withoutFocusBlockTasks(
-        buildTasksForDay(businessId, month, dayInMonth, title, objective, week)
+        buildTasksForDay(
+          businessId,
+          month,
+          dayInMonth,
+          baseTitle,
+          title,
+          objective,
+          week,
+          marketSegment
+        )
       ),
-      tip: dayTip(businessId, month, week, title, phaseId),
+      tip: dayTip(businessId, month, week, baseTitle, phaseId),
     };
   });
 }

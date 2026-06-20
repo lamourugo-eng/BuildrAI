@@ -87,7 +87,7 @@ export default function CityHud({ snapshot, compact }: CityHudProps) {
           <strong>
             {snapshot.unlockedBuildingCount}/{totalDistricts}
           </strong>
-          <span>Districts</span>
+          <span>Zones</span>
         </span>
       </div>
 

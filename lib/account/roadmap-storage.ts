@@ -1,4 +1,5 @@
 import type { BusinessId } from '@/lib/quiz/data';
+import type { MarketSegment } from '@/lib/quiz/market-segment';
 
 export const ROADMAP_PROGRESS_KEY = 'buildrai_roadmap_progress';
 export const ROADMAP_PROGRESS_EVENT = 'buildrai:roadmap-progress';
@@ -10,6 +11,8 @@ export interface RoadmapProgress {
   businessId: BusinessId;
   completedDays: number[];
   completedTasks?: RoadmapCompletedTasks;
+  /** B2B ou B2C — SaaS, marketplace, e-commerce */
+  marketSegment?: MarketSegment;
   updatedAt: string;
 }
 

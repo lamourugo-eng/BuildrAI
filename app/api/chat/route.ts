@@ -21,6 +21,7 @@ import {
 import type { CoachInteractionMode } from '@/lib/coach/interaction-mode';
 import {
   detectCoachInteractionMode,
+  isCoachFreeQuestionMessage,
 } from '@/lib/coach/interaction-mode';
 import {
   appendProductExchange,
@@ -35,6 +36,7 @@ import {
 import { truncateNotepadForPrompt } from '@/lib/coach/prompt-memory';
 import { detectRoadmapDayInMessage, getRoadmapDayForCoach } from '@/lib/coach/resolve-roadmap-day';
 import {
+  buildRoadmapCoachQuestionReminder,
   buildRoadmapCoachReminder,
   parseRoadmapCoachContext,
 } from '@/lib/coach/roadmap-coach-context';
@@ -71,6 +73,36 @@ const VALID_BUSINESS_IDS = new Set([
   'ofm',
 ]);
 
+function stripMemoryForQuestionMode(
+  memory: CoachMemoryContext | null | undefined
+): CoachMemoryContext | null {
+  if (!memory) return null;
+  return {
+    ...memory,
+    coachingPhase: undefined,
+    coachingStepLabel: undefined,
+    progressPoint: '',
+    lastAction: '',
+    recentExchanges: [],
+  };
+}
+
+function buildUserTurnForCompletion(
+  userText: string,
+  interactionMode: CoachInteractionMode,
+  reminder: string
+): string {
+  if (interactionMode === 'question') {
+    return `=== QUESTION LIBRE ===
+Réponds UNIQUEMENT à la question ci-dessous. N'analyse ni ne commente un livrable précédent (phrase transformation, offre, persona rédigée…) sauf si la question le demande explicitement.
+
+Question : ${userText}
+
+${reminder}`;
+  }
+  return `${userText}\n\n${reminder}`;
+}
+
 function buildCoachReminder(
   phase: number,
   businessId: BusinessId | null,
@@ -79,6 +111,9 @@ function buildCoachReminder(
   interactionMode: ReturnType<typeof detectCoachInteractionMode> = 'progression',
   completedRoadmapTaskIndices: number[] = []
 ): string {
+  if (roadmapContext && interactionMode === 'question') {
+    return buildRoadmapCoachQuestionReminder(roadmapContext, completedRoadmapTaskIndices);
+  }
   if (roadmapContext) {
     return buildRoadmapCoachReminder(roadmapContext, completedRoadmapTaskIndices);
   }
@@ -116,12 +151,18 @@ function resolveInteractionModeForRequest(
   clientMode: unknown,
   planLinked: boolean
 ): CoachInteractionMode {
-  if (roadmapContext && planLinked) return 'progression';
-  if (roadmapContext && !planLinked) return 'question';
-  if (clientMode === 'question' || clientMode === 'progression') {
-    return clientMode;
+  if (isCoachFreeQuestionMessage(userText)) return 'question';
+
+  const resolved =
+    clientMode === 'question' || clientMode === 'progression'
+      ? clientMode
+      : detectCoachInteractionMode(userText);
+
+  if (roadmapContext && planLinked) {
+    return resolved === 'question' ? 'question' : 'progression';
   }
-  return detectCoachInteractionMode(userText);
+  if (roadmapContext && !planLinked) return 'question';
+  return resolved;
 }
 
 function parseCompletedRoadmapTaskIndices(raw: unknown): number[] {
@@ -235,9 +276,19 @@ export async function POST(request: Request) {
       planLinked
     );
 
+    if (interactionMode === 'question') {
+      memoryContext = stripMemoryForQuestionMode(memoryContext);
+    }
+
     const openai = getOpenAI();
 
-    const trimmedHistory = trimChatHistoryForModel(messages.slice(0, -1));
+    const priorMessages = messages.slice(0, -1);
+    const trimmedHistory = trimChatHistoryForModel(
+      interactionMode === 'question' ? [] : priorMessages,
+      interactionMode === 'question'
+        ? { maxMessages: 0, maxCharsPerMessage: 800 }
+        : undefined
+    );
     const history: ChatCompletionMessageParam[] = trimmedHistory.map((m) => ({
       role: m.role,
       content: m.content.trim(),
@@ -264,14 +315,18 @@ export async function POST(request: Request) {
       ...history,
       {
         role: 'user',
-        content: `${userText}\n\n${buildCoachReminder(
-          reminderPhase,
-          validBusinessId,
-          profile?.techLevel,
-          roadmapContext,
+        content: buildUserTurnForCompletion(
+          userText,
           interactionMode,
-          roadmapCompletedTasks
-        )}`,
+          buildCoachReminder(
+            reminderPhase,
+            validBusinessId,
+            profile?.techLevel,
+            roadmapContext,
+            interactionMode,
+            roadmapCompletedTasks
+          )
+        ),
       },
     ];
 
@@ -317,7 +372,7 @@ export async function POST(request: Request) {
       interactionMode,
     });
 
-    if (roadmapContext && planLinked) {
+    if (roadmapContext && planLinked && interactionMode !== 'question') {
       reply = processRoadmapCoachReply(
         reply,
         roadmapContext,

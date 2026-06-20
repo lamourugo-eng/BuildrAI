@@ -207,6 +207,6 @@ export const CITY_XP = {
 export const COACH_CITY_HINTS = [
   'Chaque action concrète fait grandir ton quartier : marché, offre, landing, prospection.',
   'Ton empire visuel reflète tes étapes business, pas des points abstraits.',
-  'Un district de plus = une compétence ou un livrable de plus dans ton projet.',
+  'Une zone de plus = une compétence ou un livrable de plus dans ton projet.',
   'La régularité se voit ici comme en business : petits pas, gros résultats.',
 ] as const;

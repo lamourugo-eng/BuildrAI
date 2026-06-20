@@ -96,7 +96,7 @@ export default function CityJourneyPanel({ snapshot }: CityJourneyPanelProps) {
 
         <div className="city-journey-metric">
           <div className="city-journey-metric-head">
-            <span>Districts</span>
+            <span>Zones</span>
             <strong>
               {districtPct}
               <span>%</span>
@@ -127,7 +127,7 @@ export default function CityJourneyPanel({ snapshot }: CityJourneyPanelProps) {
           </div>
         </div>
       ) : (
-        <p className="city-journey-done">Empire à jour. Poursuis ton parcours pour de nouveaux districts.</p>
+        <p className="city-journey-done">Empire à jour. Poursuis ton parcours pour de nouvelles zones.</p>
       )}
 
       <div className="city-journey-links city-journey-links--premium">

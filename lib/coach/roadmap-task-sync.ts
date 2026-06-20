@@ -1,9 +1,15 @@
 import {
   getRoadmapDayTaskIndices,
   toggleRoadmapTask,
+  saveRoadmapProgress,
   type RoadmapProgress,
 } from '@/lib/account/roadmap-storage';
 import type { RoadmapCoachContext } from '@/lib/coach/roadmap-coach-context';
+import { isCoachFreeQuestionMessage } from '@/lib/coach/interaction-mode';
+import {
+  businessUsesMarketSegment,
+  detectMarketSegmentFromText,
+} from '@/lib/quiz/market-segment';
 import type { BusinessId } from '@/lib/quiz/data';
 
 /** Format unique affiché par le coach et lu par Mon plan. */
@@ -46,21 +52,108 @@ export function getNextPendingTaskIndex(tasks: string[], completedIndices: numbe
   return tasks.findIndex((_, index) => !completedIndices.includes(index));
 }
 
+export type CoachActionPresentationVariant = 'intro' | 'resume' | 'next';
+
+export interface CoachActionPresentationOptions {
+  variant?: CoachActionPresentationVariant;
+}
+
+function truncateTaskLabel(task: string, max = 48): string {
+  const trimmed = task.trim();
+  if (trimmed.length <= max) return trimmed;
+  return `${trimmed.slice(0, max - 1)}…`;
+}
+
+/** Ligne compacte : jour + titre + progression Mon plan. */
+export function buildRoadmapProgressHeader(
+  ctx: RoadmapCoachContext,
+  completedIndices: number[]
+): string {
+  const total = ctx.tasks.length;
+  const done = completedIndices.length;
+  const phaseLine = ctx.phaseName ? ` · _${ctx.phaseName}_` : '';
+  return `**Jour ${ctx.dayInMonth}** — ${ctx.title}${phaseLine} · **${done}/${total}** validée${done > 1 ? 's' : ''}`;
+}
+
+/** Récap des actions déjà cochées dans Mon plan (évite l'effet « retour à zéro »). */
+export function buildRoadmapCompletedRecap(
+  ctx: RoadmapCoachContext,
+  completedIndices: number[]
+): string {
+  if (!completedIndices.length) return '';
+
+  return [...completedIndices]
+    .sort((a, b) => a - b)
+    .map((index) => `✅ Action ${index + 1} — ${truncateTaskLabel(ctx.tasks[index])}`)
+    .join('\n');
+}
+
+function resolveActionPresentationVariant(
+  taskIndex: number,
+  completedCount: number,
+  explicit?: CoachActionPresentationVariant
+): CoachActionPresentationVariant {
+  if (explicit) return explicit;
+  if (completedCount > 0) return 'resume';
+  if (taskIndex === 0) return 'intro';
+  return 'next';
+}
+
+function buildActionPresentationFooter(variant: CoachActionPresentationVariant): string {
+  switch (variant) {
+    case 'intro':
+      return 'Fais l\'exercice puis **envoie ta réponse ici**. Dès que c\'est bon, je valide dans Mon plan et on passe à la suite.';
+    case 'resume':
+      return '**Envoie ta réponse** pour l\'action en cours — je valide dans Mon plan et on enchaîne.';
+    case 'next':
+      return 'À toi — **envoie ton livrable** quand c\'est prêt.';
+  }
+}
+
 /** Message coach pour présenter une action (une à la fois). */
 export function buildCoachNextActionPresentation(
   ctx: RoadmapCoachContext,
   taskIndex: number,
-  completedCount = 0
+  completedCount = 0,
+  options?: CoachActionPresentationOptions
 ): string {
   const task = ctx.tasks[taskIndex];
   const total = ctx.tasks.length;
-  const tipLine = ctx.tip && taskIndex === 0 ? `\n\n💡 ${ctx.tip}` : '';
+  const variant = resolveActionPresentationVariant(taskIndex, completedCount, options?.variant);
+  const tipLine = ctx.tip && taskIndex === 0 && variant === 'intro' ? `\n\n💡 ${ctx.tip}` : '';
+  const footer = buildActionPresentationFooter(variant);
 
   return `### Action ${taskIndex + 1}/${total}
 
 ${task}${tipLine}
 
-Fais l'exercice puis **envoie ta réponse ici**. Dès que c'est bon, je valide dans Mon plan et on passe à la suite.`;
+${footer}`;
+}
+
+/** Accueil reprise quand le client revient sur un jour déjà entamé. */
+export function buildRoadmapCoachResumeWelcome(
+  ctx: RoadmapCoachContext,
+  completedIndices: number[]
+): string {
+  const nextIndex = getNextPendingTaskIndex(ctx.tasks, completedIndices);
+
+  if (nextIndex < 0) {
+    return `Content de te revoir !
+
+${buildCoachDayCompletedMessage(ctx)}`;
+  }
+
+  const header = buildRoadmapProgressHeader(ctx, completedIndices);
+  const recap = buildRoadmapCompletedRecap(ctx, completedIndices);
+  const nextPreview = truncateTaskLabel(ctx.tasks[nextIndex], 72);
+
+  return `Content de te revoir ! On reprend **là où tu t'étais arrêté**.
+
+${header}${recap ? `\n\n${recap}` : ''}
+
+➡️ **Prochaine action** : ${nextPreview}
+
+Clique « Reprendre mon plan » ou envoie directement ton livrable.`;
 }
 
 /** Message quand toutes les actions du jour sont validées. */
@@ -163,16 +256,12 @@ function countListItems(text: string): number {
 
 /** Détecte si le message utilisateur contient le livrable d'une action du jour. */
 function userMessageMatchesTask(task: string, userMessage: string): boolean {
+  if (isCoachFreeQuestionMessage(userMessage)) return false;
+
   const user = normalizeText(userMessage);
   const taskNorm = normalizeText(task);
 
   if (!user.trim()) return false;
-
-  if (/^(comment|pourquoi|qu['']est|c['']est quoi|explique|aide[- ]moi)\b/i.test(userMessage.trim())) {
-    if (!/\bmon client galere|mon offre|b2b|b2c|\d+\s*€|persona|frustration/i.test(user)) {
-      return false;
-    }
-  }
 
   if (/mon client galere|redige.*mon client|redigez.*mon client/i.test(taskNorm)) {
     return /mon client galere|galere parce que|client galle|client galere parce/i.test(user);
@@ -317,7 +406,9 @@ export function appendNextActionIfValidated(
   const nextTaskSnippet = ctx.tasks[nextIndex].slice(0, 40);
   if (withValidation.includes(nextTaskSnippet)) return withValidation;
 
-  return `${withValidation.trim()}\n\n${buildCoachNextActionPresentation(ctx, nextIndex, updatedDone.length)}`;
+  return `${withValidation.trim()}\n\n${buildCoachNextActionPresentation(ctx, nextIndex, updatedDone.length, {
+    variant: 'next',
+  })}`;
 }
 
 /** @deprecated Utiliser processRoadmapCoachReply */
@@ -354,14 +445,19 @@ ${doneCount}/${total} actions validées — **jour terminé**. Félicite briève
   const nextActionHint = hasNext
     ? `\n- Juste après cette ligne, enchaîne dans le **MÊME** message avec le bloc Action ${nextIndex + 2} (titre ###, texte exact, guide court).`
     : '\n- C\'était la dernière action : félicite sans enchaîner.';
+  const doneRecap =
+    doneCount > 0
+      ? `\n\n**Déjà validées (${doneCount}/${total}) — ne les redemande pas :**\n${buildRoadmapCompletedRecap(ctx, completedIndices)}`
+      : '';
 
-  return `## Progression Mon plan (${doneCount}/${total} validées)
+  return `## Progression Mon plan (${doneCount}/${total} validées)${doneRecap}
+
 **Action EN COURS (une seule visible pour le client) :**
 Action ${nextIndex + 1} : ${ctx.tasks[nextIndex]}
 
 **Mode séquentiel strict :**
-- Ne répète **jamais** le titre du jour, l'objectif ou la phase coach (déjà affichés une fois).
-- Ne liste **jamais** les autres actions du jour.
+- Ne répète **jamais** le titre du jour, l'objectif ou la phase coach (sauf reprise explicite « où j'en suis »).
+- Ne liste **jamais** les autres actions du jour ni ne redemande une action déjà validée.
 - Ne traite qu'**une** action à la fois.
 - Quand le client envoie son livrable pour l'Action ${nextIndex + 1}, termine par exactement :
 « ${validationExample} »${nextActionHint}
@@ -403,6 +499,16 @@ export function applyCoachRoadmapTaskSync(
   }
 
   if (!currentProgress) return null;
+
+  const segment = detectMarketSegmentFromText(userMessage);
+  if (segment && businessUsesMarketSegment(businessId)) {
+    currentProgress = {
+      ...currentProgress,
+      marketSegment: segment,
+      updatedAt: new Date().toISOString(),
+    };
+    saveRoadmapProgress(currentProgress);
+  }
 
   const tasksDone = getRoadmapDayTaskIndices(currentProgress, ctx.day, totalTasks).length;
 
@@ -494,13 +600,12 @@ export function trySyncPendingActionFromHistory(
     ctx.tasks,
     getRoadmapDayTaskIndices(sync.progress, ctx.day, totalTasks)
   );
+  const syncedDone = getRoadmapDayTaskIndices(sync.progress, ctx.day, totalTasks).length;
   const followUp =
     nextIndex >= 0
-      ? buildCoachNextActionPresentation(
-          ctx,
-          nextIndex,
-          getRoadmapDayTaskIndices(sync.progress, ctx.day, totalTasks).length
-        )
+      ? buildCoachNextActionPresentation(ctx, nextIndex, syncedDone, {
+          variant: syncedDone > 0 ? 'resume' : 'intro',
+        })
       : buildCoachDayCompletedMessage(ctx);
 
   return { sync, followUp };

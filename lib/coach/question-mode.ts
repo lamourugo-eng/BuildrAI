@@ -27,7 +27,7 @@ export function sanitizeCoachReplyForQuestionMode(reply: string): string {
 
 export function isCoachFreeQuestionMode(
   interactionMode: CoachInteractionMode,
-  hasRoadmapContext: boolean
+  _hasRoadmapContext: boolean
 ): boolean {
-  return interactionMode === 'question' && !hasRoadmapContext;
+  return interactionMode === 'question';
 }

@@ -17,7 +17,7 @@ export default function CityWorldOverlay({ snapshot }: CityWorldOverlayProps) {
           <span className="city-world-rail-label">Ressources</span>
           <ul className="city-world-rail-list">
             <li>
-              <span>Districts</span>
+              <span>Zones</span>
               <strong>
                 {snapshot.unlockedBuildingCount}
                 <small>/{snapshot.buildings.length}</small>
@@ -51,7 +51,7 @@ export default function CityWorldOverlay({ snapshot }: CityWorldOverlayProps) {
           <div className="city-world-rail-card city-world-rail-card--complete">
             <span className="city-world-rail-label">État</span>
             <strong>Empire complet</strong>
-            <p>Tous les districts sont actifs. Continue ton parcours pour faire évoluer ta civilisation.</p>
+            <p>Toutes les zones sont actives. Continue ton parcours pour faire évoluer ta civilisation.</p>
           </div>
         )}
       </aside>

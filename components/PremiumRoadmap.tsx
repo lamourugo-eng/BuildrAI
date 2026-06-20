@@ -12,6 +12,13 @@ import {
   type RoadmapProgress,
 } from '@/lib/account/roadmap-storage';
 import {
+  businessUsesMarketSegment,
+  marketSegmentDescription,
+  marketSegmentLabel,
+  saveMarketSegment,
+  type MarketSegment,
+} from '@/lib/quiz/market-segment';
+import {
   getUnlockedRoadmapMonths,
   loadSubscriptionMeta,
 } from '@/lib/account/subscription-storage';
@@ -93,10 +100,18 @@ export default function PremiumRoadmap({
   const plan = useMemo(
     () =>
       resolvedBusinessId && unlockedMonths > 0
-        ? buildPremiumRoadmap(resolvedBusinessId, unlockedMonths)
+        ? buildPremiumRoadmap(resolvedBusinessId, unlockedMonths, {
+            marketSegment: progress?.marketSegment ?? null,
+          })
         : null,
-    [resolvedBusinessId, unlockedMonths]
+    [resolvedBusinessId, unlockedMonths, progress?.marketSegment]
   );
+
+  function handleMarketSegmentChoice(segment: MarketSegment) {
+    if (!resolvedBusinessId) return;
+    const updated = saveMarketSegment(resolvedBusinessId, segment, progress);
+    setProgress(updated);
+  }
 
   const refreshProgress = useCallback(() => {
     const activeId = resolvedBusinessId ?? resolveActiveBusinessId();
@@ -338,6 +353,53 @@ export default function PremiumRoadmap({
             <p className="premium-roadmap-hero-lead">
               {completed.size}/{plan.totalUnlockedDays} jours · {completion}% global
             </p>
+            {businessUsesMarketSegment(resolvedBusinessId) && (
+              <div className="premium-roadmap-segment">
+                {progress?.marketSegment ? (
+                  <p className="premium-roadmap-segment-active">
+                    <strong>{marketSegmentLabel(progress.marketSegment)}</strong>
+                    <span>
+                      {' '}
+                      — {marketSegmentDescription(resolvedBusinessId, progress.marketSegment)}
+                    </span>
+                    <span className="premium-roadmap-segment-switch">
+                      {' '}
+                      <button
+                        type="button"
+                        className="premium-roadmap-segment-link"
+                        onClick={() =>
+                          handleMarketSegmentChoice(
+                            progress.marketSegment === 'b2b' ? 'b2c' : 'b2b'
+                          )
+                        }
+                      >
+                        Passer en {progress.marketSegment === 'b2b' ? 'B2C' : 'B2B'}
+                      </button>
+                    </span>
+                  </p>
+                ) : (
+                  <div className="premium-roadmap-segment-pick">
+                    <p>Quelle cible pour ton plan ? Le parcours s&apos;adapte à ton choix.</p>
+                    <div className="premium-roadmap-segment-actions">
+                      <button
+                        type="button"
+                        className="btn btn-outline btn-sm"
+                        onClick={() => handleMarketSegmentChoice('b2b')}
+                      >
+                        B2B — Entreprises
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-outline btn-sm"
+                        onClick={() => handleMarketSegmentChoice('b2c')}
+                      >
+                        B2C — Particuliers
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
             <details className="premium-roadmap-more">
               <summary>Infos parcours</summary>
               <p>{copy.roadmap.heroDescription(plan.businessName)}</p>

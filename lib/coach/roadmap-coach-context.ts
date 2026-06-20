@@ -1,13 +1,16 @@
 import { COACH_CONCISENESS_PROMPT, COACH_LENGTH_QUESTION } from '@/lib/coach/concise-style';
+import { COACH_QA_MODE_PROMPT } from '@/lib/coach/interaction-mode';
 import { buildContextualToolsPromptReference } from '@/lib/coach/contextual-tools';
 import { buildBusinessCoachExpertBlock } from '@/lib/coach/business-coach-context';
 import {
   buildCoachDayCompletedMessage,
   buildCoachNextActionPresentation,
+  buildRoadmapCompletedRecap,
+  buildRoadmapProgressHeader,
   buildRoadmapTasksProgressBlock,
   getNextPendingTaskIndex,
 } from '@/lib/coach/roadmap-task-sync';
-import { buildRoadmapMemorySnippet, truncateNotepadForPrompt } from '@/lib/coach/prompt-memory';
+import { buildRoadmapMemorySnippet, buildQuestionMemoryPromptBlock, truncateNotepadForPrompt } from '@/lib/coach/prompt-memory';
 import type { CoachMemoryContext } from '@/lib/coach/memory-context';
 import { getCoachLanguageBlock, resolveCopyTier } from '@/lib/copy/entrepreneur-level';
 import { businessProfiles, type BusinessId } from '@/lib/quiz/data';
@@ -42,6 +45,7 @@ Guider le client **action par action** sur le jour en cours. Une seule action vi
 3. **Validation Mon plan** : uniquement si le livrable est dans le message client → ligne exacte « ✅ Action N validée : [résumé court] ».
 4. **Enchaînement** : dans le **même** message, après la validation, présente l'action suivante (### Action N+1/Total).
 5. **Questions** : si le client pose une question sur l'action en cours, réponds brièvement puis rappelle ce qu'il doit envoyer. Ne valide pas sans livrable.
+6. **Reprise** : si des actions sont déjà validées (voir progression), ne les redemande pas. Enchaîne directement sur l'action en cours.
 
 ## Interdit
 - Lister plusieurs actions du jour d'un coup
@@ -59,6 +63,17 @@ Reddit (+ subreddit), Typeform, Cal.com, Stripe… Jamais « cherche sur des for
 
 ${COACH_CONCISENESS_PROMPT}`;
 
+export const ROADMAP_COACH_QUESTION_PROMPT = `Tu es BuildrAI Coach. Le client pose une **question libre** pendant son parcours Mon plan.
+
+## Comportement obligatoire
+1. **Réponds d'abord** clairement et complètement à la question (définition, conseil, exemple concret).
+2. **Ne valide aucune action** Mon plan : pas de ligne « ✅ Action N validée ».
+3. **Ne présente pas** le bloc ### Action N/Total ni ne renvoies vers l'exercice en cours — sauf si le client demande explicitement à reprendre le plan.
+4. Tu peux faire **un lien court** avec l'action en cours si c'est pertinent (ex. « Utile pour ton action persona »), sans imposer l'exercice.
+5. Structure libre et pédagogique. Pas de format 8 étapes coach (SITUATION / PARCOURS / PLAN).
+
+${COACH_QA_MODE_PROMPT}`;
+
 
 export function buildRoadmapCoachWelcome(
   ctx: RoadmapCoachContext,
@@ -72,9 +87,17 @@ export function buildRoadmapCoachWelcome(
     return buildCoachDayCompletedMessage(ctx);
   }
 
-  const actionBlock = buildCoachNextActionPresentation(ctx, nextIndex, completedTaskIndices.length);
+  const doneCount = completedTaskIndices.length;
+  const variant = doneCount > 0 ? 'resume' : 'intro';
+  const actionBlock = buildCoachNextActionPresentation(ctx, nextIndex, doneCount, { variant });
 
-  if (options?.includeDayIntro !== false && completedTaskIndices.length === 0) {
+  if (doneCount > 0) {
+    const header = buildRoadmapProgressHeader(ctx, completedTaskIndices);
+    const recap = buildRoadmapCompletedRecap(ctx, completedTaskIndices);
+    return `${header}${recap ? `\n\n${recap}` : ''}\n\n${actionBlock}`;
+  }
+
+  if (options?.includeDayIntro !== false) {
     const phaseLine = ctx.phaseName ? `\n_${ctx.phaseName}_` : '';
     return `**Jour ${ctx.dayInMonth}** — ${ctx.title}${phaseLine}\n\n${actionBlock}`;
   }
@@ -160,6 +183,77 @@ export function buildRoadmapCoachReminder(
         : ` Dernière action (${nextIndex + 1}). Livrable reçu → valide puis félicite.`
       : ' Jour terminé.';
   return `[Parcours jour ${ctx.day}. Action ${nextIndex >= 0 ? nextIndex + 1 : '—'}/${ctx.tasks.length}]${focusHint} 80–200 mots max.`;
+}
+
+/** Consigne interne pour une question libre pendant Mon plan. */
+export function buildRoadmapCoachQuestionReminder(
+  ctx: RoadmapCoachContext,
+  completedTaskIndices: number[] = []
+): string {
+  const nextIndex = getNextPendingTaskIndex(ctx.tasks, completedTaskIndices);
+  const actionHint =
+    nextIndex >= 0
+      ? ` Action en cours (ne pas présenter sauf demande) : ${nextIndex + 1}/${ctx.tasks.length}.`
+      : '';
+  return `[Question libre Mon plan — réponds DIRECTEMENT et COMPLÈTEMENT à la question du client. Ignore tout livrable ou message précédent (phrase transformation, offre, persona rédigée…) sauf si la question s'y rapporte. Ne valide aucune action. Pas de bloc ### Action.${actionHint}]`;
+}
+
+export function buildRoadmapCoachQuestionSystemPrompt(
+  profile: QuizProfileSnapshot | null | undefined,
+  ctx: RoadmapCoachContext,
+  memory?: CoachMemoryContext | null,
+  notepadSnippet?: string,
+  completedTaskIndices: number[] = []
+): string {
+  const memoryBlock = buildQuestionMemoryPromptBlock(memory, notepadSnippet);
+
+  const businessBlock = (() => {
+    const businessId =
+      ctx.businessId ??
+      (profile?.topBusinessId as BusinessId | undefined);
+
+    if (businessId && businessProfiles[businessId]) {
+      const biz = businessProfiles[businessId];
+      const languageBlock = profile
+        ? getCoachLanguageBlock(resolveCopyTier(profile.entrepreneurialLevel))
+        : '';
+      const expertBlock = buildBusinessCoachExpertBlock(businessId, {
+        phaseId: ctx.phaseId,
+        techLevel: profile?.techLevel,
+        compact: true,
+      });
+
+      return `
+${languageBlock}
+
+## Profil client
+- Modèle : ${ctx.businessName ?? profile?.topBusinessName ?? biz.name}
+- Personnalité : ${profile?.personalityLabel ?? '—'}
+- Niveau : ${profile?.entrepreneurialLevel ?? 'Non renseigné'}
+- Budget : ${profile?.investmentLevel ?? 'Non renseigné'}
+- Tech : ${profile?.techLevel ?? 'Non renseigné'}
+
+${expertBlock}`;
+    }
+
+    if (ctx.businessName) {
+      return `\n## Modèle business\n- ${ctx.businessName}`;
+    }
+    return '';
+  })();
+
+  const nextIndex = getNextPendingTaskIndex(ctx.tasks, completedTaskIndices);
+  const contextBlock =
+    nextIndex >= 0
+      ? `\n\n## Contexte Mon plan (pour lier ta réponse si utile — ne pas imposer l'exercice)
+- Jour ${ctx.dayInMonth} : ${ctx.title}
+- Action en cours : ${ctx.tasks[nextIndex]}`
+      : `\n\n## Contexte Mon plan
+- Jour ${ctx.dayInMonth} : ${ctx.title} (terminé)`;
+
+  return `${ROADMAP_COACH_QUESTION_PROMPT}
+
+${buildContextualToolsPromptReference(ctx.businessId ?? profile?.topBusinessId)}${contextBlock}${businessBlock}${memoryBlock}`;
 }
 
 export function buildRoadmapCoachFullSystemPrompt(

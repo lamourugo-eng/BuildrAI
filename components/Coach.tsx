@@ -39,7 +39,7 @@ import { TOTAL_ROADMAP_DAYS } from '@/lib/quiz/roadmap-program';
 import {
   applyCoachRoadmapTaskSync,
   buildCoachDayCompletedMessage,
-  buildCoachNextActionPresentation,
+  buildRoadmapCoachResumeWelcome,
   formatRoadmapTaskSyncNotice,
   getNextPendingTaskIndex,
   inferCompletedTaskIndices,
@@ -99,6 +99,24 @@ function resolveCoachRoadmapContext(
   if (step.status === 'completed_all') return undefined;
 
   return roadmapDayToCoachContext(step.day, businessId, profile?.topBusinessName);
+}
+
+function buildRoadmapAwareResumeWelcome(
+  businessId: BusinessId | undefined,
+  profile: QuizProfileSnapshot | null,
+  isSubscribed: boolean,
+  fallback: string
+): string {
+  const ctx = resolveCoachRoadmapContext(
+    businessId,
+    loadActiveRoadmapCoachContext(),
+    profile,
+    isSubscribed
+  );
+  if (!ctx || !businessId || !ctx.tasks.length) return fallback;
+
+  const completed = getRoadmapCompletedIndicesForDay(businessId, ctx.day, ctx.tasks.length);
+  return buildRoadmapCoachResumeWelcome(ctx, completed);
 }
 
 interface Message {
@@ -172,6 +190,24 @@ function runRoadmapCatchUpSync(
     exchanges,
     stored?.businessId === businessId ? stored : null
   );
+}
+
+function appendAssistantToChat(
+  prev: Message[],
+  userMessage: Message,
+  assistantContent: string
+): Message[] {
+  const last = prev[prev.length - 1];
+  if (last?.role === 'assistant' && last.content === assistantContent) {
+    return prev;
+  }
+  if (last?.role === 'user' && last.content === userMessage.content) {
+    return [...prev, { role: 'assistant', content: assistantContent }];
+  }
+  const hasUser = prev.some((m) => m.role === 'user' && m.content === userMessage.content);
+  return hasUser
+    ? [...prev, { role: 'assistant', content: assistantContent }]
+    : [...prev, userMessage, { role: 'assistant', content: assistantContent }];
 }
 
 function appendRoadmapWelcomeIfNew(messages: Message[], welcome: string, dayTitle: string): Message[] {
@@ -292,7 +328,12 @@ export default function Coach({
     const memory = loadCoachMemory(businessId);
 
     if (memory && hasCoachConversation(memory)) {
-      const resume = buildResumeWelcome(memory);
+      const resume = buildRoadmapAwareResumeWelcome(
+        businessId,
+        resolvedProfile,
+        isSubscribed,
+        buildResumeWelcome(memory)
+      );
       setResumeWelcome(resume);
       setConversationMessages(memory.messages);
       setMessages(buildChatDisplay(resume, memory.messages));
@@ -321,9 +362,15 @@ export default function Coach({
 
     if (authenticated && product && product.messages.some((m) => m.role === 'user')) {
       setUseProductMemory(true);
-      setResumeWelcome(product.resumeWelcome);
+      const resume = buildRoadmapAwareResumeWelcome(
+        businessId,
+        resolvedProfile,
+        isSubscribed,
+        product.resumeWelcome
+      );
+      setResumeWelcome(resume);
       setConversationMessages(product.messages);
-      setMessages(buildChatDisplay(product.resumeWelcome, product.messages));
+      setMessages(buildChatDisplay(resume, product.messages));
       if (product.coachingPhase) setCoachingPhase(product.coachingPhase);
       setInitializing(false);
       return;
@@ -565,7 +612,7 @@ export default function Coach({
     const interaction = detectCoachInteractionMode(trimmed);
     const nextPlanLinked = options?.forcePlan
       ? true
-      : options?.forceFree || interaction === 'question'
+      : options?.forceFree
         ? false
         : interaction === 'progression'
           ? true
@@ -641,7 +688,9 @@ export default function Coach({
 
         const navReply =
           nextIndex >= 0
-            ? buildCoachNextActionPresentation(roadmapPayload, nextIndex, completed.length)
+            ? buildRoadmapCoachWelcome(roadmapPayload, '', completed, {
+                includeDayIntro: completed.length === 0 ? false : undefined,
+              })
             : buildCoachDayCompletedMessage(roadmapPayload);
 
         setMessages((prev) => [...prev, { role: 'assistant', content: navReply }]);
@@ -681,9 +730,13 @@ export default function Coach({
           : null;
 
       const apiInteractionMode: 'question' | 'progression' =
-        nextPlanLinked && roadmapPayload ? 'progression' : interaction;
+        interaction === 'question'
+          ? 'question'
+          : nextPlanLinked && roadmapPayload
+            ? 'progression'
+            : interaction;
       const memoryPayload =
-        apiInteractionMode === 'question' && !nextPlanLinked
+        apiInteractionMode === 'question'
           ? enrichedMemory
             ? {
                 ...enrichedMemory,
@@ -691,6 +744,7 @@ export default function Coach({
                 coachingStepLabel: undefined,
                 progressPoint: '',
                 lastAction: '',
+                recentExchanges: [],
               }
             : null
           : enrichedMemory;
@@ -746,7 +800,7 @@ export default function Coach({
         : activeRoadmapContext;
 
       let finalReply = assistantMessage.content;
-      if (syncContextForReply && businessId && nextPlanLinked) {
+      if (syncContextForReply && businessId && nextPlanLinked && interaction !== 'question') {
         const doneBefore = getRoadmapCompletedIndicesForDay(
           businessId,
           syncContextForReply.day,
@@ -766,12 +820,9 @@ export default function Coach({
       if (data.memory?.messages) {
         setUseProductMemory(true);
         setConversationMessages(data.memory.messages);
-        const welcome =
-          resumeWelcome ||
-          (activeProfile
-            ? buildWelcomeMessage(activeProfile, copy.coach, copy.tier)
-            : buildWelcomeMessage(null, copy.coach, copy.tier));
-        setMessages(buildChatDisplay(welcome, data.memory.messages));
+        setMessages((prev) =>
+          appendAssistantToChat(prev, userMessage, assistantMessage.content)
+        );
       } else if (businessId) {
         const updated = appendCoachExchange(
           businessId,
@@ -784,7 +835,9 @@ export default function Coach({
         setConversationMessages(updated.messages);
         const welcome = resumeWelcome || buildResumeWelcome(updated);
         setResumeWelcome(welcome);
-        setMessages(buildChatDisplay(welcome, updated.messages));
+        setMessages((prev) =>
+          appendAssistantToChat(prev, userMessage, assistantMessage.content)
+        );
       } else {
         setConversationMessages((prev) => [
           ...prev,
@@ -804,6 +857,7 @@ export default function Coach({
       }
 
       const syncContext = (() => {
+        if (interaction === 'question') return null;
         if (nextPlanLinked) {
           return roadmapPayload ?? data.roadmapContext ?? activeRoadmapContext ?? null;
         }

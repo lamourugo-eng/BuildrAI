@@ -38,6 +38,7 @@ function mergeRoadmapProgress(local: RoadmapProgress | null, remote: RoadmapProg
     businessId: local.businessId,
     completedDays: mergedDays,
     completedTasks: mergedTasks,
+    marketSegment: local.marketSegment ?? remote.marketSegment,
     updatedAt: new Date(Math.max(localUpdated, remoteUpdated)).toISOString(),
   });
 }

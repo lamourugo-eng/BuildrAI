@@ -41,7 +41,7 @@ export default function DashCityPreview({
 
         {city.hasAvatar ? (
           <span className="dash-city-preview-meta">
-            {city.unlockedBuildingCount}/{city.buildings.length} districts
+            {city.unlockedBuildingCount}/{city.buildings.length} zones
           </span>
         ) : (
           <p className="dash-city-preview-meta">Personnalisation gratuite</p>

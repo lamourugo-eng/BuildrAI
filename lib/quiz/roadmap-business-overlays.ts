@@ -256,7 +256,7 @@ function buildTitleTaskOverlays(): Record<BusinessId, Record<string, string[]>> 
   };
 }
 
-const TITLE_TASK_OVERLAYS = buildTitleTaskOverlays();
+export const TITLE_TASK_OVERLAYS = buildTitleTaskOverlays();
 
 const WEEK_FOCUS_TASKS: Record<
   BusinessFamily,
@@ -505,6 +505,34 @@ export function resolveBusinessWeekObjective(
   return defaultObjective.replace(/ton modèle/gi, businessProfiles[businessId].name);
 }
 
+/** Une piste métier différente chaque jour de la semaine (enrichissement, pas remplacement). */
+export function pickWeeklyEnrichmentTask(
+  businessId: BusinessId,
+  month: number,
+  week: number,
+  dayInMonth: number,
+  baseTitle: string
+): string | null {
+  if (TITLE_TASK_OVERLAYS[businessId]?.[baseTitle]?.length) {
+    return null;
+  }
+
+  let pool: string[] | null = null;
+  if (businessId === 'ofm') {
+    pool = OFM_WEEK_FOCUS[month]?.[week] ?? null;
+  } else {
+    const family = BUSINESS_FAMILY[businessId];
+    pool = WEEK_FOCUS_TASKS[family]?.[month]?.[week] ?? null;
+  }
+
+  if (!pool?.length) return null;
+
+  const dayIndexInWeek = (dayInMonth - 1) % 7;
+  const pick = pool[dayIndexInWeek % pool.length];
+  return `Angle ${businessProfiles[businessId].name} : ${pick}`;
+}
+
+/** @deprecated Les overlays hebdo ne remplacent plus le jour — utiliser pickWeeklyEnrichmentTask */
 export function getBusinessSemesterTaskOverlay(
   businessId: BusinessId,
   month: number,
