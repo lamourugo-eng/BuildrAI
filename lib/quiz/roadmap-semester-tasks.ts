@@ -1,11 +1,11 @@
-import { getBusinessPhaseHint } from '@/lib/coach/journey';
-import { businessProfiles, type BusinessId } from '@/lib/quiz/data';
+import type { BusinessId } from '@/lib/quiz/data';
 import type { MarketSegment } from '@/lib/quiz/market-segment';
 import { businessUsesMarketSegment } from '@/lib/quiz/market-segment';
 import { applyMarketSegmentToTasks } from '@/lib/quiz/market-segment-tasks';
 import {
   pickWeeklyEnrichmentTask,
   TITLE_TASK_OVERLAYS,
+  adaptGenericTasksToBusiness,
 } from '@/lib/quiz/roadmap-business-overlays';
 import {
   buildDenseDailyTasks,
@@ -645,6 +645,101 @@ const TITLE_TASKS: Record<string, string[]> = {
     'Fixe 3 priorités pour le mois 7',
     'Bloque les créneaux de la première semaine du mois 7',
   ],
+  'Bilan semaine. Rétention': [
+    'Compte clients ou comptes actifs vs inactifs depuis 14 jours',
+    'Identifie la cause #1 de désengagement (onboarding, support, prix…)',
+    'Planifie 1 action rétention concrète pour les 3 prochains jours',
+  ],
+  'Bilan offre actuelle': [
+    'Liste ce que ton offre inclut aujourd\'hui (livrables, prix, délais)',
+    'Note les 3 retours clients les plus fréquents sur l\'offre',
+    'Décide 1 ajustement à tester cette semaine (scope, bonus ou garantie)',
+  ],
+  'Bilan semaine. Offre': [
+    'Compare les tests pricing/packaging de la semaine (réactions, objections)',
+    'Garde ce qui a converti. Abandonne ce qui n\'a eu aucun signal',
+    'Rédige la version finale de ton offre pour la semaine prochaine',
+  ],
+  'Bilan 60 jours': [
+    'Exporte CA/MRR, clients acquis et canal #1 sur 60 jours',
+    'Compare vs objectif mois 1 : écart en % et cause principale',
+    'Fixe 3 priorités non négociables pour le mois 3',
+  ],
+  'Bilan semaine acquisition': [
+    'Calcule taux de réponse et RDV bookés par script testé',
+    'Garde le message gagnant. Archive les versions < 5 % réponse',
+    'Fixe quota outbound pour la semaine prochaine (+20 % si marge OK)',
+  ],
+  'Bilan contenu': [
+    'Liste les 3 contenus publiés : vues, clics, leads générés',
+    'Identifie le format et sujet qui performe le mieux',
+    'Planifie 2 contenus similaires pour la semaine prochaine',
+  ],
+  'Bilan partenariats': [
+    'Statut de chaque partenaire contacté : répondu / en cours / mort',
+    'Note 1 win concret (intro, co-marketing, vente) ou 0 — pourquoi',
+    'Relance ou abandon chaque piste. Max 3 partenaires actifs en parallèle',
+  ],
+  'Bilan 90 jours': [
+    'Consolide pipeline, CA et canal #1 sur 90 jours',
+    'Identifie le levier qui a le plus accéléré (volume, conversion, offre)',
+    'Fixe objectif chiffré mois 4 et 1 action prioritaire demain',
+  ],
+  'Bilan rentabilité semaine 1': [
+    'Marge % moyenne sur 3 clients ou ventes récentes',
+    'Classe clients/offres : rentables / neutres / à couper',
+    'Décide 1 action marge cette semaine (prix, coût ou scope)',
+  ],
+  'Bilan process semaine 2': [
+    'Mesure délai moyen livraison vs promesse client',
+    'Note l\'étape ops la plus lente (chronomètre ou estimation)',
+    'Applique 1 correctif process testé sur la prochaine livraison',
+  ],
+  'Bilan automatisations': [
+    'Liste automatisations mises en place cette semaine',
+    'Estime heures gagnées vs temps de setup',
+    'Choisis 1 prochaine tâche à automatiser (ROI > 2 h/semaine)',
+  ],
+  'Bilan 120 jours': [
+    'Tableau CA, marge et capacité max sur 120 jours',
+    'As-tu atteint l\'objectif mois 4 ? Écart et cause racine',
+    'Valide ou ajuste ton plan 30 jours avant le mois 5',
+  ],
+  'Bilan écoute marché': [
+    'Synthétise les 5+ retours clients collectés cette semaine',
+    'Classe demandes : must-have / nice-to-have / hors scope',
+    'Retiens 1 opportunité validée à transformer en offre #2',
+  ],
+  'Bilan offre #2': [
+    'Récap tests offre complémentaire : intérêt, prix, objections',
+    'Décide : lancer, ajuster ou mettre en pause l\'offre #2',
+    'Si go : fixe date soft launch et liste 5 early adopters',
+  ],
+  'Bilan rétention': [
+    'Calcule taux réachat ou renouvellement sur 30 jours',
+    'Identifie les 3 clients/comptes les plus fidèles — profil commun',
+    'Lance 1 action rétention ciblée (email, bonus, check-in)',
+  ],
+  'Bilan 150 jours': [
+    'Consolide revenus, LTV estimée et taux adoption offre #2',
+    'Compare vs vision mois 1 : sur la bonne trajectoire ?',
+    'Fixe objectif mois 6 et 3 actions semaine 1 du mois 6',
+  ],
+  'Bilan chiffres semaine 1': [
+    'Mets à jour dashboard : CA, marge, conversion par canal',
+    'Repère la métrique la plus en retard vs objectif semestre',
+    'Prends 1 décision data-driven (continuer / arrêter / doubler)',
+  ],
+  'Bilan rétention semestre': [
+    'Taux rétention/réachat mois 1 vs mois 6 : tendance',
+    'Synthétise 3 leçons des interviews clients (satisfaits + perdus)',
+    'Planifie 1 initiative rétention pour le semestre 2',
+  ],
+  'Bilan délégation': [
+    'Statut délégation : brief publié, candidats, process doc',
+    'Estime coût mensuel vs marge disponible',
+    'Décide go/no-go délégation mois 7 avec date de démarrage',
+  ],
 };
 
 function tasksFromBilanTitle(title: string, objective: string): string[] {
@@ -729,6 +824,12 @@ function tasksFromTitlePattern(title: string, objective: string): string[] | nul
   return null;
 }
 
+function hasExplicitSemesterTasks(businessId: BusinessId, baseTitle: string): boolean {
+  return Boolean(
+    TITLE_TASK_OVERLAYS[businessId]?.[baseTitle]?.length || TITLE_TASKS[baseTitle]?.length
+  );
+}
+
 function resolveCoreTasks(
   businessId: BusinessId,
   baseTitle: string,
@@ -739,25 +840,20 @@ function resolveCoreTasks(
   if (businessTitleTasks?.length) return businessTitleTasks;
 
   const exact = TITLE_TASKS[baseTitle];
-  if (exact?.length) return exact;
+  if (exact?.length) {
+    return adaptGenericTasksToBusiness(businessId, exact, baseTitle);
+  }
 
   const patterned = tasksFromTitlePattern(baseTitle, objective);
-  if (patterned?.length) return patterned;
+  if (patterned?.length) {
+    return adaptGenericTasksToBusiness(businessId, patterned, baseTitle);
+  }
 
   return [
-    `Action principale : ${displayTitle}`,
-    `Objectif du jour : ${objective}`,
-    `Livrable ce soir : document, message ou chiffre concret lié à « ${baseTitle} »`,
+    `Définis le livrable concret pour « ${displayTitle} » (doc, message ou chiffre)`,
+    `Exécute l'action principale du jour. Objectif : ${objective}`,
+    `Note le résultat mesurable en 1 phrase avant ce soir`,
   ];
-}
-
-function buildClosingTask(baseTitle: string, dayInMonth: number): string {
-  const closings = [
-    `Coche mentalement : qu'as-tu terminé pour « ${baseTitle} » ?`,
-    `Note 1 apprentissage du jour sur « ${baseTitle} » (1 phrase).`,
-    `Si bloqué sur « ${baseTitle} », envoie ta question au coach IA.`,
-  ];
-  return closings[(dayInMonth - 1) % closings.length];
 }
 
 export function buildSemesterDayTasks(
@@ -775,8 +871,6 @@ export function buildSemesterDayTasks(
     return buildLegalExitTasks(businessId, special);
   }
 
-  const profile = businessProfiles[businessId];
-  const phaseHint = getBusinessPhaseHint(businessId, phaseId);
   const week = dayInMonth <= 7 ? 1 : dayInMonth <= 14 ? 2 : dayInMonth <= 21 ? 3 : 4;
 
   const core = resolveCoreTasks(businessId, baseTitle, displayTitle, objective);
@@ -784,17 +878,15 @@ export function buildSemesterDayTasks(
     marketSegment && businessUsesMarketSegment(businessId)
       ? applyMarketSegmentToTasks(core, businessId, marketSegment, baseTitle)
       : core;
-  const enrichment = pickWeeklyEnrichmentTask(businessId, month, week, dayInMonth, baseTitle);
 
-  const phaseTask = phaseHint
-    ? `Focus étape ${phaseId}/8 — ${profile.name} : ${phaseHint}`
-    : `Relie cette action à ton modèle ${profile.name}.`;
+  const enrichment =
+    !hasExplicitSemesterTasks(businessId, baseTitle) && dayInMonth % 7 !== 0
+      ? pickWeeklyEnrichmentTask(businessId, month, week, dayInMonth, baseTitle)
+      : null;
 
   const baseTasks = [
     ...adaptedCore,
     ...(enrichment ? [enrichment] : []),
-    phaseTask,
-    ...(dayInMonth % 7 !== 0 ? [buildClosingTask(baseTitle, dayInMonth)] : []),
   ];
 
   return buildDenseDailyTasks(

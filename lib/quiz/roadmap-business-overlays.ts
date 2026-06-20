@@ -154,6 +154,16 @@ function buildTitleTaskOverlays(): Record<BusinessId, Record<string, string[]>> 
         'Compare LTV/CAC. Cible > 3',
         'Identifie 1 levier rétention (onboarding, email, feature)',
       ],
+      '10 nouveaux messages': [
+        '10 outbound LinkedIn ou email vers ICP qualifié',
+        'Accroche = pain point + résultat chiffré. CTA = démo 15 min',
+        'Note taux réponse et démos bookées en fin de journée',
+      ],
+      '1 appel de vente minimum': [
+        'Mène 1 démo produit avec script découverte (5 questions)',
+        'Montre le « aha moment » en < 5 min',
+        'Note objections et envoie follow-up sous 2 h',
+      ],
     },
     freelance: {
       'Audit du premier mois': sharedAudit('freelance', ['page', 'devis', 'RDV', 'missions']),
@@ -166,6 +176,16 @@ function buildTitleTaskOverlays(): Record<BusinessId, Record<string, string[]>> 
         'Relance 5 prospects avec un angle nouveau (cas client, insight)',
         'Propose un créneau RDV 20 min. Pas seulement un email',
         'Planifie relance J+7 pour les sans réponse',
+      ],
+      '10 nouveaux messages': [
+        'Envoie 10 messages LinkedIn ou email à décideurs qualifiés',
+        'Personnalise l\'accroche avec un pain point de leur secteur',
+        'Objectif : 2 RDV bookés cette semaine',
+      ],
+      'Modèle de proposition': [
+        'Template devis : contexte → livrables → délais → TJM/forfait',
+        'Inclus 1 cas anonymisé et garantie satisfaction',
+        'Envoie version personnalisée à 1 prospect chaud',
       ],
     },
     ecommerce: {
@@ -180,6 +200,21 @@ function buildTitleTaskOverlays(): Record<BusinessId, Record<string, string[]>> 
         'Identifie SKU le plus et le moins rentable',
         'Teste bundle pour augmenter panier moyen',
       ],
+      '10 nouveaux messages': [
+        'Contacte 10 micro-influenceurs ou clients potentiels (UGC, collab)',
+        'Propose un angle produit concret (échantillon, code, avis)',
+        'Note taux de réponse et commandes attribuées',
+      ],
+      'Relances personnalisées': [
+        'Relance 5 paniers abandonnés avec objection adressée (livraison, retour…)',
+        'Teste 2 objets d\'email différents',
+        'Mesure taux de récupération panier',
+      ],
+      'Email win-back inactifs': [
+        'Segmente acheteurs inactifs 60+ jours',
+        'Email win-back : nouveauté produit + code -10 % limité 48 h',
+        'Mesure réachat sur 5 envois minimum',
+      ],
     },
     agency: {
       'Audit du premier mois': sharedAudit('agency', ['niche', 'audits', 'propositions', 'missions']),
@@ -188,6 +223,16 @@ function buildTitleTaskOverlays(): Record<BusinessId, Record<string, string[]>> 
         'Assignez responsable client vs interne par étape',
         'Teste sur la prochaine mission',
       ],
+      'Modèle de proposition': [
+        'Structure audit agence : diagnostic → plan 90 j → livrables → budget',
+        'Inclus 2 références ou cas anonymisés',
+        'Template 80 % réutilisable. Personnalise pour 1 prospect',
+      ],
+      '1 appel de vente minimum': [
+        'Mène 1 call audit découverte 30 min',
+        'Prépare 5 questions enjeux + budget + timing',
+        'Envoie récap + prochaine étape sous 24 h',
+      ],
     },
     marketplace: {
       'Audit du premier mois': sharedAudit('marketplace', ['offreurs', 'demandeurs', 'transactions']),
@@ -195,6 +240,16 @@ function buildTitleTaskOverlays(): Record<BusinessId, Record<string, string[]>> 
         'Comptez early adopters actifs de chaque côté',
         'Ratio offre/demande. Où est le goulot ?',
         '5 actions pour débloquer le côté le plus faible',
+      ],
+      '10 nouveaux messages': [
+        'Outreach manuel : 10 early adopters côté faible (offre ou demande)',
+        'Proposition claire : pourquoi rejoindre maintenant + incitation',
+        'Mesure taux d\'inscription ou 1ère transaction',
+      ],
+      'Activer le parrainage simple': [
+        'Incitation parrainage des 2 côtés (crédit, commission, accès VIP)',
+        'Message prêt à transférer pour utilisateurs actifs',
+        'Envoie à 10 early adopters satisfaits',
       ],
     },
     impact: {
@@ -212,6 +267,16 @@ function buildTitleTaskOverlays(): Record<BusinessId, Record<string, string[]>> 
         'Cas type chiffré (sans nom client)',
         'Template réutilisable. 80 % personnalisable',
       ],
+      '1 appel de vente minimum': [
+        'Call diagnostic 45 min : enjeu, stakeholders, budget, timing',
+        'Propose diagnostic payant ou mission en fin d\'appel',
+        'Envoi synthèse PDF sous 24 h',
+      ],
+      'Demande d\'avis ou témoignage': [
+        'Demande témoignage à 3 clients mission récente (format LinkedIn ou 2 phrases)',
+        'Inclus résultat chiffré obtenu (%, €, délai…)',
+        'Publie sur page et propositions commerciales',
+      ],
     },
     content: {
       'Audit du premier mois': sharedAudit('content', ['contenu', 'audience', 'monétisation']),
@@ -219,6 +284,16 @@ function buildTitleTaskOverlays(): Record<BusinessId, Record<string, string[]>> 
         'Publie sur plateforme #1 avec CTA vers offre ou newsletter',
         'Hook 3 secondes + valeur + CTA en fin',
         'Mesure vues, clics, inscriptions',
+      ],
+      '10 nouveaux messages': [
+        '10 DMs ou emails à sponsors / partenaires audience alignée',
+        'Pitch court : audience, engagement, proposition collab',
+        'Objectif : 1 réponse positive ou deal en discussion',
+      ],
+      'Calendrier éditorial 2 sem.': [
+        'Planifie 8 contenus (dates, sujet, format, CTA monétisation)',
+        'Batch 2 contenus à l\'avance (tournage ou rédaction)',
+        'Bloque créneaux publication dans l\'agenda',
       ],
     },
     ofm: {
@@ -577,4 +652,67 @@ export function getBusinessSemesterTip(
 
 export function getBusinessKpi(businessId: BusinessId): BusinessKpi {
   return BUSINESS_KPI[businessId];
+}
+
+const GENERIC_TASK_REWRITES: Record<
+  BusinessFamily,
+  Array<{ pattern: RegExp; replace: string | ((kpi: BusinessKpi) => string) }>
+> = {
+  product: [
+    { pattern: /\bprospects?\b/gi, replace: 'comptes ou essais' },
+    { pattern: /\bclients?\b/gi, replace: 'comptes' },
+    { pattern: /\bCA\b/g, replace: 'MRR' },
+    { pattern: /\bappel de vente\b/gi, replace: 'démo produit' },
+    { pattern: /\bpipeline\b/gi, replace: (kpi) => kpi.pipeline },
+  ],
+  services: [
+    { pattern: /\bprospects?\b/gi, replace: 'prospects missions' },
+    { pattern: /\bclients?\b/gi, replace: 'clients mission' },
+    { pattern: /\bappel de vente\b/gi, replace: 'call découverte' },
+    { pattern: /\bpipeline\b/gi, replace: (kpi) => kpi.pipeline },
+  ],
+  commerce: [
+    { pattern: /\bprospects?\b/gi, replace: 'visiteurs ou paniers' },
+    { pattern: /\bclients?\b/gi, replace: 'acheteurs' },
+    { pattern: /\bCA\b/g, replace: 'CA boutique' },
+    { pattern: /\bcommandes?\b/gi, replace: 'commandes' },
+    { pattern: /\bpipeline\b/gi, replace: (kpi) => kpi.pipeline },
+  ],
+  platform: [
+    { pattern: /\bprospects?\b/gi, replace: 'early adopters' },
+    { pattern: /\bclients?\b/gi, replace: 'utilisateurs actifs' },
+    { pattern: /\bCA\b/g, replace: 'GMV' },
+    { pattern: /\bpipeline\b/gi, replace: (kpi) => kpi.pipeline },
+  ],
+  impact: [
+    { pattern: /\bclients?\b/gi, replace: 'clients payeurs' },
+    { pattern: /\bCA\b/g, replace: 'CA + financements' },
+    { pattern: /\bpipeline\b/gi, replace: (kpi) => kpi.pipeline },
+  ],
+  creator: [
+    { pattern: /\bprospects?\b/gi, replace: 'leads ou sponsors' },
+    { pattern: /\bclients?\b/gi, replace: 'abonnés ou acheteurs' },
+    { pattern: /\bCA\b/g, replace: 'revenus creator' },
+    { pattern: /\bpipeline\b/gi, replace: (kpi) => kpi.pipeline },
+  ],
+};
+
+/** Adapte le vocabulaire générique (prospects, CA…) au modèle business. */
+export function adaptGenericTasksToBusiness(
+  businessId: BusinessId,
+  tasks: string[],
+  _baseTitle: string
+): string[] {
+  const family = BUSINESS_FAMILY[businessId];
+  const rules = GENERIC_TASK_REWRITES[family];
+  if (!rules?.length) return tasks;
+
+  const kpi = BUSINESS_KPI[businessId];
+  return tasks.map((task) =>
+    rules.reduce((text, rule) => {
+      const replacement =
+        typeof rule.replace === 'function' ? rule.replace(kpi) : rule.replace;
+      return text.replace(rule.pattern, replacement);
+    }, task)
+  );
 }

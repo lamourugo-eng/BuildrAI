@@ -4,10 +4,12 @@ import { businessProfiles, type BusinessId } from '@/lib/quiz/data';
 import type { MarketSegment } from '@/lib/quiz/market-segment';
 import { businessUsesMarketSegment } from '@/lib/quiz/market-segment';
 import {
-  applyMarketSegmentToMonth1Focus,
   applyMarketSegmentToObjective,
   applyMarketSegmentToTasks,
 } from '@/lib/quiz/market-segment-tasks';
+import {
+  buildMonth1TasksFromBlueprint,
+} from '@/lib/quiz/month1-task-overlays';
 import {
   buildDenseDailyTasks,
   formatExitGuideTip,
@@ -814,29 +816,19 @@ export function buildMonth1DayTasks(
 ): string[] {
   const custom = blueprint.businessTasks?.[businessId];
   if (custom?.length) {
-    return marketSegment && businessUsesMarketSegment(businessId)
-      ? applyMarketSegmentToTasks(custom, businessId, marketSegment, blueprint.title)
-      : custom;
+    let tasks = custom;
+    if (marketSegment && businessUsesMarketSegment(businessId)) {
+      tasks = applyMarketSegmentToTasks(custom, businessId, marketSegment, blueprint.title);
+    }
+    return tasks;
   }
 
-  let focus = blueprint.businessFocus[businessId];
-  if (focus && marketSegment && businessUsesMarketSegment(businessId)) {
-    focus = applyMarketSegmentToMonth1Focus(
-      businessId,
-      marketSegment,
-      blueprint.day,
-      focus
-    );
-  }
-
-  if (!blueprint.baseTasks.length) return focus ? [focus] : [];
-
-  let tasks: string[];
-  if (focus) {
-    tasks = [blueprint.baseTasks[0], blueprint.baseTasks[1], focus, ...blueprint.baseTasks.slice(2)];
-  } else {
-    tasks = [...blueprint.baseTasks];
-  }
+  let tasks = buildMonth1TasksFromBlueprint(
+    businessId,
+    blueprint.title,
+    blueprint.baseTasks,
+    blueprint.businessFocus[businessId] ?? ''
+  );
 
   if (marketSegment && businessUsesMarketSegment(businessId)) {
     tasks = applyMarketSegmentToTasks(tasks, businessId, marketSegment, blueprint.title);

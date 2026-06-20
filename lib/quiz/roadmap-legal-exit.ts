@@ -486,7 +486,7 @@ export function buildDenseDailyTasks(
   const extra: string[] = [];
   const exit = getExitGuide(businessId);
 
-  if (dayInMonth % 7 === 0) {
+  if (dayInMonth % 7 === 0 && !title.toLowerCase().startsWith('bilan')) {
     extra.push('Bilan hebdo : 1 victoire, 1 blocage, 1 priorité semaine prochaine.');
   }
 
