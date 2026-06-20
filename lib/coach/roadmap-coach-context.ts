@@ -2,7 +2,10 @@ import { COACH_CONCISENESS_PROMPT, COACH_LENGTH_QUESTION } from '@/lib/coach/con
 import { buildContextualToolsPromptReference } from '@/lib/coach/contextual-tools';
 import { buildBusinessCoachExpertBlock } from '@/lib/coach/business-coach-context';
 import {
+  buildCoachDayCompletedMessage,
+  buildCoachNextActionPresentation,
   buildRoadmapTasksProgressBlock,
+  getNextPendingTaskIndex,
 } from '@/lib/coach/roadmap-task-sync';
 import { buildRoadmapMemorySnippet, truncateNotepadForPrompt } from '@/lib/coach/prompt-memory';
 import type { CoachMemoryContext } from '@/lib/coach/memory-context';
@@ -28,38 +31,55 @@ export interface RoadmapCoachContext {
   phaseName?: string;
 }
 
-export const ROADMAP_COACH_MODE_PROMPT = `Tu es BuildrAI Coach. Mode **Parcours premium (${TOTAL_ROADMAP_DAYS} jours)**.
+export const ROADMAP_COACH_MODE_PROMPT = `Tu es BuildrAI Coach. Mode **Parcours premium (${TOTAL_ROADMAP_DAYS} jours)** — **flux séquentiel strict**.
 
 ## Mission
-L'utilisateur discute d'un **jour précis** du parcours, ou pose une **question business** (même hors sujet du jour). Tu réponds à **n'importe quelle question** orientée entrepreneuriat :
-- comment réaliser une action, clarification, exemple concret, texte prêt à copier-coller ;
-- Adaptation à son modèle business, budget et niveau tech ;
-- **OnlyFans Management (OFM)** : modèles OnlyFans, chatting, acquisition abonnés, commission sur revenus plateforme, charte éthique. Jamais de promesses de revenus garantis ;
-- **forme juridique** (micro, SASU, EURL…) **uniquement en mois 1** : aider à anticiper le statut cible, sans pousser à immatriculer. Conseiller de formaliser une fois le business monté (clients, CA) ;
-- déblocage, priorisation, erreurs fréquentes, alternatives ;
-- lien avec l'étape coach 8 phases **uniquement** si ça aide ce jour (sans imposer le plan général).
+Guider le client **action par action** sur le jour en cours. Une seule action visible à la fois.
 
-## Règles
-- Réponds **directement** à la question posée (pas de message d'accueil, pas de reprise de la dernière micro-étape mémorisée).
-- Appuie-toi sur le titre, l'objectif, les actions et le conseil du jour. Enrichis avec ton expertise **spécifique au modèle business** du client (métriques, canaux, pricing typiques).
-- Structure libre (titres courts, listes, exemples). **Interdit** d'imposer le format rigide SITUATION / PARCOURS 8 étapes / PLAN numéroté coach sauf demande explicite du client.
-- Sois actionnable : checklists, scripts, décisions, outils nommés (avec URL si pertinent).
-- **Outils précis obligatoires** : Reddit (+ subreddit), Typeform, Cal.com, Stripe… Jamais « cherche sur des forums » sans nommer Reddit ou Indie Hackers.
-- **Synchronisation Mon plan (format unique)** : pour cocher une action dans Mon plan, termine par une ligne exacte :
-  « ✅ Action N validée : [résumé court] » (N = numéro).
-  **Uniquement** si le client a **envoyé son livrable** dans ce message (texte rédigé, choix B2B/B2C, liste complétée…).
-  **Interdit** de valider sur « continuer », « reprendre mon plan », « où j'en suis » ou une simple question.
-  **Interdit** de faire l'exercice à sa place puis valider : guide-le, attends sa réponse, puis valide.
-  Sans livrable client + cette ligne, Mon plan ne sera pas mis à jour.
-- **Interdit** : proposer un « Bloc Focus » ou « 45 minutes sans distractions ». Pas de conseils de gestion du temps génériques.
-- Une seule question de clarification si indispensable.
+## Comportement obligatoire
+1. **Présentation** : uniquement l'action en cours (format ### Action N/Total + consigne). Jamais la liste des autres actions.
+2. **Attente** : le client doit envoyer **son** livrable (texte, choix B2B/B2C, liste…). Tu guides, tu ne fais pas l'exercice à sa place.
+3. **Validation Mon plan** : uniquement si le livrable est dans le message client → ligne exacte « ✅ Action N validée : [résumé court] ».
+4. **Enchaînement** : dans le **même** message, après la validation, présente l'action suivante (### Action N+1/Total).
+5. **Questions** : si le client pose une question sur l'action en cours, réponds brièvement puis rappelle ce qu'il doit envoyer. Ne valide pas sans livrable.
+
+## Interdit
+- Lister plusieurs actions du jour d'un coup
+- Valider sur « continuer », « reprendre mon plan », « où j'en suis »
+- Valider sans livrable client dans le message
+- Répéter à chaque message le bloc « Jour X / chapitre / objectif / étape coach » (contexte déjà connu)
+- Écrire le livrable final à la place du client
+- Format 8 étapes coach (SITUATION / PARCOURS / PLAN) sauf demande explicite
+- « Bloc Focus » ou conseils de gestion du temps génériques
+
+## Outils
+Reddit (+ subreddit), Typeform, Cal.com, Stripe… Jamais « cherche sur des forums » sans nommer Reddit ou Indie Hackers.
+
 - ${COACH_LENGTH_QUESTION}
 
 ${COACH_CONCISENESS_PROMPT}`;
 
-function formatRoadmapDayTasks(tasks: string[]): string {
-  if (!tasks.length) return '';
-  return tasks.map((task, index) => `${index + 1}. ${task}`).join('\n');
+
+export function buildRoadmapCoachWelcome(
+  ctx: RoadmapCoachContext,
+  _businessName: string,
+  completedTaskIndices: number[] = [],
+  options?: { includeDayIntro?: boolean }
+): string {
+  const nextIndex = getNextPendingTaskIndex(ctx.tasks, completedTaskIndices);
+
+  if (nextIndex < 0) {
+    return buildCoachDayCompletedMessage(ctx);
+  }
+
+  const actionBlock = buildCoachNextActionPresentation(ctx, nextIndex, completedTaskIndices.length);
+
+  if (options?.includeDayIntro !== false && completedTaskIndices.length === 0) {
+    const phaseLine = ctx.phaseName ? `\n_${ctx.phaseName}_` : '';
+    return `**Jour ${ctx.dayInMonth}** — ${ctx.title}${phaseLine}\n\n${actionBlock}`;
+  }
+
+  return actionBlock;
 }
 
 export function saveRoadmapCoachContext(ctx: RoadmapCoachContext): void {
@@ -103,44 +123,27 @@ export function consumeRoadmapCoachContext(): RoadmapCoachContext | null {
   }
 }
 
-export function buildRoadmapCoachWelcome(
-  ctx: RoadmapCoachContext,
-  businessName: string
-): string {
-  const phaseLine = ctx.phaseName ? `\nÉtape coach : ${ctx.phaseName}` : '';
-  const tasksBlock = ctx.tasks.length
-    ? `\n\n**Actions du jour :**\n${formatRoadmapDayTasks(ctx.tasks)}`
-    : '';
-  const tipLabel = ctx.businessName ?? businessName;
-  const tipBlock = ctx.tip ? `\n\n**${tipLabel}**. ${ctx.tip}` : '';
-
-  return `Tu viens du parcours. **jour ${ctx.dayInMonth}** (chapitre mois ${ctx.month}).
-
-**${ctx.title}**
-${ctx.objective}${phaseLine}${tasksBlock}${tipBlock}
-
-Pour faire avancer Mon plan, **fais une action du jour puis envoie ta réponse ici** (texte rédigé, choix, liste…). Je t'aide à affiner — je ne coche le plan que quand tu m'as envoyé ton livrable.`;
-}
-
 /** Bloc injecté dans le prompt système quand l'utilisateur vient du parcours premium. */
 export function buildRoadmapCoachSystemBlock(
   ctx: RoadmapCoachContext,
   completedTaskIndices: number[] = []
 ): string {
   const phaseLine = ctx.phaseName ? `\n- Phase coach liée : ${ctx.phaseName}` : '';
-  const tasksLine = ctx.tasks.length
-    ? `\n- Actions du jour (reproduire telles quelles si tu les cites) :\n${formatRoadmapDayTasks(ctx.tasks)}`
-    : '';
-  const tipLine = ctx.tip ? `\n- Conseil modèle : ${ctx.tip}` : '';
+  const nextIndex = getNextPendingTaskIndex(ctx.tasks, completedTaskIndices);
+  const currentTaskLine =
+    nextIndex >= 0
+      ? `\n- Action en cours (seule à traiter) : ${ctx.tasks[nextIndex]}`
+      : '\n- Toutes les actions du jour sont validées.';
+  const tipLine = ctx.tip && nextIndex === 0 ? `\n- Conseil modèle : ${ctx.tip}` : '';
   const progressLine = ctx.tasks.length
     ? `\n\n${buildRoadmapTasksProgressBlock(ctx, completedTaskIndices)}`
     : '';
 
   return `L'utilisateur pose une question sur le **jour ${ctx.dayInMonth}** du parcours premium (chapitre ${ctx.month}, **jour global ${ctx.day}/${TOTAL_ROADMAP_DAYS}**) :
 - Titre : ${ctx.title}
-- Objectif : ${ctx.objective}${phaseLine}${tasksLine}${tipLine}${progressLine}
+- Objectif : ${ctx.objective}${phaseLine}${currentTaskLine}${tipLine}${progressLine}
 
-Tu connais l'intégralité du parcours (${TOTAL_ROADMAP_DAYS} jours). Ici, concentre-toi sur **ce jour** et réponds à **toute** question du client (pratique, stratégique, rédaction, outil, priorisation, juridique, revente) sans renvoyer vers un plan coach générique ni répéter un message de session précédente.`;
+Tu connais l'intégralité du parcours (${TOTAL_ROADMAP_DAYS} jours). Ici, concentre-toi sur **l'action en cours uniquement** (mode séquentiel). Ne liste pas les actions futures.`;
 }
 
 /** Consigne interne ajoutée au message utilisateur côté API. */
@@ -148,15 +151,15 @@ export function buildRoadmapCoachReminder(
   ctx: RoadmapCoachContext,
   completedTaskIndices: number[] = []
 ): string {
-  const tasksHint = ctx.tasks.length
-    ? ` Actions du jour : ${ctx.tasks.join('. ')}.`
-    : '';
-  const nextIndex = ctx.tasks.findIndex((_, index) => !completedTaskIndices.includes(index));
+  const nextIndex = getNextPendingTaskIndex(ctx.tasks, completedTaskIndices);
+  const hasNext = nextIndex >= 0 && nextIndex + 1 < ctx.tasks.length;
   const focusHint =
     nextIndex >= 0
-      ? ` Priorise Action ${nextIndex + 1}. Ne valide que si le client a collé son livrable dans CE message (pas sur « continuer » / « reprendre »). Sinon : explique l'exercice et demande sa réponse — sans ligne « ✅ Action N validée ».`
-      : ' Toutes les actions du jour sont déjà cochées.';
-  return `[Consigne interne. Parcours jour ${ctx.day}/${TOTAL_ROADMAP_DAYS}] « ${ctx.title} ».${tasksHint}${focusHint} Réponse dense, 100–280 mots. Pas de format 8 étapes. Pas de remplissage.`;
+      ? hasNext
+        ? ` STRICT : Action ${nextIndex + 1} seule. Livrable reçu → valide puis ### Action ${nextIndex + 2}. Pas de répétition du contexte jour. Pas de liste d'actions.`
+        : ` Dernière action (${nextIndex + 1}). Livrable reçu → valide puis félicite.`
+      : ' Jour terminé.';
+  return `[Parcours jour ${ctx.day}. Action ${nextIndex >= 0 ? nextIndex + 1 : '—'}/${ctx.tasks.length}]${focusHint} 80–200 mots max.`;
 }
 
 export function buildRoadmapCoachFullSystemPrompt(

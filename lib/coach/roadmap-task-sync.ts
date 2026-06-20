@@ -41,11 +41,99 @@ function normalizeText(text: string): string {
     .replace(/\p{M}/gu, '');
 }
 
+/** Index de la prochaine action non validée, ou -1 si le jour est terminé. */
+export function getNextPendingTaskIndex(tasks: string[], completedIndices: number[]): number {
+  return tasks.findIndex((_, index) => !completedIndices.includes(index));
+}
+
+/** Message coach pour présenter une action (une à la fois). */
+export function buildCoachNextActionPresentation(
+  ctx: RoadmapCoachContext,
+  taskIndex: number,
+  completedCount = 0
+): string {
+  const task = ctx.tasks[taskIndex];
+  const total = ctx.tasks.length;
+  const tipLine = ctx.tip && taskIndex === 0 ? `\n\n💡 ${ctx.tip}` : '';
+
+  return `### Action ${taskIndex + 1}/${total}
+
+${task}${tipLine}
+
+Fais l'exercice puis **envoie ta réponse ici**. Dès que c'est bon, je valide dans Mon plan et on passe à la suite.`;
+}
+
+/** Message quand toutes les actions du jour sont validées. */
+export function buildCoachDayCompletedMessage(ctx: RoadmapCoachContext): string {
+  return `🎉 **Jour ${ctx.dayInMonth} terminé !** Toutes les actions sont validées dans Mon plan.
+
+Tu peux revenir à **Mon plan** pour le jour suivant, ou me poser une question libre.`;
+}
+
 export function formatCoachActionValidationLine(actionNumber: number, summary: string): string {
   return COACH_ACTION_VALIDATION_LINE.replace('{n}', String(actionNumber)).replace(
     '{summary}',
     summary.trim()
   );
+}
+
+function summarizeTaskForValidation(task: string): string {
+  const trimmed = task.trim();
+  if (trimmed.length <= 52) return trimmed;
+  return `${trimmed.slice(0, 49)}…`;
+}
+
+/** Pipeline unique : validation Mon plan + enchaînement action suivante. */
+export function processRoadmapCoachReply(
+  reply: string,
+  ctx: RoadmapCoachContext,
+  completedIndices: number[],
+  userMessage?: string
+): string {
+  if (!userMessage?.trim() || isCoachNavigationMessage(userMessage)) {
+    return sanitizeSequentialCoachReply(reply, ctx);
+  }
+
+  let processed = ensureCoachValidationLine(reply, ctx, completedIndices, userMessage);
+  processed = appendNextActionIfValidated(processed, ctx, completedIndices, userMessage);
+  return sanitizeSequentialCoachReply(processed, ctx);
+}
+
+/** Retire les répétitions de contexte jour quand une action est déjà présentée. */
+export function sanitizeSequentialCoachReply(reply: string, ctx: RoadmapCoachContext): string {
+  if (!/###\s*Action\s+\d+/i.test(reply)) return reply.trim();
+
+  let text = reply.trim();
+  const dayHeader = new RegExp(
+    `\\*\\*Jour\\s+${ctx.dayInMonth}\\*\\*[\\s\\S]*?On avance \\*\\*une action à la fois\\*\\*[\\s\\S]*?Voici la suivante\\s*:\\s*\\n+`,
+    'i'
+  );
+  text = text.replace(dayHeader, '');
+  text = text.replace(
+    /Tu viens du parcours\.[\s\S]*?Voici la suivante\s*:\s*\n+/i,
+    ''
+  );
+  return text.replace(/\n{3,}/g, '\n\n').trim();
+}
+
+/** Ajoute la ligne ✅ si le client a livré l'action en cours mais le coach a oublié le format. */
+export function ensureCoachValidationLine(
+  reply: string,
+  ctx: RoadmapCoachContext,
+  completedIndices: number[],
+  userMessage?: string
+): string {
+  if (!userMessage?.trim() || isCoachNavigationMessage(userMessage)) return reply;
+
+  const currentIndex = getNextPendingTaskIndex(ctx.tasks, completedIndices);
+  if (currentIndex < 0) return reply;
+  if (!userMessageFulfillsTask(ctx.tasks[currentIndex], userMessage)) return reply;
+  if (parseCoachValidatedActionIndices(reply).includes(currentIndex)) return reply;
+
+  return `${reply.trim()}\n\n${formatCoachActionValidationLine(
+    currentIndex + 1,
+    summarizeTaskForValidation(ctx.tasks[currentIndex])
+  )}`;
 }
 
 /** Extrait tous les numéros d'actions validées dans la réponse du coach (format unique). */
@@ -90,11 +178,13 @@ function userMessageMatchesTask(task: string, userMessage: string): boolean {
     return /mon client galere|galere parce que|client galle|client galere parce/i.test(user);
   }
 
-  if (/b2b|b2c|entreprise.*particulier|particulier.*entreprise/i.test(taskNorm)) {
+  if (/b2b|b2c|entreprise.*particulier|particulier.*entreprise|plutot une entreprise|plutot un particulier/i.test(taskNorm)) {
     return (
-      /\bb2b\b|\bb2c\b|business to business|business to consumer|plutot une entreprise|plutot un particulier|vers les entreprises|vers les particuliers|cible entreprise|cible particulier/i.test(
+      /\bb2b\b|\bb2c\b|business to business|business to consumer|plutot.*entreprise|plutot.*particulier|vers les entreprises|vers les particuliers|cible.*entreprise|cible.*particulier|je vise.*entreprise|je vise.*particulier|pour les entreprises|pour les particuliers|des entreprises|aux entreprises|aux particuliers|marketplace b2b|marketplace b2c/i.test(
         user
-      )
+      ) ||
+      (/\bentreprise/i.test(user) && !/\bparticulier/i.test(user)) ||
+      (/\bparticulier/i.test(user) && !/\bentreprise/i.test(user))
     );
   }
 
@@ -173,8 +263,9 @@ export interface RoadmapTaskSyncInput {
 
 /**
  * Actions cochées uniquement si :
- * 1) le coach écrit « ✅ Action N validée : … », ET
- * 2) le message client contient le livrable de cette action (pas un simple « continuer »).
+ * 1) le coach écrit « ✅ Action N validée : … » pour l'action EN COURS,
+ * 2) le message client contient le livrable de cette action,
+ * 3) une seule action par échange (séquentiel).
  */
 export function inferCompletedTaskIndices(input: RoadmapTaskSyncInput): number[] {
   const { reply, tasks, alreadyDone, userMessage } = input;
@@ -182,24 +273,62 @@ export function inferCompletedTaskIndices(input: RoadmapTaskSyncInput): number[]
     return [];
   }
 
-  return parseCoachValidatedActionIndices(reply)
-    .filter(
-      (index) =>
-        index < tasks.length &&
-        !alreadyDone.includes(index) &&
-        userMessageFulfillsTask(tasks[index], userMessage)
-    )
-    .sort((a, b) => a - b);
+  const currentIndex = getNextPendingTaskIndex(tasks, alreadyDone);
+  if (currentIndex < 0) return [];
+
+  const validated = parseCoachValidatedActionIndices(reply).filter(
+    (index) =>
+      index === currentIndex &&
+      index < tasks.length &&
+      userMessageFulfillsTask(tasks[index], userMessage)
+  );
+
+  return validated.length ? [currentIndex] : [];
 }
 
-/** Conservé pour compatibilité — n'ajoute plus de validations automatiques. */
+/** Ajoute la présentation de l'action suivante après validation de l'action EN COURS. */
+export function appendNextActionIfValidated(
+  reply: string,
+  ctx: RoadmapCoachContext,
+  completedIndices: number[],
+  userMessage?: string
+): string {
+  if (!userMessage?.trim() || isCoachNavigationMessage(userMessage)) return reply;
+
+  const currentIndex = getNextPendingTaskIndex(ctx.tasks, completedIndices);
+  if (currentIndex < 0) return reply;
+  if (!userMessageFulfillsTask(ctx.tasks[currentIndex], userMessage)) return reply;
+
+  const withValidation = parseCoachValidatedActionIndices(reply).includes(currentIndex)
+    ? reply
+    : ensureCoachValidationLine(reply, ctx, completedIndices, userMessage);
+
+  if (!parseCoachValidatedActionIndices(withValidation).includes(currentIndex)) {
+    return reply;
+  }
+
+  const updatedDone = [...completedIndices, currentIndex];
+  const nextIndex = getNextPendingTaskIndex(ctx.tasks, updatedDone);
+  if (nextIndex < 0) {
+    if (/jour\s+\d+\s+termin/i.test(withValidation)) return withValidation;
+    return `${withValidation.trim()}\n\n${buildCoachDayCompletedMessage(ctx)}`;
+  }
+
+  const nextTaskSnippet = ctx.tasks[nextIndex].slice(0, 40);
+  if (withValidation.includes(nextTaskSnippet)) return withValidation;
+
+  return `${withValidation.trim()}\n\n${buildCoachNextActionPresentation(ctx, nextIndex, updatedDone.length)}`;
+}
+
+/** @deprecated Utiliser processRoadmapCoachReply */
 export function appendInferredCoachValidations(
   reply: string,
-  _userMessage: string,
-  _tasks: string[],
-  _alreadyDone: number[]
+  userMessage: string,
+  tasks: string[],
+  alreadyDone: number[]
 ): string {
-  return reply;
+  const ctx = { tasks } as RoadmapCoachContext;
+  return processRoadmapCoachReply(reply, ctx, alreadyDone, userMessage);
 }
 
 export function buildRoadmapTasksProgressBlock(
@@ -208,31 +337,35 @@ export function buildRoadmapTasksProgressBlock(
 ): string {
   if (!ctx.tasks.length) return '';
 
-  const doneSet = new Set(completedIndices);
-  const nextIndex = ctx.tasks.findIndex((_, index) => !doneSet.has(index));
-  const lines = ctx.tasks.map((task, index) => {
-    const status = doneSet.has(index) ? '[✓]' : '[ ]';
-    const marker = index === nextIndex ? ' ← ACTION EN COURS' : '';
-    return `  ${status} Action ${index + 1} : ${task}${marker}`;
-  });
+  const total = ctx.tasks.length;
+  const doneCount = completedIndices.length;
+  const nextIndex = getNextPendingTaskIndex(ctx.tasks, completedIndices);
 
-  const validationExample =
-    nextIndex >= 0
-      ? formatCoachActionValidationLine(nextIndex + 1, 'résumé court de ce qui a été fait')
-      : '';
+  if (nextIndex < 0) {
+    return `## Progression Mon plan
+${doneCount}/${total} actions validées — **jour terminé**. Félicite brièvement le client.`;
+  }
 
-  const nextLine =
-    nextIndex >= 0
-      ? `\n**Validation Mon plan (format OBLIGATOIRE)** :
-- Ne valide **jamais** sur un simple « continuer », « reprendre mon plan » ou une question sans livrable.
-- Guide d'abord l'Action ${nextIndex + 1}, demande au client de **faire l'exercice et coller sa réponse**.
-- Quand (et seulement quand) le client a fourni son livrable dans son message, termine par exactement :
-« ${validationExample} »
-Sans cette ligne + livrable client, Mon plan ne sera pas mis à jour. Une action à la fois sauf si le client envoie plusieurs livrables distincts.`
-      : '\n**Toutes les actions du jour sont cochées.** Félicite brièvement et propose le jour suivant.';
+  const validationExample = formatCoachActionValidationLine(
+    nextIndex + 1,
+    'résumé court de ce qui a été fait'
+  );
+  const hasNext = nextIndex + 1 < total;
+  const nextActionHint = hasNext
+    ? `\n- Juste après cette ligne, enchaîne dans le **MÊME** message avec le bloc Action ${nextIndex + 2} (titre ###, texte exact, guide court).`
+    : '\n- C\'était la dernière action : félicite sans enchaîner.';
 
-  return `## Progression actions du jour (synchronisée avec Mon plan)
-${lines.join('\n')}${nextLine}`;
+  return `## Progression Mon plan (${doneCount}/${total} validées)
+**Action EN COURS (une seule visible pour le client) :**
+Action ${nextIndex + 1} : ${ctx.tasks[nextIndex]}
+
+**Mode séquentiel strict :**
+- Ne répète **jamais** le titre du jour, l'objectif ou la phase coach (déjà affichés une fois).
+- Ne liste **jamais** les autres actions du jour.
+- Ne traite qu'**une** action à la fois.
+- Quand le client envoie son livrable pour l'Action ${nextIndex + 1}, termine par exactement :
+« ${validationExample} »${nextActionHint}
+- Sans livrable client + cette ligne, Mon plan ne sera pas mis à jour.`;
 }
 
 export interface CoachRoadmapTaskSyncResult {
@@ -283,16 +416,105 @@ export function applyCoachRoadmapTaskSync(
   };
 }
 
+interface CoachExchangeLike {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+/** Rattrape les actions déjà répondues dans l'historique (une ou plusieurs). */
+export function syncAllPendingActionsFromHistory(
+  businessId: BusinessId,
+  ctx: RoadmapCoachContext,
+  exchanges: CoachExchangeLike[],
+  progress?: RoadmapProgress | null
+): { progress: RoadmapProgress; followUp: string; totalSynced: number } | null {
+  let currentProgress = progress?.businessId === businessId ? progress : null;
+  let totalSynced = 0;
+  let followUp = '';
+
+  for (let attempt = 0; attempt < ctx.tasks.length; attempt++) {
+    const result = trySyncPendingActionFromHistory(
+      businessId,
+      ctx,
+      exchanges,
+      currentProgress
+    );
+    if (!result) break;
+    currentProgress = result.sync.progress;
+    followUp = result.followUp;
+    totalSynced += result.sync.newlyCompleted.length;
+  }
+
+  if (!totalSynced || !currentProgress) return null;
+  return { progress: currentProgress, followUp, totalSynced };
+}
+
+export function trySyncPendingActionFromHistory(
+  businessId: BusinessId,
+  ctx: RoadmapCoachContext,
+  exchanges: CoachExchangeLike[],
+  progress?: RoadmapProgress | null
+): { sync: CoachRoadmapTaskSyncResult; followUp: string } | null {
+  const totalTasks = ctx.tasks.length;
+  if (!totalTasks || !exchanges.length) return null;
+
+  const alreadyDone = getRoadmapDayTaskIndices(progress ?? null, ctx.day, totalTasks);
+  const currentIndex = getNextPendingTaskIndex(ctx.tasks, alreadyDone);
+  if (currentIndex < 0) return null;
+
+  let matchedUser: CoachExchangeLike | null = null;
+  let matchedAssistant: CoachExchangeLike | null = null;
+
+  for (let i = exchanges.length - 1; i >= 0; i--) {
+    const msg = exchanges[i];
+    if (msg.role !== 'user' || isCoachNavigationMessage(msg.content)) continue;
+    if (!userMessageFulfillsTask(ctx.tasks[currentIndex], msg.content)) continue;
+    matchedUser = msg;
+    matchedAssistant =
+      exchanges.slice(i + 1).find((next) => next.role === 'assistant') ?? null;
+    break;
+  }
+
+  if (!matchedUser) return null;
+
+  let reply = matchedAssistant?.content ?? '';
+  reply = processRoadmapCoachReply(reply, ctx, alreadyDone, matchedUser.content);
+
+  const sync = applyCoachRoadmapTaskSync(
+    businessId,
+    ctx,
+    reply,
+    progress?.businessId === businessId ? progress : null,
+    matchedUser.content
+  );
+
+  if (!sync?.newlyCompleted.length) return null;
+
+  const nextIndex = getNextPendingTaskIndex(
+    ctx.tasks,
+    getRoadmapDayTaskIndices(sync.progress, ctx.day, totalTasks)
+  );
+  const followUp =
+    nextIndex >= 0
+      ? buildCoachNextActionPresentation(
+          ctx,
+          nextIndex,
+          getRoadmapDayTaskIndices(sync.progress, ctx.day, totalTasks).length
+        )
+      : buildCoachDayCompletedMessage(ctx);
+
+  return { sync, followUp };
+}
+
 export function formatRoadmapTaskSyncNotice(result: CoachRoadmapTaskSyncResult): string | null {
   if (!result.newlyCompleted.length) return null;
 
-  const lines = result.newlyCompleted.map(
-    (index) => `✅ Action ${index + 1} validée dans Mon plan`
-  );
+  const actionNum = result.newlyCompleted[0] + 1;
+  const line = `✅ Action ${actionNum} validée dans Mon plan`;
 
   if (result.dayCompleted) {
-    return `${lines.join(' · ')} — jour terminé !`;
+    return `${line} — jour terminé !`;
   }
 
-  return `${lines.join(' · ')} (${result.tasksDone}/${result.tasksTotal})`;
+  return `${line} (${result.tasksDone}/${result.tasksTotal}) — action suivante ci-dessous`;
 }

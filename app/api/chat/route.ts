@@ -13,7 +13,7 @@ import {
 } from '@/lib/coach/token-usage';
 import { enrichCoachReply } from '@/lib/coach/enrich-reply';
 import { resolveContextualTools } from '@/lib/coach/contextual-tools';
-import { parseCoachValidatedActionIndices } from '@/lib/coach/roadmap-task-sync';
+import { appendNextActionIfValidated, parseCoachValidatedActionIndices, processRoadmapCoachReply } from '@/lib/coach/roadmap-task-sync';
 import {
   buildCoachProgressionReminderConcise,
   buildCoachQaReminderConcise,
@@ -113,9 +113,11 @@ function resolveRoadmapContextForRequest(
 function resolveInteractionModeForRequest(
   userText: string,
   roadmapContext: ReturnType<typeof parseRoadmapCoachContext>,
-  clientMode: unknown
+  clientMode: unknown,
+  planLinked: boolean
 ): CoachInteractionMode {
-  if (roadmapContext) return 'question';
+  if (roadmapContext && planLinked) return 'progression';
+  if (roadmapContext && !planLinked) return 'question';
   if (clientMode === 'question' || clientMode === 'progression') {
     return clientMode;
   }
@@ -229,7 +231,8 @@ export async function POST(request: Request) {
     const interactionMode = resolveInteractionModeForRequest(
       userText,
       roadmapContext,
-      body.coachInteractionMode
+      body.coachInteractionMode,
+      planLinked
     );
 
     const openai = getOpenAI();
@@ -313,6 +316,15 @@ export async function POST(request: Request) {
       roadmapContext,
       interactionMode,
     });
+
+    if (roadmapContext && planLinked) {
+      reply = processRoadmapCoachReply(
+        reply,
+        roadmapContext,
+        roadmapCompletedTasks,
+        userText
+      );
+    }
 
     const coachingPhase = roadmapContext
       ? memoryContext?.coachingPhase ?? 1
