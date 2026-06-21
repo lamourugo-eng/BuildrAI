@@ -45,7 +45,6 @@ import {
   inferCompletedTaskIndices,
   isCoachNavigationMessage,
   processRoadmapCoachReply,
-  syncAllPendingActionsFromHistory,
 } from '@/lib/coach/roadmap-task-sync';
 import { detectCoachInteractionMode, resolveRoadmapPlanInteractionMode } from '@/lib/coach/interaction-mode';
 import {
@@ -189,20 +188,6 @@ function buildChatDisplay(resumeWelcome: string, stored: CoachMessage[]): Messag
     return [{ role: 'assistant', content: resumeWelcome }];
   }
   return [{ role: 'assistant', content: resumeWelcome }, ...toDisplayMessages(stored)];
-}
-
-function runRoadmapCatchUpSync(
-  businessId: BusinessId,
-  ctx: RoadmapCoachContext,
-  exchanges: Message[]
-) {
-  const stored = loadRoadmapProgress();
-  return syncAllPendingActionsFromHistory(
-    businessId,
-    ctx,
-    exchanges,
-    stored?.businessId === businessId ? stored : null
-  );
 }
 
 function appendAssistantToChat(
@@ -533,34 +518,6 @@ export default function Coach({
         ? getRoadmapCompletedIndicesForDay(businessIdForWelcome, ctx.day, ctx.tasks.length)
         : [];
 
-    const historyForCatchUp = messages.some((m) => m.role === 'user')
-      ? messages
-      : toDisplayMessages(conversationMessages);
-
-    if (businessIdForWelcome) {
-      const catchUp = runRoadmapCatchUpSync(businessIdForWelcome, ctx, historyForCatchUp);
-      if (catchUp) {
-        completedForWelcome = getRoadmapDayTaskIndices(
-          catchUp.progress,
-          ctx.day,
-          ctx.tasks.length
-        );
-        setTaskSyncNotice(
-          catchUp.totalSynced > 1
-            ? `✅ ${catchUp.totalSynced} actions synchronisées dans Mon plan`
-            : formatRoadmapTaskSyncNotice({
-                day: ctx.day,
-                newlyCompleted: [completedForWelcome[completedForWelcome.length - 1]],
-                tasksDone: completedForWelcome.length,
-                tasksTotal: ctx.tasks.length,
-                dayCompleted: completedForWelcome.length >= ctx.tasks.length,
-                progress: catchUp.progress,
-              })!
-        );
-        setRoadmapProgressTick((tick) => tick + 1);
-      }
-    }
-
     const welcome = buildRoadmapCoachWelcome(ctx, businessName, completedForWelcome, {
       includeDayIntro: completedForWelcome.length === 0,
     });
@@ -689,40 +646,6 @@ export default function Coach({
           roadmapPayload.tasks.length
         );
         const nextIndex = getNextPendingTaskIndex(roadmapPayload.tasks, completed);
-
-        const catchUp = runRoadmapCatchUpSync(businessId, roadmapPayload, [
-          ...messages,
-          userMessage,
-        ]);
-        if (catchUp) {
-          setMessages((prev) => [...prev, { role: 'assistant', content: catchUp.followUp }]);
-          setTaskSyncNotice(
-            catchUp.totalSynced > 1
-              ? `✅ ${catchUp.totalSynced} actions synchronisées dans Mon plan`
-              : formatRoadmapTaskSyncNotice({
-                  day: roadmapPayload.day,
-                  newlyCompleted: [
-                    getRoadmapDayTaskIndices(catchUp.progress, roadmapPayload.day, roadmapPayload.tasks.length).slice(-1)[0],
-                  ],
-                  tasksDone: getRoadmapDayTaskIndices(
-                    catchUp.progress,
-                    roadmapPayload.day,
-                    roadmapPayload.tasks.length
-                  ).length,
-                  tasksTotal: roadmapPayload.tasks.length,
-                  dayCompleted:
-                    getRoadmapDayTaskIndices(
-                      catchUp.progress,
-                      roadmapPayload.day,
-                      roadmapPayload.tasks.length
-                    ).length >= roadmapPayload.tasks.length,
-                  progress: catchUp.progress,
-                })!
-          );
-          setRoadmapProgressTick((tick) => tick + 1);
-          setLoading(false);
-          return;
-        }
 
         const navReply =
           nextIndex >= 0

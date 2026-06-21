@@ -7,7 +7,6 @@ import {
 import type { RoadmapCoachContext } from '@/lib/coach/roadmap-coach-context';
 import {
   isDefinitionalQuestion,
-  looksLikeRoadmapDeliverable,
 } from '@/lib/coach/interaction-mode';
 import {
   businessUsesMarketSegment,
@@ -22,8 +21,24 @@ export const COACH_ACTION_VALIDATION_LINE =
 const COACH_VALIDATION_PATTERNS = [
   /✅\s*action\s*(\d+)\s*(?:du\s+jour\s*)?(?:validee|valid[eé]e|terminee|termin[eé]e|completee|compl[eé]t[eé]e)\b/gi,
   /\baction\s*(\d+)\s*(?:du\s+jour\s*)?(?:validee|valid[eé]e)\b/gi,
-  /(?:parfait|excellent|c['']est\s+bon|bien\s+jou[eé]|not[eé]|enregistr[eé]).{0,48}action\s*(\d+)\s*(?:validee|valid[eé]e)/gi,
 ];
+
+/** Le coach a explicitement accueilli le livrable (pas seulement donné des conseils). */
+function coachSignalsDeliverableAccepted(reply: string): boolean {
+  if (parseCoachValidatedActionIndices(reply).length > 0) return true;
+
+  const n = normalizeText(reply);
+  const asksForMore =
+    /envoie|redige|precise|il manque|peux-tu|complete|brouillon|pas encore|reformule|developpe|detaille|essaie plutot|manque encore/i.test(
+      n
+    );
+  const accepts =
+    /valid[eé]e|parfait|excellent|bravo|bien jou[eé]|c['']est bon|c est bon|bien recu|merci pour (?:ton|ta|votre)|not[eé]|enregistr[eé]|c'est exact|ca correspond|livrable (?:est )?(?:bon|ok|correct)|on passe|enchainons|passons a l['']action/i.test(
+      n
+    );
+
+  return accepts && !asksForMore;
+}
 
 /** Messages de navigation — ne doivent jamais cocher Mon plan. */
 const COACH_NAV_MESSAGE_PATTERNS = [
@@ -226,6 +241,7 @@ export function ensureCoachValidationLine(
   if (currentIndex < 0) return reply;
   if (!userMessageFulfillsTask(ctx.tasks[currentIndex], userMessage)) return reply;
   if (parseCoachValidatedActionIndices(reply).includes(currentIndex)) return reply;
+  if (!coachSignalsDeliverableAccepted(reply)) return reply;
 
   return `${reply.trim()}\n\n${formatCoachActionValidationLine(
     currentIndex + 1,
@@ -331,15 +347,25 @@ function userMessageMatchesTask(task: string, userMessage: string): boolean {
     return /\d+\s*€|euros|prix|tarif|forfait.*\d|mensuel|annuel/i.test(user);
   }
 
+  if (/audit du premier mois|liste tout ce que tu as lance/i.test(taskNorm)) {
+    return /lance|landing|essai|demo|client|vente|contact|pub|commande|mrr|pipeline/i.test(user);
+  }
+
+  if (/ce qui a converti|canal.*message.*gagnant/i.test(taskNorm)) {
+    return /converti|conversion|canal|script|message|reponse positive|rdv|vente/i.test(user);
+  }
+
+  if (/ce qui a bloque|freins principaux/i.test(taskNorm)) {
+    return /bloque|frein|peur|temps|technique|objection|probleme/i.test(user);
+  }
+
   const keywords = taskNorm
     .split(/[^a-z0-9]+/)
     .filter((word) => word.length > 4 && !['action', 'liste', 'note', 'verifie', 'definis'].includes(word));
   if (keywords.length === 0) return false;
 
   const hits = keywords.filter((word) => user.includes(word)).length;
-  if (hits >= Math.max(2, Math.ceil(keywords.length * 0.35))) return true;
-
-  return looksLikeRoadmapDeliverable(userMessage);
+  return hits >= Math.max(3, Math.ceil(keywords.length * 0.5));
 }
 
 /** Le client a fourni le livrable attendu pour cette action (pas seulement posé une question). */
@@ -540,32 +566,38 @@ interface CoachExchangeLike {
   content: string;
 }
 
-/** Rattrape les actions déjà répondues dans l'historique (une ou plusieurs). */
+/** Rattrape au plus une action depuis le dernier échange user → coach (pas tout l'historique). */
 export function syncAllPendingActionsFromHistory(
   businessId: BusinessId,
   ctx: RoadmapCoachContext,
   exchanges: CoachExchangeLike[],
   progress?: RoadmapProgress | null
 ): { progress: RoadmapProgress; followUp: string; totalSynced: number } | null {
-  let currentProgress = progress?.businessId === businessId ? progress : null;
-  let totalSynced = 0;
-  let followUp = '';
+  const result = trySyncPendingActionFromHistory(
+    businessId,
+    ctx,
+    exchanges,
+    progress
+  );
+  if (!result) return null;
 
-  for (let attempt = 0; attempt < ctx.tasks.length; attempt++) {
-    const result = trySyncPendingActionFromHistory(
-      businessId,
-      ctx,
-      exchanges,
-      currentProgress
-    );
-    if (!result) break;
-    currentProgress = result.sync.progress;
-    followUp = result.followUp;
-    totalSynced += result.sync.newlyCompleted.length;
+  return {
+    progress: result.sync.progress,
+    followUp: result.followUp,
+    totalSynced: result.sync.newlyCompleted.length,
+  };
+}
+
+function findLastCoachExchange(
+  exchanges: CoachExchangeLike[]
+): { user: CoachExchangeLike; assistant: CoachExchangeLike | null } | null {
+  for (let i = exchanges.length - 1; i >= 0; i--) {
+    const msg = exchanges[i];
+    if (msg.role !== 'user' || isCoachNavigationMessage(msg.content)) continue;
+    const assistant = exchanges[i + 1]?.role === 'assistant' ? exchanges[i + 1] : null;
+    return { user: msg, assistant };
   }
-
-  if (!totalSynced || !currentProgress) return null;
-  return { progress: currentProgress, followUp, totalSynced };
+  return null;
 }
 
 export function trySyncPendingActionFromHistory(
@@ -581,30 +613,24 @@ export function trySyncPendingActionFromHistory(
   const currentIndex = getNextPendingTaskIndex(ctx.tasks, alreadyDone);
   if (currentIndex < 0) return null;
 
-  let matchedUser: CoachExchangeLike | null = null;
-  let matchedAssistant: CoachExchangeLike | null = null;
+  const lastExchange = findLastCoachExchange(exchanges);
+  if (!lastExchange) return null;
+  if (!userMessageFulfillsTask(ctx.tasks[currentIndex], lastExchange.user.content)) return null;
 
-  for (let i = exchanges.length - 1; i >= 0; i--) {
-    const msg = exchanges[i];
-    if (msg.role !== 'user' || isCoachNavigationMessage(msg.content)) continue;
-    if (!userMessageFulfillsTask(ctx.tasks[currentIndex], msg.content)) continue;
-    matchedUser = msg;
-    matchedAssistant =
-      exchanges.slice(i + 1).find((next) => next.role === 'assistant') ?? null;
-    break;
+  let reply = lastExchange.assistant?.content ?? '';
+  if (!reply.trim()) return null;
+  if (!coachSignalsDeliverableAccepted(reply) && !parseCoachValidatedActionIndices(reply).includes(currentIndex)) {
+    return null;
   }
 
-  if (!matchedUser) return null;
-
-  let reply = matchedAssistant?.content ?? '';
-  reply = processRoadmapCoachReply(reply, ctx, alreadyDone, matchedUser.content);
+  reply = processRoadmapCoachReply(reply, ctx, alreadyDone, lastExchange.user.content);
 
   const sync = applyCoachRoadmapTaskSync(
     businessId,
     ctx,
     reply,
     progress?.businessId === businessId ? progress : null,
-    matchedUser.content
+    lastExchange.user.content
   );
 
   if (!sync?.newlyCompleted.length) return null;
