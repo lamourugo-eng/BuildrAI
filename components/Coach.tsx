@@ -47,7 +47,7 @@ import {
   processRoadmapCoachReply,
   syncAllPendingActionsFromHistory,
 } from '@/lib/coach/roadmap-task-sync';
-import { detectCoachInteractionMode } from '@/lib/coach/interaction-mode';
+import { detectCoachInteractionMode, resolveRoadmapPlanInteractionMode } from '@/lib/coach/interaction-mode';
 import {
   detectRoadmapDayInMessage,
   getRoadmapDayForCoach,
@@ -609,14 +609,21 @@ export default function Coach({
     if (!text.trim() || loading || initializing || coachLimitReached) return;
 
     const trimmed = text.trim();
-    const interaction = detectCoachInteractionMode(trimmed);
+    const willBePlanLinked = options?.forcePlan
+      ? true
+      : options?.forceFree
+        ? false
+        : planLinked || detectCoachInteractionMode(trimmed) === 'progression';
+
+    const interaction = willBePlanLinked
+      ? resolveRoadmapPlanInteractionMode(trimmed)
+      : detectCoachInteractionMode(trimmed);
+
     const nextPlanLinked = options?.forcePlan
       ? true
       : options?.forceFree
         ? false
-        : interaction === 'progression'
-          ? true
-          : planLinked;
+        : willBePlanLinked;
 
     if (nextPlanLinked !== planLinked) {
       setPlanLinked(nextPlanLinked);

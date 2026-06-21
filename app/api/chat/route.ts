@@ -21,7 +21,8 @@ import {
 import type { CoachInteractionMode } from '@/lib/coach/interaction-mode';
 import {
   detectCoachInteractionMode,
-  isCoachFreeQuestionMessage,
+  isDefinitionalQuestion,
+  resolveRoadmapPlanInteractionMode,
 } from '@/lib/coach/interaction-mode';
 import {
   appendProductExchange,
@@ -151,16 +152,19 @@ function resolveInteractionModeForRequest(
   clientMode: unknown,
   planLinked: boolean
 ): CoachInteractionMode {
-  if (isCoachFreeQuestionMessage(userText)) return 'question';
+  if (roadmapContext && planLinked) {
+    if (clientMode === 'question' && isDefinitionalQuestion(userText)) return 'question';
+    if (clientMode === 'progression') return 'progression';
+    return resolveRoadmapPlanInteractionMode(userText);
+  }
+
+  if (isDefinitionalQuestion(userText)) return 'question';
 
   const resolved =
     clientMode === 'question' || clientMode === 'progression'
       ? clientMode
       : detectCoachInteractionMode(userText);
 
-  if (roadmapContext && planLinked) {
-    return resolved === 'question' ? 'question' : 'progression';
-  }
   if (roadmapContext && !planLinked) return 'question';
   return resolved;
 }

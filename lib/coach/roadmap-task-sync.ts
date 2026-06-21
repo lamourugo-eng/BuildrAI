@@ -5,7 +5,10 @@ import {
   type RoadmapProgress,
 } from '@/lib/account/roadmap-storage';
 import type { RoadmapCoachContext } from '@/lib/coach/roadmap-coach-context';
-import { isCoachFreeQuestionMessage } from '@/lib/coach/interaction-mode';
+import {
+  isDefinitionalQuestion,
+  looksLikeRoadmapDeliverable,
+} from '@/lib/coach/interaction-mode';
 import {
   businessUsesMarketSegment,
   detectMarketSegmentFromText,
@@ -19,6 +22,7 @@ export const COACH_ACTION_VALIDATION_LINE =
 const COACH_VALIDATION_PATTERNS = [
   /✅\s*action\s*(\d+)\s*(?:du\s+jour\s*)?(?:validee|valid[eé]e|terminee|termin[eé]e|completee|compl[eé]t[eé]e)\b/gi,
   /\baction\s*(\d+)\s*(?:du\s+jour\s*)?(?:validee|valid[eé]e)\b/gi,
+  /(?:parfait|excellent|c['']est\s+bon|bien\s+jou[eé]|not[eé]|enregistr[eé]).{0,48}action\s*(\d+)\s*(?:validee|valid[eé]e)/gi,
 ];
 
 /** Messages de navigation — ne doivent jamais cocher Mon plan. */
@@ -256,7 +260,7 @@ function countListItems(text: string): number {
 
 /** Détecte si le message utilisateur contient le livrable d'une action du jour. */
 function userMessageMatchesTask(task: string, userMessage: string): boolean {
-  if (isCoachFreeQuestionMessage(userMessage)) return false;
+  if (isDefinitionalQuestion(userMessage)) return false;
 
   const user = normalizeText(userMessage);
   const taskNorm = normalizeText(task);
@@ -333,7 +337,9 @@ function userMessageMatchesTask(task: string, userMessage: string): boolean {
   if (keywords.length === 0) return false;
 
   const hits = keywords.filter((word) => user.includes(word)).length;
-  return hits >= Math.max(2, Math.ceil(keywords.length * 0.45));
+  if (hits >= Math.max(2, Math.ceil(keywords.length * 0.35))) return true;
+
+  return looksLikeRoadmapDeliverable(userMessage);
 }
 
 /** Le client a fourni le livrable attendu pour cette action (pas seulement posé une question). */
@@ -403,12 +409,19 @@ export function appendNextActionIfValidated(
     return `${withValidation.trim()}\n\n${buildCoachDayCompletedMessage(ctx)}`;
   }
 
+  const nextActionNum = nextIndex + 1;
+  if (coachAlreadyPresentedAction(withValidation, nextActionNum)) return withValidation;
+
   const nextTaskSnippet = ctx.tasks[nextIndex].slice(0, 40);
   if (withValidation.includes(nextTaskSnippet)) return withValidation;
 
   return `${withValidation.trim()}\n\n${buildCoachNextActionPresentation(ctx, nextIndex, updatedDone.length, {
     variant: 'next',
   })}`;
+}
+
+function coachAlreadyPresentedAction(reply: string, actionNumber: number): boolean {
+  return new RegExp(`###\\s*Action\\s+${actionNumber}(?:\\/|\\s)`, 'i').test(reply);
 }
 
 /** @deprecated Utiliser processRoadmapCoachReply */

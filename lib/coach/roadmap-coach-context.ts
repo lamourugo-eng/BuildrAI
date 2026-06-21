@@ -179,10 +179,10 @@ export function buildRoadmapCoachReminder(
   const focusHint =
     nextIndex >= 0
       ? hasNext
-        ? ` STRICT : Action ${nextIndex + 1} seule. Livrable reçu → valide puis ### Action ${nextIndex + 2}. Pas de répétition du contexte jour. Pas de liste d'actions.`
+        ? ` STRICT : Action ${nextIndex + 1} seule. Livrable reçu → ligne « ✅ Action ${nextIndex + 1} validée : … » PUIS immédiatement ### Action ${nextIndex + 2}/${ctx.tasks.length} dans le MÊME message. Pas de répétition du contexte jour.`
         : ` Dernière action (${nextIndex + 1}). Livrable reçu → valide puis félicite.`
       : ' Jour terminé.';
-  return `[Parcours jour ${ctx.day}. Action ${nextIndex >= 0 ? nextIndex + 1 : '—'}/${ctx.tasks.length}]${focusHint} 80–200 mots max.`;
+  return `[Parcours jour ${ctx.day}. Action ${nextIndex >= 0 ? nextIndex + 1 : '—'}/${ctx.tasks.length}]${focusHint} Feedback court OK, mais enchaîne toujours sur l'action suivante si livrable reçu. 80–200 mots max.`;
 }
 
 /** Consigne interne pour une question libre pendant Mon plan. */

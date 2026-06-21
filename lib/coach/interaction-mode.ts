@@ -17,24 +17,68 @@ const QUESTION_PATTERNS = [
 ];
 
 /** Question de définition / clarification — ne doit jamais valider une action Mon plan. */
-export function isCoachFreeQuestionMessage(userMessage?: string): boolean {
-  return detectCoachInteractionMode(userMessage) === 'question';
-}
+export function isDefinitionalQuestion(text: string): boolean {
+  const trimmed = text.trim();
+  if (!trimmed) return false;
 
-function isDefinitionalQuestion(text: string): boolean {
   if (
     /^(quest\s*ce\s*que|qu['']?\s*est[- ]ce\s*qu|qu['']?\s*est\s*qu|c['']?\s*est\s*quoi|c est quoi|d[eé]finis|d[eé]finition\s*(de|d['']|du)?|explique[- ]moi|aide[- ]moi\s+[àa]\s+comprendre)/i.test(
-      text
+      trimmed
     )
   ) {
     return true;
   }
 
-  if (/\?/.test(text) && !PROGRESSION_PATTERNS.some((pattern) => pattern.test(text))) {
+  // Question courte sans contenu livrable
+  if (
+    trimmed.length < 120 &&
+    /\?/.test(trimmed) &&
+    !looksLikeRoadmapDeliverable(trimmed) &&
+    !PROGRESSION_PATTERNS.some((pattern) => pattern.test(trimmed))
+  ) {
     return true;
   }
 
   return false;
+}
+
+/** Livrable Mon plan (texte, liste, choix…) — pas une simple question. */
+export function looksLikeRoadmapDeliverable(userMessage?: string): boolean {
+  const text = userMessage?.trim() ?? '';
+  if (text.length < 28) return false;
+  if (/^(quest\s*ce\s*que|qu['']?\s*est|c['']?\s*est\s*quoi|d[eé]finis|explique[- ]moi)/i.test(text)) {
+    return false;
+  }
+
+  const signals = [
+    /(?:^|\n)\s*(?:[-*•]|\d+[.)])\s+/m,
+    /mon client|j'aide|je vise|notre offre|persona|frustration|b2b|b2c|forfait|pitch|accroche/i,
+    /.{90,}/,
+    /:\s*\S.{12,}/,
+    /\n\s*\n/,
+    /\b(j'ai|nous avons|voici|mon offre|ma cible|segment|niche)\b/i,
+  ];
+
+  return signals.some((pattern) => pattern.test(text));
+}
+
+/** Question libre sans livrable — ne pas cocher Mon plan. */
+export function isCoachFreeQuestionMessage(userMessage?: string): boolean {
+  const text = userMessage?.trim() ?? '';
+  if (!text) return false;
+  if (looksLikeRoadmapDeliverable(text)) return false;
+  return isDefinitionalQuestion(text);
+}
+
+/** Mode interaction quand Mon plan est actif : livrables → progression séquentielle. */
+export function resolveRoadmapPlanInteractionMode(userMessage?: string): CoachInteractionMode {
+  const text = userMessage?.trim() ?? '';
+  if (!text) return 'progression';
+  if (isDefinitionalQuestion(text)) return 'question';
+  if (looksLikeRoadmapDeliverable(text)) return 'progression';
+  if (PROGRESSION_PATTERNS.some((pattern) => pattern.test(text))) return 'progression';
+  if (text.length >= 60) return 'progression';
+  return 'question';
 }
 
 /** Détecte si l'utilisateur pose une question libre ou veut avancer dans le parcours 8 étapes. */
@@ -54,10 +98,6 @@ export function detectCoachInteractionMode(userMessage?: string): CoachInteracti
   }
 
   if (looksLikeQuestion) {
-    return 'question';
-  }
-
-  if (text.length > 100 && !looksLikeProgression) {
     return 'question';
   }
 
