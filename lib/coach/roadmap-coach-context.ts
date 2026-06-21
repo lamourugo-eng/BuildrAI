@@ -153,9 +153,10 @@ export function buildRoadmapCoachSystemBlock(
 ): string {
   const phaseLine = ctx.phaseName ? `\n- Phase coach liée : ${ctx.phaseName}` : '';
   const nextIndex = getNextPendingTaskIndex(ctx.tasks, completedTaskIndices);
+  const nextActionNum = nextIndex >= 0 ? nextIndex + 1 : null;
   const currentTaskLine =
     nextIndex >= 0
-      ? `\n- Action en cours (seule à traiter) : ${ctx.tasks[nextIndex]}`
+      ? `\n- Action en cours (seule à traiter) : **Action ${nextActionNum}/${ctx.tasks.length}** — ${ctx.tasks[nextIndex]}`
       : '\n- Toutes les actions du jour sont validées.';
   const tipLine = ctx.tip && nextIndex === 0 ? `\n- Conseil modèle : ${ctx.tip}` : '';
   const progressLine = ctx.tasks.length

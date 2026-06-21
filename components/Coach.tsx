@@ -51,9 +51,9 @@ import { detectCoachInteractionMode, resolveRoadmapPlanInteractionMode } from '@
 import {
   detectRoadmapDayInMessage,
   getRoadmapDayForCoach,
-  roadmapDayToCoachContext,
+  resolveCoachRoadmapContext,
+  resolveLiveCoachRoadmapContext,
 } from '@/lib/coach/resolve-roadmap-day';
-import { resolveCurrentRoadmapStep } from '@/lib/quiz/current-roadmap-step';
 import { getPhaseById } from '@/lib/coach/journey';
 import { COACH_BUDGET_ERROR_CODE } from '@/lib/coach/token-budget';
 import { getSiteToolRecommendation } from '@/lib/coach/tools';
@@ -86,19 +86,29 @@ function getRoadmapCompletedIndicesForDay(
   );
 }
 
-function resolveCoachRoadmapContext(
-  businessId: BusinessId | undefined,
-  activeContext: RoadmapCoachContext | null,
+function coachRoadmapResolveOptions(
   profile: QuizProfileSnapshot | null,
   isSubscribed: boolean
+) {
+  return {
+    businessName: profile?.topBusinessName,
+    progress: loadRoadmapProgress(),
+    isSubscribed,
+  };
+}
+
+function refreshCoachRoadmapContext(
+  businessId: BusinessId,
+  profile: QuizProfileSnapshot | null,
+  isSubscribed: boolean,
+  pinned: RoadmapCoachContext | null,
+  options?: { forceLive?: boolean }
 ): RoadmapCoachContext | undefined {
-  if (activeContext) return activeContext;
-  if (!businessId || !isSubscribed) return undefined;
-
-  const step = resolveCurrentRoadmapStep(businessId, true);
-  if (step.status === 'completed_all') return undefined;
-
-  return roadmapDayToCoachContext(step.day, businessId, profile?.topBusinessName);
+  const resolveOptions = coachRoadmapResolveOptions(profile, isSubscribed);
+  const ctx = options?.forceLive
+    ? resolveLiveCoachRoadmapContext(businessId, resolveOptions)
+    : resolveCoachRoadmapContext(businessId, pinned, resolveOptions);
+  return ctx ?? undefined;
 }
 
 function buildRoadmapAwareResumeWelcome(
@@ -107,13 +117,16 @@ function buildRoadmapAwareResumeWelcome(
   isSubscribed: boolean,
   fallback: string
 ): string {
-  const ctx = resolveCoachRoadmapContext(
+  if (!businessId) return fallback;
+
+  const ctx = refreshCoachRoadmapContext(
     businessId,
-    loadActiveRoadmapCoachContext(),
     profile,
-    isSubscribed
+    isSubscribed,
+    loadActiveRoadmapCoachContext(),
+    { forceLive: true }
   );
-  if (!ctx || !businessId || !ctx.tasks.length) return fallback;
+  if (!ctx || !ctx.tasks.length) return fallback;
 
   const completed = getRoadmapCompletedIndicesForDay(businessId, ctx.day, ctx.tasks.length);
   return buildRoadmapCoachResumeWelcome(ctx, completed);
@@ -466,20 +479,21 @@ export default function Coach({
   }
 
   useEffect(() => {
-    const stored = loadActiveRoadmapCoachContext();
-    if (stored) {
-      setActiveRoadmapContext(stored);
-      return;
-    }
-
     const profile = activeProfile ?? quizProfile;
     const businessId = selectedBusinessId ?? profile?.topBusinessId;
-    const ctx = resolveCoachRoadmapContext(businessId, null, profile, isSubscribed);
+    if (!businessId || !isSubscribed) return;
+
+    const ctx = refreshCoachRoadmapContext(
+      businessId,
+      profile,
+      isSubscribed,
+      loadActiveRoadmapCoachContext()
+    );
     if (ctx) {
       setActiveRoadmapContext(ctx);
       persistActiveRoadmapCoachContext(ctx);
     }
-  }, [activeProfile, quizProfile, selectedBusinessId, isSubscribed]);
+  }, [activeProfile, quizProfile, selectedBusinessId, isSubscribed, roadmapProgressTick]);
 
   useEffect(() => {
     if (!taskSyncNotice) return;
@@ -500,11 +514,20 @@ export default function Coach({
     roadmapHandledRef.current = true;
     router.replace('/espace?section=coach', { scroll: false });
 
-    const ctx = consumeRoadmapCoachContext();
-    if (!ctx) return;
+    const consumed = consumeRoadmapCoachContext();
+    if (!consumed) return;
 
     const businessName = activeProfile?.topBusinessName ?? 'ton projet';
     const businessIdForWelcome = selectedBusinessId ?? activeProfile?.topBusinessId;
+    const ctx =
+      (businessIdForWelcome &&
+        resolveLiveCoachRoadmapContext(businessIdForWelcome, {
+          ...coachRoadmapResolveOptions(activeProfile, isSubscribed),
+          preferGlobalDay: consumed.day,
+          businessName,
+        })) ??
+      consumed;
+
     let completedForWelcome =
       businessIdForWelcome && ctx.tasks.length
         ? getRoadmapCompletedIndicesForDay(businessIdForWelcome, ctx.day, ctx.tasks.length)
@@ -558,24 +581,32 @@ export default function Coach({
     businessId: BusinessId | undefined,
     linkedToPlan: boolean
   ): RoadmapCoachContext | undefined {
-    if (businessId) {
-      const detectedDay = detectRoadmapDayInMessage(text);
-      if (detectedDay != null) {
-        const resolved = getRoadmapDayForCoach(businessId, detectedDay);
-        if (resolved) {
-          setActiveRoadmapContext(resolved);
-          persistActiveRoadmapCoachContext(resolved);
-          setPlanLinked(true);
-          return resolved;
-        }
+    if (!businessId || !linkedToPlan) return undefined;
+
+    const progress = loadRoadmapProgress();
+    const marketSegment =
+      progress?.businessId === businessId ? progress.marketSegment ?? null : null;
+    const resolveOptions = coachRoadmapResolveOptions(activeProfile, isSubscribed);
+
+    if (detectRoadmapDayInMessage(text) != null) {
+      const detectedDay = detectRoadmapDayInMessage(text)!;
+      const resolved = getRoadmapDayForCoach(businessId, detectedDay, marketSegment);
+      if (resolved) {
+        setActiveRoadmapContext(resolved);
+        persistActiveRoadmapCoachContext(resolved);
+        setPlanLinked(true);
+        return resolved;
       }
     }
 
-    if (!linkedToPlan) return undefined;
-
-    const payload =
-      activeRoadmapContext ??
-      resolveCoachRoadmapContext(businessId, null, activeProfile, isSubscribed);
+    const forceLive = isCoachNavigationMessage(text);
+    const payload = refreshCoachRoadmapContext(
+      businessId,
+      activeProfile,
+      isSubscribed,
+      forceLive ? null : activeRoadmapContext,
+      { forceLive }
+    );
 
     if (payload) {
       setActiveRoadmapContext(payload);
@@ -587,11 +618,11 @@ export default function Coach({
 
   function resumePlan() {
     const businessId = selectedBusinessId ?? activeProfile?.topBusinessId;
-    const ctx =
-      activeRoadmapContext ??
-      (businessId
-        ? resolveCoachRoadmapContext(businessId, null, activeProfile, isSubscribed)
-        : undefined);
+    const ctx = businessId
+      ? refreshCoachRoadmapContext(businessId, activeProfile, isSubscribed, null, {
+          forceLive: true,
+        })
+      : undefined;
 
     if (ctx) {
       setActiveRoadmapContext(ctx);
@@ -858,7 +889,19 @@ export default function Coach({
         setCoachingPhase(data.meta.coachingPhase);
       }
 
-      if (data.roadmapContext) {
+      if (businessId && nextPlanLinked && interaction !== 'question') {
+        const refreshed = refreshCoachRoadmapContext(
+          businessId,
+          activeProfile,
+          isSubscribed,
+          null,
+          { forceLive: true }
+        );
+        if (refreshed) {
+          setActiveRoadmapContext(refreshed);
+          persistActiveRoadmapCoachContext(refreshed);
+        }
+      } else if (data.roadmapContext) {
         setActiveRoadmapContext(data.roadmapContext);
         persistActiveRoadmapCoachContext(data.roadmapContext);
       }
@@ -896,6 +939,17 @@ export default function Coach({
         if (notice) setTaskSyncNotice(notice);
         if (syncResult?.newlyCompleted.length) {
           setRoadmapProgressTick((tick) => tick + 1);
+          const refreshed = refreshCoachRoadmapContext(
+            businessId,
+            activeProfile,
+            isSubscribed,
+            null,
+            { forceLive: true }
+          );
+          if (refreshed) {
+            setActiveRoadmapContext(refreshed);
+            persistActiveRoadmapCoachContext(refreshed);
+          }
         }
       }
 
@@ -943,13 +997,10 @@ export default function Coach({
     !planLinked &&
       isSubscribed &&
       activeProfile &&
-      (activeRoadmapContext ??
-        resolveCoachRoadmapContext(
-          selectedBusinessId ?? activeProfile.topBusinessId,
-          null,
-          activeProfile,
-          isSubscribed
-        ))
+      resolveLiveCoachRoadmapContext(
+        selectedBusinessId ?? activeProfile.topBusinessId,
+        coachRoadmapResolveOptions(activeProfile, isSubscribed)
+      )
   );
   const roadmapTaskProgress =
     activeRoadmapContext && activeProfile && activeRoadmapContext.tasks.length > 0

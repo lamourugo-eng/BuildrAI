@@ -1,10 +1,8 @@
-import { loadRoadmapProgress } from '@/lib/account/roadmap-storage';
+import { getRoadmapDayTaskIndices, loadRoadmapProgress } from '@/lib/account/roadmap-storage';
 import { getUnlockedRoadmapMonths, loadSubscriptionMeta } from '@/lib/account/subscription-storage';
+import { countRoadmapDayTasks, findWorkingRoadmapDay } from '@/lib/coach/resolve-roadmap-day';
 import type { BusinessId } from '@/lib/quiz/data';
-import {
-  buildPremiumRoadmap,
-  type RoadmapDay,
-} from '@/lib/quiz/premium-roadmap';
+import { buildPremiumRoadmap, type RoadmapDay } from '@/lib/quiz/premium-roadmap';
 
 export type RoadmapStepStatus = 'start' | 'in_progress' | 'completed_all';
 
@@ -26,18 +24,37 @@ export function resolveCurrentRoadmapStep(
   const marketSegment =
     progress?.businessId === businessId ? progress.marketSegment ?? null : null;
   const plan = buildPremiumRoadmap(businessId, unlockedMonths, { marketSegment });
-  const completed = new Set(
-    progress?.businessId === businessId ? progress.completedDays : []
-  );
 
   const unlockedDays = plan.activeDays.filter((d) => !d.locked);
-  const nextDay = unlockedDays.find((d) => !completed.has(d.day));
+  const workingDay = findWorkingRoadmapDay(plan, progress, businessId);
+  const allComplete =
+    workingDay &&
+    unlockedDays.length > 0 &&
+    unlockedDays.every((d) => {
+      const total = countRoadmapDayTasks(d);
+      if (total <= 0) return true;
+      return (
+        getRoadmapDayTaskIndices(
+          progress?.businessId === businessId ? progress : null,
+          d.day,
+          total
+        ).length >= total
+      );
+    });
 
-  if (nextDay) {
+  if (workingDay && !allComplete) {
+    const totalTasks = countRoadmapDayTasks(workingDay);
+    const doneCount = getRoadmapDayTaskIndices(
+      progress?.businessId === businessId ? progress : null,
+      workingDay.day,
+      totalTasks
+    ).length;
+
     return {
-      day: nextDay,
-      status: completed.size > 0 ? 'in_progress' : 'start',
-      completedCount: completed.size,
+      day: workingDay,
+      status:
+        doneCount <= 0 ? 'start' : doneCount >= totalTasks ? 'completed_all' : 'in_progress',
+      completedCount: progress?.businessId === businessId ? progress.completedDays.length : 0,
       unlockedDays: plan.totalUnlockedDays,
     };
   }
@@ -46,7 +63,7 @@ export function resolveCurrentRoadmapStep(
   return {
     day: lastDay,
     status: 'completed_all',
-    completedCount: completed.size,
+    completedCount: progress?.businessId === businessId ? progress.completedDays.length : 0,
     unlockedDays: plan.totalUnlockedDays,
   };
 }
