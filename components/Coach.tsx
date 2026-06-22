@@ -46,7 +46,7 @@ import {
   isCoachNavigationMessage,
   processRoadmapCoachReply,
 } from '@/lib/coach/roadmap-task-sync';
-import { detectCoachInteractionMode, resolveRoadmapPlanInteractionMode } from '@/lib/coach/interaction-mode';
+import { detectCoachInteractionMode, isDefinitionalQuestion, resolveRoadmapPlanInteractionMode } from '@/lib/coach/interaction-mode';
 import {
   detectRoadmapDayInMessage,
   getRoadmapDayForCoach,
@@ -603,9 +603,12 @@ export default function Coach({
         ? false
         : planLinked || detectCoachInteractionMode(trimmed) === 'progression';
 
-    const interaction = willBePlanLinked
-      ? resolveRoadmapPlanInteractionMode(trimmed)
-      : detectCoachInteractionMode(trimmed);
+    const interaction =
+      willBePlanLinked && !isDefinitionalQuestion(trimmed)
+        ? 'progression'
+        : willBePlanLinked
+          ? resolveRoadmapPlanInteractionMode(trimmed)
+          : detectCoachInteractionMode(trimmed);
 
     const nextPlanLinked = options?.forcePlan
       ? true
@@ -691,11 +694,9 @@ export default function Coach({
           : null;
 
       const apiInteractionMode: 'question' | 'progression' =
-        interaction === 'question'
-          ? 'question'
-          : nextPlanLinked && roadmapPayload
-            ? 'progression'
-            : interaction;
+        nextPlanLinked && roadmapPayload && !isDefinitionalQuestion(trimmed)
+          ? 'progression'
+          : interaction;
       const memoryPayload =
         apiInteractionMode === 'question'
           ? enrichedMemory
@@ -761,7 +762,12 @@ export default function Coach({
         : activeRoadmapContext;
 
       let finalReply = assistantMessage.content;
-      if (syncContextForReply && businessId && nextPlanLinked && interaction !== 'question') {
+      const shouldProcessPlanReply =
+        syncContextForReply &&
+        businessId &&
+        nextPlanLinked &&
+        !isDefinitionalQuestion(trimmed);
+      if (shouldProcessPlanReply) {
         const doneBefore = getRoadmapCompletedIndicesForDay(
           businessId,
           syncContextForReply.day,
@@ -812,7 +818,7 @@ export default function Coach({
         setCoachingPhase(data.meta.coachingPhase);
       }
 
-      if (businessId && nextPlanLinked && interaction !== 'question') {
+      if (businessId && nextPlanLinked && !isDefinitionalQuestion(trimmed)) {
         const refreshed = refreshCoachRoadmapContext(
           businessId,
           activeProfile,
@@ -830,7 +836,7 @@ export default function Coach({
       }
 
       const syncContext = (() => {
-        if (interaction === 'question') return null;
+        if (isDefinitionalQuestion(trimmed)) return null;
         if (nextPlanLinked) {
           return roadmapPayload ?? data.roadmapContext ?? activeRoadmapContext ?? null;
         }

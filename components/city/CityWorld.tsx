@@ -53,6 +53,15 @@ export default function CityWorld({
 
   const heroPos = gridToScreen(ISO_HERO.gx, ISO_HERO.gy, compact);
   const gridTiles = useMemo(() => generateGridTiles(), []);
+  const [selectedBuildingId, setSelectedBuildingId] = useState<string | null>(null);
+
+  function handleBuildingSelect(buildingId: string) {
+    setSelectedBuildingId((current) => (current === buildingId ? null : buildingId));
+  }
+
+  function clearBuildingSelection() {
+    setSelectedBuildingId(null);
+  }
 
   useEffect(() => {
     if (newBuildingIds.length > 0) {
@@ -99,7 +108,7 @@ export default function CityWorld({
 
       {!compact && <CityWorldOverlay snapshot={snapshot} />}
 
-      <div className="city-iso-viewport">
+      <div className="city-iso-viewport" onClick={compact ? undefined : clearBuildingSelection}>
         <div className={`city-iso-scene${compact ? ' city-iso-scene--compact' : ''}`}>
           {gridTiles.map(({ gx, gy, key }) => (
             <IsoTile key={key} gx={gx} gy={gy} compact={compact} />
@@ -131,6 +140,8 @@ export default function CityWorld({
               compact={compact}
               isNew={newBuildingIds.includes(building.id)}
               appearIndex={index}
+              isSelected={selectedBuildingId === building.id}
+              onSelect={compact ? undefined : handleBuildingSelect}
             />
           ))}
 
@@ -144,6 +155,8 @@ export default function CityWorld({
                 compact={compact}
                 isNew={newBuildingIds.includes('foundation')}
                 appearIndex={0}
+                isSelected={selectedBuildingId === 'foundation'}
+                onSelect={compact ? undefined : handleBuildingSelect}
               />
             );
           })()}

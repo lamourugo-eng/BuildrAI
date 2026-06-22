@@ -23,21 +23,23 @@ const COACH_VALIDATION_PATTERNS = [
   /\baction\s*(\d+)\s*(?:du\s+jour\s*)?(?:validee|valid[eé]e)\b/gi,
 ];
 
-/** Le coach a explicitement accueilli le livrable (pas seulement donné des conseils). */
-function coachSignalsDeliverableAccepted(reply: string): boolean {
-  if (parseCoachValidatedActionIndices(reply).length > 0) return true;
-
+/** Le coach refuse explicitement le livrable (sinon on peut avancer). */
+function coachExplicitlyRejectsDeliverable(reply: string): boolean {
   const n = normalizeText(reply);
-  const asksForMore =
-    /envoie|redige|precise|il manque|peux-tu|complete|brouillon|pas encore|reformule|developpe|detaille|essaie plutot|manque encore/i.test(
-      n
-    );
-  const accepts =
-    /valid[eé]e|parfait|excellent|bravo|bien jou[eé]|c['']est bon|c est bon|bien recu|merci pour (?:ton|ta|votre)|not[eé]|enregistr[eé]|c'est exact|ca correspond|livrable (?:est )?(?:bon|ok|correct)|on passe|enchainons|passons a l['']action/i.test(
-      n
-    );
+  return /pas encore|incomplet|il manque|pas assez|reformule|reessaie|pas valide|ne valide pas|trop court|insuffisant|precise davantage|peux-tu (?:preciser|completer|developper)|ce n'est pas suffisant|pas tout a fait/i.test(
+    n
+  );
+}
 
-  return accepts && !asksForMore;
+function userLikelySubmittedDeliverable(userMessage: string): boolean {
+  const text = userMessage.trim();
+  if (text.length < 22) return false;
+  if (isDefinitionalQuestion(text)) return false;
+  if (isCoachNavigationMessage(text)) return false;
+  if (text.length < 100 && /\?\s*$/.test(text) && !/(?:^|\n)\s*(?:[-*•]|\d+[.)])/m.test(text)) {
+    return false;
+  }
+  return true;
 }
 
 /** Messages de navigation — ne doivent jamais cocher Mon plan. */
@@ -240,8 +242,8 @@ export function ensureCoachValidationLine(
   const currentIndex = getNextPendingTaskIndex(ctx.tasks, completedIndices);
   if (currentIndex < 0) return reply;
   if (!userMessageFulfillsTask(ctx.tasks[currentIndex], userMessage)) return reply;
+  if (coachExplicitlyRejectsDeliverable(reply)) return reply;
   if (parseCoachValidatedActionIndices(reply).includes(currentIndex)) return reply;
-  if (!coachSignalsDeliverableAccepted(reply)) return reply;
 
   return `${reply.trim()}\n\n${formatCoachActionValidationLine(
     currentIndex + 1,
@@ -359,13 +361,23 @@ function userMessageMatchesTask(task: string, userMessage: string): boolean {
     return /bloque|frein|peur|temps|technique|objection|probleme/i.test(user);
   }
 
+  if (/compare|difference|alternative|solution existante/i.test(taskNorm)) {
+    return /compare|difference|concurrent|alternative|versus|\bvs\b|plutot|differencie/i.test(user);
+  }
+
+  if (/ecris|redige|note |liste |definis|decris/i.test(taskNorm)) {
+    return user.length >= 20;
+  }
+
   const keywords = taskNorm
     .split(/[^a-z0-9]+/)
     .filter((word) => word.length > 4 && !['action', 'liste', 'note', 'verifie', 'definis'].includes(word));
-  if (keywords.length === 0) return false;
+  if (keywords.length > 0) {
+    const hits = keywords.filter((word) => user.includes(word)).length;
+    if (hits >= Math.max(2, Math.ceil(keywords.length * 0.35))) return true;
+  }
 
-  const hits = keywords.filter((word) => user.includes(word)).length;
-  return hits >= Math.max(3, Math.ceil(keywords.length * 0.5));
+  return userLikelySubmittedDeliverable(userMessage);
 }
 
 /** Le client a fourni le livrable attendu pour cette action (pas seulement posé une question). */
@@ -619,9 +631,7 @@ export function trySyncPendingActionFromHistory(
 
   let reply = lastExchange.assistant?.content ?? '';
   if (!reply.trim()) return null;
-  if (!coachSignalsDeliverableAccepted(reply) && !parseCoachValidatedActionIndices(reply).includes(currentIndex)) {
-    return null;
-  }
+  if (coachExplicitlyRejectsDeliverable(reply)) return null;
 
   reply = processRoadmapCoachReply(reply, ctx, alreadyDone, lastExchange.user.content);
 
