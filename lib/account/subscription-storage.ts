@@ -81,6 +81,13 @@ export function getUnlockedRoadmapMonths(meta: SubscriptionMeta): number {
   return MAX_ROADMAP_MONTHS;
 }
 
+/** Mois débloqués pour l'UI quand l'abonnement serveur est actif (meta locale parfois en retard). */
+export function getEffectiveUnlockedRoadmapMonths(isSubscribed: boolean): number {
+  if (!isSubscribed) return 0;
+  const fromMeta = getUnlockedRoadmapMonths(loadSubscriptionMeta());
+  return fromMeta > 0 ? fromMeta : MAX_ROADMAP_MONTHS;
+}
+
 /** Met à jour le compteur de mois depuis Stripe (ne réduit jamais le local). */
 export function mergeStripeRoadmapMonths(
   meta: SubscriptionMeta,

@@ -36,6 +36,7 @@ import {
   loadRoadmapProgress,
 } from '@/lib/account/roadmap-storage';
 import {
+  getEffectiveUnlockedRoadmapMonths,
   getUnlockedRoadmapMonths,
   loadSubscriptionMeta,
 } from '@/lib/account/subscription-storage';
@@ -96,7 +97,7 @@ export default function AccountDashboard({
     const biz = resolveActiveBusinessId();
     const storedRoadmap = loadRoadmapProgress();
     const unlockedDays = isSubscribed
-      ? getTotalUnlockedRoadmapDays(getUnlockedRoadmapMonths(subMeta))
+      ? getTotalUnlockedRoadmapDays(getEffectiveUnlockedRoadmapMonths(true))
       : 30;
     if (biz && storedRoadmap?.businessId === biz) {
       setRoadmapProgress(

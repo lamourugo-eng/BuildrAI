@@ -19,15 +19,18 @@ import {
   type MarketSegment,
 } from '@/lib/quiz/market-segment';
 import {
+  getEffectiveUnlockedRoadmapMonths,
   getUnlockedRoadmapMonths,
   loadSubscriptionMeta,
 } from '@/lib/account/subscription-storage';
+import { loadAccountAnalytics } from '@/lib/account/analytics-storage';
 import { syncRoadmapMonthsFromStripe } from '@/lib/account/roadmap-sync-client';
 import { saveRoadmapCoachContext } from '@/lib/coach/roadmap-coach-context';
 import { roadmapDayToCoachContext } from '@/lib/coach/resolve-roadmap-day';
 import { COACHING_PHASES } from '@/lib/coach/journey';
 import type { BusinessId } from '@/lib/quiz/data';
 import { buildPremiumRoadmap, type RoadmapDay } from '@/lib/quiz/premium-roadmap';
+import { loadQuizProfile } from '@/lib/quiz/profile-storage';
 import { resolveActiveBusinessId } from '@/lib/quiz/resolve-active-business';
 import { TOTAL_ROADMAP_DAYS, getSemesterChapterMeta } from '@/lib/quiz/roadmap-program';
 import { useEntrepreneurCopy } from '@/components/EntrepreneurCopyProvider';
@@ -68,7 +71,7 @@ export default function PremiumRoadmap({
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
   const [monthsOpen, setMonthsOpen] = useState(false);
   const [unlockedMonths, setUnlockedMonths] = useState(() =>
-    isSubscribed ? getUnlockedRoadmapMonths(loadSubscriptionMeta()) : 0
+    getEffectiveUnlockedRoadmapMonths(isSubscribed)
   );
   const [resolvedBusinessId, setResolvedBusinessId] = useState<BusinessId | null>(
     businessId ?? null
@@ -85,7 +88,11 @@ export default function PremiumRoadmap({
       setResolvedBusinessId(businessId ?? resolveActiveBusinessId());
     }
     window.addEventListener('buildrai:quiz-profile', syncBusinessId);
-    return () => window.removeEventListener('buildrai:quiz-profile', syncBusinessId);
+    window.addEventListener(ROADMAP_PROGRESS_EVENT, syncBusinessId);
+    return () => {
+      window.removeEventListener('buildrai:quiz-profile', syncBusinessId);
+      window.removeEventListener(ROADMAP_PROGRESS_EVENT, syncBusinessId);
+    };
   }, [businessId]);
 
   useEffect(() => {
@@ -93,8 +100,11 @@ export default function PremiumRoadmap({
       setUnlockedMonths(0);
       return;
     }
-    setUnlockedMonths(getUnlockedRoadmapMonths(loadSubscriptionMeta()));
-    void syncRoadmapMonthsFromStripe().then(setUnlockedMonths);
+    const applyMonths = () => {
+      setUnlockedMonths(getEffectiveUnlockedRoadmapMonths(true));
+    };
+    applyMonths();
+    void syncRoadmapMonthsFromStripe().then(applyMonths);
   }, [isSubscribed]);
 
   const plan = useMemo(
@@ -106,6 +116,8 @@ export default function PremiumRoadmap({
         : null,
     [resolvedBusinessId, unlockedMonths, progress?.marketSegment]
   );
+
+  const profileKnown = Boolean(loadQuizProfile() || loadAccountAnalytics().quizCompletedAt);
 
   function handleMarketSegmentChoice(segment: MarketSegment) {
     if (!resolvedBusinessId) return;
@@ -168,7 +180,12 @@ export default function PremiumRoadmap({
     const onStorage = (e: StorageEvent) => {
       if (e.key === ROADMAP_PROGRESS_KEY || e.key === 'buildrai_subscription_meta') {
         const meta = loadSubscriptionMeta();
-        setUnlockedMonths(isSubscribed ? getUnlockedRoadmapMonths(meta) : 0);
+        setUnlockedMonths(isSubscribed ? getEffectiveUnlockedRoadmapMonths(true) : 0);
+        if (isSubscribed && getUnlockedRoadmapMonths(meta) === 0) {
+          void syncRoadmapMonthsFromStripe().then(() => {
+            setUnlockedMonths(getEffectiveUnlockedRoadmapMonths(true));
+          });
+        }
         refreshProgress();
       }
     };
@@ -247,14 +264,22 @@ export default function PremiumRoadmap({
       <section className="premium-roadmap premium-roadmap--empty">
         <div className="premium-roadmap-header">
           <span className="section-tag">Parcours évolutif</span>
-          <h3>Choisis ton modèle business</h3>
+          <h3>{profileKnown ? 'Retrouve ton parcours' : 'Choisis ton modèle business'}</h3>
           <p>
-            Complète le questionnaire pour générer ton parcours personnalisé jour par jour.
+            {profileKnown
+              ? 'Ton profil est enregistré. Ouvre ton profil pour confirmer ou changer de modèle business, puis ton parcours s’affichera ici.'
+              : 'Complète le questionnaire pour générer ton parcours personnalisé jour par jour.'}
           </p>
         </div>
-        <Link href="/espace?section=profil&quiz=1" className="btn btn-primary">
-          Compléter le questionnaire
-        </Link>
+        {profileKnown ? (
+          <Link href="/espace?section=profil" className="btn btn-primary">
+            Ouvrir mon profil
+          </Link>
+        ) : (
+          <Link href="/espace?section=profil&quiz=1" className="btn btn-primary">
+            Compléter le questionnaire
+          </Link>
+        )}
       </section>
     );
   }

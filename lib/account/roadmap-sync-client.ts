@@ -2,6 +2,7 @@ import {
   getUnlockedRoadmapMonths,
   loadSubscriptionMeta,
   mergeStripeRoadmapMonths,
+  MAX_ROADMAP_MONTHS,
   saveSubscriptionMeta,
 } from '@/lib/account/subscription-storage';
 import { normalizeBillingPeriod } from '@/lib/stripe';
@@ -30,6 +31,8 @@ export async function syncRoadmapMonthsFromStripe(): Promise<number> {
         planId:
           data.planId === 'growth' || data.planId === 'starter' ? data.planId : meta.planId,
         period: normalizeBillingPeriod(data.period),
+        activatedAt: meta.activatedAt || new Date().toISOString(),
+        monthsPaid: meta.monthsPaid > 0 ? meta.monthsPaid : MAX_ROADMAP_MONTHS,
       },
       data.roadmapMonthsPaid,
       data.currentPeriodEnd

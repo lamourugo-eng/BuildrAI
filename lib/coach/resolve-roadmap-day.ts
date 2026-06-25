@@ -93,6 +93,8 @@ export interface ResolveLiveCoachRoadmapOptions {
   isSubscribed?: boolean;
   /** Jour choisi explicitement dans Mon plan (prioritaire s'il reste des actions). */
   preferGlobalDay?: number;
+  /** true = l'utilisateur a ouvert ce jour depuis Mon plan ou l'a nommé dans son message. */
+  explicitDayPin?: boolean;
 }
 
 /**
@@ -110,22 +112,31 @@ export function resolveLiveCoachRoadmapContext(
       : getUnlockedRoadmapMonths(loadSubscriptionMeta());
 
   const plan = buildCoachRoadmapPlan(businessId, { unlockedMonths, marketSegment });
+  const workingDay = findWorkingRoadmapDay(plan, progress, businessId);
 
   let day: RoadmapDay | undefined;
 
   if (options.preferGlobalDay != null) {
-    day = plan.activeDays.find((d) => d.day === options.preferGlobalDay);
-    if (day && !day.locked) {
-      const total = countRoadmapDayTasks(day);
-      const complete = isRoadmapDayComplete(progress, businessId, day.day, total);
-      if (complete) day = undefined;
-    } else {
-      day = undefined;
+    const preferred = plan.activeDays.find((d) => d.day === options.preferGlobalDay);
+    if (preferred && !preferred.locked) {
+      const preferredTotal = countRoadmapDayTasks(preferred);
+      const preferredComplete = isRoadmapDayComplete(
+        progress,
+        businessId,
+        preferred.day,
+        preferredTotal
+      );
+      const explicitPin = options.explicitDayPin === true;
+      const matchesWorking = workingDay?.day === preferred.day;
+
+      if (!preferredComplete && (explicitPin || matchesWorking)) {
+        day = preferred;
+      }
     }
   }
 
   if (!day) {
-    day = findWorkingRoadmapDay(plan, progress, businessId);
+    day = workingDay;
   }
 
   if (!day) return null;
@@ -138,36 +149,21 @@ export function resolveLiveCoachRoadmapContext(
 }
 
 /**
- * Contexte coach = progression live, sauf jour épinglé depuis Mon plan (encore en cours).
+ * Contexte coach = progression live depuis Mon plan (session épinglée seulement si = jour en cours).
  */
 export function resolveCoachRoadmapContext(
   businessId: BusinessId,
   pinnedContext: RoadmapCoachContext | null | undefined,
-  options: Omit<ResolveLiveCoachRoadmapOptions, 'preferGlobalDay'> = {}
+  options: Omit<ResolveLiveCoachRoadmapOptions, 'preferGlobalDay' | 'explicitDayPin'> = {}
 ): RoadmapCoachContext | null {
-  const live = resolveLiveCoachRoadmapContext(businessId, options);
-  if (!pinnedContext || pinnedContext.businessId !== businessId) return live;
+  const preferGlobalDay =
+    pinnedContext?.businessId === businessId ? pinnedContext.day : undefined;
 
-  const pinned = resolveLiveCoachRoadmapContext(businessId, {
+  return resolveLiveCoachRoadmapContext(businessId, {
     ...options,
-    preferGlobalDay: pinnedContext.day,
+    preferGlobalDay,
+    explicitDayPin: false,
   });
-
-  if (!live || !pinned) return pinned ?? live;
-
-  const pinnedTotal = pinned.tasks.length;
-  const pinnedComplete = isRoadmapDayComplete(
-    options.progress ?? null,
-    businessId,
-    pinned.day,
-    pinnedTotal
-  );
-
-  if (!pinnedComplete && pinned.day !== live.day) {
-    return pinned;
-  }
-
-  return live;
 }
 
 /** Contenu d'un jour pour le coach (tâches alignées Mon plan, segment B2B/B2C). */

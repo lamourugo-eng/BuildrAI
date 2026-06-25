@@ -31,7 +31,7 @@ function coachExplicitlyRejectsDeliverable(reply: string): boolean {
   );
 }
 
-function userLikelySubmittedDeliverable(userMessage: string): boolean {
+export function userLikelySubmittedDeliverable(userMessage: string): boolean {
   const text = userMessage.trim();
   if (text.length < 22) return false;
   if (isDefinitionalQuestion(text)) return false;
@@ -241,9 +241,14 @@ export function ensureCoachValidationLine(
 
   const currentIndex = getNextPendingTaskIndex(ctx.tasks, completedIndices);
   if (currentIndex < 0) return reply;
-  if (!userMessageFulfillsTask(ctx.tasks[currentIndex], userMessage)) return reply;
   if (coachExplicitlyRejectsDeliverable(reply)) return reply;
   if (parseCoachValidatedActionIndices(reply).includes(currentIndex)) return reply;
+  if (
+    !userMessageFulfillsTask(ctx.tasks[currentIndex], userMessage) &&
+    !userLikelySubmittedDeliverable(userMessage)
+  ) {
+    return reply;
+  }
 
   return `${reply.trim()}\n\n${formatCoachActionValidationLine(
     currentIndex + 1,
@@ -409,14 +414,24 @@ export function inferCompletedTaskIndices(input: RoadmapTaskSyncInput): number[]
   const currentIndex = getNextPendingTaskIndex(tasks, alreadyDone);
   if (currentIndex < 0) return [];
 
-  const validated = parseCoachValidatedActionIndices(reply).filter(
-    (index) =>
-      index === currentIndex &&
-      index < tasks.length &&
-      userMessageFulfillsTask(tasks[index], userMessage)
-  );
+  if (coachExplicitlyRejectsDeliverable(reply)) return [];
 
-  return validated.length ? [currentIndex] : [];
+  const validated = parseCoachValidatedActionIndices(reply).filter(
+    (index) => index === currentIndex && index < tasks.length
+  );
+  if (!validated.length) return [];
+
+  if (isDefinitionalQuestion(userMessage)) return [];
+
+  if (userMessageFulfillsTask(tasks[currentIndex], userMessage)) {
+    return [currentIndex];
+  }
+
+  if (userLikelySubmittedDeliverable(userMessage)) {
+    return [currentIndex];
+  }
+
+  return [];
 }
 
 /** Ajoute la présentation de l'action suivante après validation de l'action EN COURS. */
@@ -430,7 +445,10 @@ export function appendNextActionIfValidated(
 
   const currentIndex = getNextPendingTaskIndex(ctx.tasks, completedIndices);
   if (currentIndex < 0) return reply;
-  if (!userMessageFulfillsTask(ctx.tasks[currentIndex], userMessage)) return reply;
+  const userReady =
+    userMessageFulfillsTask(ctx.tasks[currentIndex], userMessage) ||
+    userLikelySubmittedDeliverable(userMessage);
+  if (!userReady) return reply;
 
   const withValidation = parseCoachValidatedActionIndices(reply).includes(currentIndex)
     ? reply
@@ -658,6 +676,21 @@ export function trySyncPendingActionFromHistory(
       : buildCoachDayCompletedMessage(ctx);
 
   return { sync, followUp };
+}
+
+export function formatRoadmapCoachProgressPoint(
+  ctx: RoadmapCoachContext,
+  completedIndices: number[]
+): string {
+  const nextIndex = getNextPendingTaskIndex(ctx.tasks, completedIndices);
+  const done = completedIndices.length;
+  const total = ctx.tasks.length;
+
+  if (nextIndex < 0) {
+    return `Mon plan · Jour ${ctx.dayInMonth} « ${ctx.title} » · ${done}/${total} actions validées`;
+  }
+
+  return `Mon plan · Jour global ${ctx.day} · Action ${nextIndex + 1}/${total} en cours`;
 }
 
 export function formatRoadmapTaskSyncNotice(result: CoachRoadmapTaskSyncResult): string | null {
